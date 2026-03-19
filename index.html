@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SELIN777 FINTECH</title>
+    <title>SELIN777 FINTECH PRO</title>
     <script src="https://telegram.org"></script>
     <style>
         :root { --bg: #030508; --card: #0d1117; --accent: #00a2ff; --text-dim: #4e5a6e; }
@@ -13,25 +13,22 @@
         /* Шапка */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .logo-wrapper { display: flex; align-items: center; gap: 8px; }
-        .logo-circle { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--accent); object-fit: cover; }
-        
-        .lang-box { display: flex; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 12px; }
-        .l-btn { background: none; border: none; color: var(--text-dim); font-size: 10px; font-weight: 800; padding: 6px 10px; border-radius: 8px; }
-        .l-btn.active { background: var(--accent); color: white; }
+        .logo-circle { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--accent); object-fit: cover; }
+        .logo-txt { font-size: 20px; font-weight: 900; letter-spacing: 1px; }
 
+        /* Баланс */
         .balance-card { background: linear-gradient(165deg, #121822 0%, #080c12 100%); border-radius: 35px; padding: 30px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        .main-val { font-size: 56px; font-weight: 200; margin: 10px 0; }
-        .curr-btns { display: flex; justify-content: center; gap: 8px; }
-        .c-btn { background: rgba(255,255,255,0.03); border: none; color: var(--text-dim); padding: 10px 18px; border-radius: 12px; font-size: 11px; font-weight: 800; }
-        .c-btn.active { color: white; background: var(--accent); }
+        .main-val { font-size: 58px; font-weight: 200; margin: 10px 0; }
+        .live-rate { font-size: 10px; color: #00ff88; font-weight: 900; margin-top: 10px; }
 
+        /* Сетка кнопок */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .item { background: var(--card); border-radius: 25px; padding: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.05); transition: 0.2s; }
-        .item:active { transform: scale(0.95); border-color: var(--accent); box-shadow: 0 0 20px rgba(0, 162, 255, 0.2); }
-        .item span { font-size: 26px; display: block; margin-bottom: 8px; }
-        .item div { font-size: 11px; font-weight: 800; text-transform: uppercase; color: #ccc; }
+        .item { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 25px; padding: 25px; text-align: center; transition: 0.2s; cursor: pointer; }
+        .item:active { transform: scale(0.95); border-color: var(--accent); box-shadow: 0 0 20px rgba(0, 162, 255, 0.3); }
+        .item span { font-size: 26px; display: block; margin-bottom: 10px; }
+        .item div { font-size: 11px; font-weight: 800; color: #ccc; text-transform: uppercase; }
 
-        /* Выезжающее меню (Drawer) */
+        /* ВЫЕЗЖАЮЩЕЕ МЕНЮ (МОЗГИ ВНЕСЕНИЯ) */
         .drawer {
             position: fixed; bottom: -100%; left: 0; width: 100%; background: #0d1117;
             border-top: 2px solid var(--accent); border-radius: 35px 35px 0 0;
@@ -39,15 +36,16 @@
             max-height: 85vh; overflow-y: auto; box-shadow: 0 -15px 50px rgba(0,0,0,0.9);
         }
         .drawer.active { bottom: 0; }
-        .op-header { text-align: center; margin-bottom: 20px; }
-        .op-header img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent); margin-bottom: 10px; }
+        .drawer-header { text-align: center; margin-bottom: 25px; }
+        .drawer-header img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent); margin-bottom: 10px; }
+        
+        .op-label { font-size: 10px; color: var(--text-dim); margin: 15px 0 10px 10px; text-transform: uppercase; letter-spacing: 1px; }
         .op-list { display: flex; flex-direction: column; gap: 10px; }
         .op-item { 
             background: rgba(255,255,255,0.03); padding: 18px; border-radius: 18px; 
-            font-weight: 700; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; text-align: left;
+            font-weight: 700; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; display: flex; justify-content: space-between;
         }
         .op-item:active { background: var(--accent); color: white; }
-        .op-label { font-size: 10px; color: var(--text-dim); margin: 15px 0 5px 10px; text-transform: uppercase; letter-spacing: 1px; }
 
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(8px); }
         .overlay.active { display: block; }
@@ -58,128 +56,88 @@
     <div class="header">
         <div class="logo-wrapper">
             <img src="logo.png" class="logo-circle" onerror="this.style.display='none'">
-            <b style="font-size: 20px;">SELIN<span style="color:var(--accent)">777</span></b>
+            <div class="logo-txt">SELIN<span>777</span></div>
         </div>
-        <div class="lang-box">
-            <button class="l-btn active" id="ru" onclick="setL('ru')">RU</button>
-            <button class="l-btn" id="en" onclick="setL('en')">EN</button>
-            <button class="l-btn" id="cn" onclick="setL('cn')">CN</button>
-        </div>
+        <div style="font-size: 10px; color: #00ff88; font-weight: 900;">● NODE ACTIVE</div>
     </div>
 
     <div class="balance-card">
-        <div id="t-assets" style="color:var(--text-dim); font-size:11px; letter-spacing:2px; font-weight: 800;">АКТИВЫ КОШЕЛЬКА</div>
-        <div class="main-val">0.00 <span id="sym" style="color:var(--text-dim); font-size:28px;">₽</span></div>
-        <div class="curr-btns">
-            <button class="c-btn active" id="b-rub" onclick="setV('₽', 'b-rub')">RUB</button>
-            <button class="c-btn" id="b-usdt" onclick="setV('₮', 'b-usdt')">USDT</button>
-            <button class="c-btn" id="b-btc" onclick="setV('₿', 'b-btc')">BTC</button>
-        </div>
+        <div style="color: var(--text-dim); font-size: 11px; letter-spacing: 2px; font-weight: 800;">БАЛАНС SELIN PAY</div>
+        <div class="main-val">0.00 <span style="font-size: 28px; color: var(--text-dim);">₽</span></div>
+        <div class="live-rate" id="rate">СИНХРОНИЗАЦИЯ КУРСА...</div>
     </div>
 
     <div class="grid">
-        <!-- ТЕПЕРЬ ОТКРЫВАЕТ МЕНЮ ВНЕСЕНИЯ -->
-        <div class="item" onclick="openDrawer('deposit')"><span>📥</span><div id="t-dep">Внести</div></div>
-        <div class="item" onclick="lock('Вывод')"><span>📤</span><div id="t-with">Вывод</div></div>
-        <div class="item" onclick="lock('Обмен')"><span>🔄</span><div id="t-exch">Обмен</div></div>
-        <!-- ТЕПЕРЬ ОТКРЫВАЕТ МЕНЮ СВЯЗИ -->
-        <div class="item" onclick="openDrawer('mobile')"><span>📱</span><div id="t-mob">Связь</div></div>
+        <!-- НАПОЛНЯЕМ КНОПКУ ВНЕСТИ -->
+        <div class="item" onclick="openDeposit()"><span>📥</span><div>Внести</div></div>
+        <div class="item" onclick="tgAlert('Вывод')"><span>📤</span><div>Вывод</div></div>
+        <div class="item" onclick="tgAlert('Обмен')"><span>🔄</span><div>Обмен</div></div>
+        <div class="item" onclick="tgAlert('Связь')"><span>📱</span><div>Связь</div></div>
     </div>
 
-    <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
-    
-    <!-- МЕНЮ ВНЕСЕНИЯ -->
-    <div class="drawer" id="drawer-deposit">
-        <div class="op-header">
-            <img src="logo.png">
-            <h2 style="margin:0;">ПОПОЛНЕНИЕ</h2>
+    <!-- МЕНЮ ПОПОЛНЕНИЯ (ВТОРАЯ СТРАНИЦА) -->
+    <div class="overlay" id="overlay" onclick="closeDeposit()"></div>
+    <div class="drawer" id="deposit-drawer">
+        <div class="drawer-header">
+            <img src="logo.png" onerror="this.src='https://via.placeholder.com'">
+            <div style="font-weight: 900; font-size: 22px; letter-spacing: 1px;">ПОПОЛНЕНИЕ</div>
         </div>
-        <div class="op-label">Валюты (₽, $, €)</div>
+        
+        <div class="op-label">Фиатные валюты</div>
         <div class="op-list">
-            <div class="op-item" onclick="payAction('RUB')">Внести РУБЛИ (₽)</div>
-            <div class="op-item" onclick="payAction('USD')">Внести ДОЛЛАРЫ ($)</div>
-            <div class="op-item" onclick="payAction('EUR')">Внести ЕВРО (€)</div>
+            <div class="op-item" onclick="initPay('RUB')"><span>🇷🇺 Рубли (RUB)</span> <span>₽</span></div>
+            <div class="op-item" onclick="initPay('USD')"><span>🇺🇸 Доллары (USD)</span> <span>$</span></div>
         </div>
-        <div class="op-label">Криптовалюта</div>
-        <div class="op-list">
-            <div class="op-item" onclick="payAction('USDT')">Tether (USDT)</div>
-            <div class="op-item" onclick="payAction('BTC')">Bitcoin (BTC)</div>
-            <div class="op-item" onclick="payAction('TON')">Toncoin (TON)</div>
-        </div>
-        <button onclick="closeDrawer()" style="width:100%; background:none; border:none; color:#555; padding:20px; font-weight:800;">ОТМЕНА</button>
-    </div>
 
-    <!-- МЕНЮ СВЯЗИ -->
-    <div class="drawer" id="drawer-mobile">
-        <div class="op-header">
-            <img src="logo.png">
-            <h2 style="margin:0;">ОПЛАТА СВЯЗИ</h2>
-        </div>
-        <div class="op-label">Россия</div>
+        <div class="op-label">Криптовалюта (Secure Node)</div>
         <div class="op-list">
-            <div class="op-item" onclick="payAction('Билайн')">Билайн</div>
-            <div class="op-item" onclick="payAction('МТС')">МТС</div>
-            <div class="op-item" onclick="payAction('МегаФон')">МегаФон</div>
+            <div class="op-item" onclick="initPay('TON')"><span>💎 Toncoin (TON)</span></div>
+            <div class="op-item" onclick="initPay('BTC')"><span>₿ Bitcoin (BTC)</span></div>
+            <div class="op-item" onclick="initPay('USDT')"><span>₮ Tether (USDT)</span></div>
         </div>
-        <div class="op-label">USA</div>
-        <div class="op-list">
-            <div class="op-item" onclick="payAction('Verizon')">Verizon</div>
-            <div class="op-item" onclick="payAction('AT&T')">AT&T</div>
-        </div>
-        <button onclick="closeDrawer()" style="width:100%; background:none; border:none; color:#555; padding:20px; font-weight:800;">ОТМЕНА</button>
+
+        <button onclick="closeDeposit()" style="width: 100%; background: none; border: 1px solid #333; color: #555; padding: 18px; border-radius: 20px; margin-top: 25px; font-weight: 800;">ОТМЕНА</button>
     </div>
 
     <script>
-        var tg = window.Telegram.WebApp;
+        const tg = window.Telegram.WebApp;
         tg.expand();
+        tg.setHeaderColor('#030508');
 
-        var ld = {
-            ru: {a:"АКТИВЫ КОШЕЛЬКА",d:"Внести",w:"Вывод",e:"Обмен",m:"Связь",l:"Авторизуйтесь!"},
-            en: {a:"WALLET ASSETS",d:"Deposit",w:"Withdraw",e:"Exchange",m:"Mobile",l:"Please Login!"},
-            cn: {a:"钱包资产",d:"充值",w:"提现",e:"兑换",m:"通讯",l:"请登录!"}
-        };
-        var cl = 'ru';
-
-        function setL(l){
-            cl = l;
-            document.querySelectorAll('.l-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(l).classList.add('active');
-            document.getElementById('t-assets').innerText = ld[l].a;
-            document.getElementById('t-dep').innerText = ld[l].d;
-            document.getElementById('t-with').innerText = ld[l].w;
-            document.getElementById('t-exch').innerText = ld[l].e;
-            document.getElementById('t-mob').innerText = ld[l].m;
-            tg.HapticFeedback.selectionChanged();
-        }
-
-        function setV(s, i){
-            document.getElementById('sym').innerText = s;
-            document.querySelectorAll('.c-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(i).classList.add('active');
-            tg.HapticFeedback.selectionChanged();
-        }
-
-        function openDrawer(type) {
+        // Мозги для открытия меню
+        function openDeposit() {
             tg.HapticFeedback.impactOccurred('medium');
+            document.getElementById('deposit-drawer').classList.add('active');
             document.getElementById('overlay').classList.add('active');
-            document.getElementById('drawer-' + type).classList.add('active');
         }
 
-        function closeDrawer() {
+        function closeDeposit() {
+            document.getElementById('deposit-drawer').classList.remove('active');
             document.getElementById('overlay').classList.remove('active');
-            document.querySelectorAll('.drawer').forEach(d => d.classList.remove('active'));
         }
 
-        function payAction(name) {
+        function initPay(type) {
             tg.HapticFeedback.notificationOccurred('success');
-            tg.showAlert(`Инициализация оплаты: ${name}\n\nСчет будет выставлен в чате с ботом.`);
-            closeDrawer();
+            tg.showAlert(`Инициализация пополнения через ${type}... \n\nСчет будет выставлен в чате с ботом.`);
+            closeDeposit();
         }
 
-        function lock(n){
-            tg.showAlert(ld[cl].l);
-            tg.HapticFeedback.notificationOccurred('warning');
+        // Обновление курса (LIVE)
+        async function getRate() {
+            try {
+                const r = await fetch('https://api.binance.com');
+                const d = await r.json();
+                document.getElementById('rate').innerText = `LIVE USDT: ${parseFloat(d.price).toFixed(2)} ₽`;
+            } catch(e) { document.getElementById('rate').innerText = "NODE ONLINE"; }
         }
+
+        function tgAlert(n) {
+            tg.HapticFeedback.impactOccurred('light');
+            tg.showPopup({ title: n, message: `Модуль "${n}" в разработке.`, buttons: });
+        }
+
+        setInterval(getRate, 30000);
+        getRate();
     </script>
 </body>
 </html>
