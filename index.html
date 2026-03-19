@@ -1,29 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SELIN777</title>
+    <title>SELIN777 FINTECH</title>
     <script src="https://telegram.org"></script>
     <style>
         :root { --bg: #030508; --card: #0d1117; --accent: #00a2ff; --text-dim: #4e5a6e; }
-        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: white; font-family: -apple-system, sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .logo-wrapper { display: flex; align-items: center; gap: 8px; }
-        .logo-circle { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--accent); }
+        .logo-circle { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--accent); object-fit: cover; }
+        
         .lang-box { display: flex; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 12px; }
-        .l-btn { background: none; border: none; color: var(--text-dim); font-size: 10px; font-weight: bold; padding: 8px 12px; border-radius: 8px; }
-        .l-btn.active { background: var(--accent); color: white; }
-        .balance-card { background: linear-gradient(165deg, #121822 0%, #080c12 100%); border-radius: 30px; padding: 30px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        .main-val { font-size: 50px; font-weight: bold; margin: 10px 0; }
+        .l-btn { background: none; border: none; color: var(--text-dim); font-size: 10px; font-weight: 800; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
+        .l-btn.active { background: var(--accent); color: white; box-shadow: 0 0 10px var(--accent); }
+
+        .balance-card { background: linear-gradient(165deg, #121822 0%, #080c12 100%); border-radius: 35px; padding: 30px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .main-val { font-size: 56px; font-weight: 200; margin: 10px 0; color: #fff; }
         .curr-btns { display: flex; justify-content: center; gap: 8px; }
-        .c-btn { background: rgba(255,255,255,0.05); border: none; color: var(--text-dim); padding: 10px 15px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+        .c-btn { background: rgba(255,255,255,0.03); border: none; color: var(--text-dim); padding: 10px 18px; border-radius: 12px; font-size: 11px; font-weight: 800; cursor: pointer; }
         .c-btn.active { color: white; background: var(--accent); }
+
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .item { background: var(--card); border-radius: 20px; padding: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        .item:active { background: rgba(0, 162, 255, 0.1); }
-        .item span { font-size: 24px; display: block; margin-bottom: 8px; }
-        .item div { font-size: 11px; font-weight: bold; color: #ccc; }
+        .item { background: var(--card); border-radius: 25px; padding: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .item:active { transform: scale(0.95); border-color: var(--accent); box-shadow: 0 0 20px rgba(0, 162, 255, 0.2); }
+        .item span { font-size: 26px; display: block; margin-bottom: 8px; }
+        .item div { font-size: 11px; font-weight: 800; color: #ccc; text-transform: uppercase; letter-spacing: 1px; }
+
+        .rate-label { font-size: 10px; color: #00ff88; margin-top: 15px; font-weight: 900; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -33,56 +40,78 @@
             <b style="font-size: 20px;">SELIN<span style="color:var(--accent)">777</span></b>
         </div>
         <div class="lang-box">
-            <button class="l-btn active" id="ru" onclick="setL('ru')">RU</button>
-            <button class="l-btn" id="en" onclick="setL('en')">EN</button>
-            <button class="l-btn" id="cn" onclick="setL('cn')">CN</button>
+            <button class="l-btn active" id="btn-ru" onclick="setL('ru')">RU</button>
+            <button class="l-btn" id="btn-en" onclick="setL('en')">EN</button>
+            <button class="l-btn" id="btn-cn" onclick="setL('cn')">CN</button>
         </div>
     </div>
+
     <div class="balance-card">
-        <div id="t-a" style="color:var(--text-dim); font-size:11px; letter-spacing:1px;">АКТИВЫ КОШЕЛЬКА</div>
-        <div class="main-val">0.00 <span id="sym" style="color:var(--text-dim); font-size:24px;">₽</span></div>
+        <div id="t-assets" style="color:var(--text-dim); font-size:11px; letter-spacing:2px; font-weight: 800;">АКТИВЫ КОШЕЛЬКА</div>
+        <div class="main-val">0.00 <span id="sym" style="color:var(--text-dim); font-size:28px;">₽</span></div>
         <div class="curr-btns">
-            <button class="c-btn active" id="b-rub" onclick="setV('₽', 'b-rub')">RUB</button>
-            <button class="c-btn" id="b-usdt" onclick="setV('₮', 'b-usdt')">USDT</button>
-            <button class="c-btn" id="b-btc" onclick="setV('₿', 'b-btc')">BTC</button>
+            <button class="c-btn active" id="c-rub" onclick="setV('₽', 'c-rub')">RUB</button>
+            <button class="c-btn" id="c-usdt" onclick="setV('₮', 'c-usdt')">USDT</button>
+            <button class="c-btn" id="c-btc" onclick="setV('₿', 'c-btc')">BTC</button>
         </div>
+        <div class="rate-label" id="rate-text">LIVE NODE: CONNECTING...</div>
     </div>
+
     <div class="grid">
-        <div class="item" onclick="lock()"><span>📥</span><div id="t-d">Внести</div></div>
-        <div class="item" onclick="lock()"><span>📤</span><div id="t-w">Вывод</div></div>
-        <div class="item" onclick="lock()"><span>🔄</span><div id="t-e">Обмен</div></div>
-        <div class="item" onclick="lock()"><span>📱</span><div id="t-m">Связь</div></div>
+        <div class="item" onclick="lock('dep')"><span>📥</span><div id="t-dep">Внести</div></div>
+        <div class="item" onclick="lock('with')"><span>📤</span><div id="t-with">Вывод</div></div>
+        <div class="item" onclick="lock('exch')"><span>🔄</span><div id="t-exch">Обмен</div></div>
+        <div class="item" onclick="lock('mob')"><span>📱</span><div id="t-mob">Связь</div></div>
     </div>
+
     <script>
-        var tg = window.Telegram.WebApp;
+        const tg = window.Telegram.WebApp;
         tg.expand();
-        var ld = {
-            ru: {a:"АКТИВЫ КОШЕЛЬКА",d:"Внести",w:"Вывод",e:"Обмен",m:"Связь",l:"Авторизуйтесь!"},
-            en: {a:"WALLET ASSETS",d:"Deposit",w:"Withdraw",e:"Exchange",m:"Mobile",l:"Please Login!"},
-            cn: {a:"钱包资产",d:"充值",w:"提现",e:"兑换",m:"通讯",l:"请登录!"}
+
+        const translations = {
+            ru: { a: "АКТИВЫ КОШЕЛЬКА", d: "Внести", w: "Вывод", e: "Обмен", m: "Связь", l: "Авторизуйтесь в системе SELIN777" },
+            en: { a: "WALLET ASSETS", d: "Deposit", w: "Withdraw", e: "Exchange", m: "Mobile", l: "Please authorize in SELIN777" },
+            cn: { a: "钱包资产", d: "充值", w: "提现", e: "兑换", m: "通讯", l: "请先登录 SELIN777" }
         };
-        var cl = 'ru';
-        function setL(l){
-            cl = l;
-            document.querySelectorAll('.l-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(l).classList.add('active');
-            document.getElementById('t-a').innerText = ld[l].a;
-            document.getElementById('t-d').innerText = ld[l].d;
-            document.getElementById('t-w').innerText = ld[l].w;
-            document.getElementById('t-e').innerText = ld[l].e;
-            document.getElementById('t-m').innerText = ld[l].m;
+
+        let currentL = 'ru';
+
+        function setL(l) {
             tg.HapticFeedback.selectionChanged();
+            currentL = l;
+            document.querySelectorAll('.l-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + l).classList.add('active');
+            
+            document.getElementById('t-assets').innerText = translations[l].a;
+            document.getElementById('t-dep').innerText = translations[l].d;
+            document.getElementById('t-with').innerText = translations[l].w;
+            document.getElementById('t-exch').innerText = translations[l].e;
+            document.getElementById('t-mob').innerText = translations[l].m;
         }
-        function setV(s, i){
+
+        async function updateRate() {
+            try {
+                const res = await fetch('https://api.binance.com');
+                const data = await res.json();
+                document.getElementById('rate-text').innerText = `LIVE USDT: ${parseFloat(data.price).toFixed(2)} ₽`;
+            } catch (e) { document.getElementById('rate-text').innerText = "NODE ONLINE"; }
+        }
+
+        function setV(s, i) {
+            tg.HapticFeedback.selectionChanged();
             document.getElementById('sym').innerText = s;
             document.querySelectorAll('.c-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(i).classList.add('active');
-            tg.HapticFeedback.selectionChanged();
+            updateRate();
         }
-        function lock(){
-            tg.showAlert(ld[cl].l);
+
+        function lock(type) {
             tg.HapticFeedback.notificationOccurred('warning');
+            tg.showAlert(translations[currentL].l);
         }
+
+        setInterval(updateRate, 30000);
+        updateRate();
     </script>
 </body>
 </html>
