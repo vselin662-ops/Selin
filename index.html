@@ -1,109 +1,87 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SELIN777 FINTECH</title>
+    <title>SELIN777</title>
     <script src="https://telegram.org"></script>
     <style>
         :root { --bg: #030508; --card: #0d1117; --accent: #00a2ff; --text-dim: #4e5a6e; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, sans-serif; }
-        body { background: var(--bg); color: white; margin: 0; padding: 20px; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-
+        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .logo-wrapper { display: flex; align-items: center; gap: 8px; }
         .logo-circle { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--accent); }
-        .logo-txt { font-size: 20px; font-weight: 900; letter-spacing: 1px; }
-
-        /* Языки */
         .lang-box { display: flex; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 12px; }
-        .l-btn { background: none; border: none; color: var(--text-dim); font-size: 10px; font-weight: 800; padding: 6px 10px; border-radius: 8px; }
-        .l-btn.active { background: var(--accent); color: white; box-shadow: 0 0 10px var(--accent); }
-
-        .balance-card {
-            background: linear-gradient(165deg, #121822 0%, #080c12 100%);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 35px; padding: 30px; margin-bottom: 20px; text-align: center;
-        }
-        .main-val { font-size: 60px; font-weight: 200; margin: 10px 0; }
-        
-        /* Валюты */
+        .l-btn { background: none; border: none; color: var(--text-dim); font-size: 10px; font-weight: bold; padding: 8px 12px; border-radius: 8px; }
+        .l-btn.active { background: var(--accent); color: white; }
+        .balance-card { background: linear-gradient(165deg, #121822 0%, #080c12 100%); border-radius: 30px; padding: 30px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .main-val { font-size: 50px; font-weight: bold; margin: 10px 0; }
         .curr-btns { display: flex; justify-content: center; gap: 8px; }
-        .c-btn { background: rgba(255,255,255,0.03); border: none; color: var(--text-dim); padding: 10px 18px; border-radius: 12px; font-size: 11px; font-weight: 800; }
+        .c-btn { background: rgba(255,255,255,0.05); border: none; color: var(--text-dim); padding: 10px 15px; border-radius: 12px; font-size: 11px; font-weight: bold; }
         .c-btn.active { color: white; background: var(--accent); }
-
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .item { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 25px; padding: 25px; text-align: center; }
-        .item:active { transform: scale(0.95); border-color: var(--accent); }
-        .item div { font-size: 11px; font-weight: 800; margin-top: 10px; color: #ccc; }
+        .item { background: var(--card); border-radius: 20px; padding: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .item:active { background: rgba(0, 162, 255, 0.1); }
+        .item span { font-size: 24px; display: block; margin-bottom: 8px; }
+        .item div { font-size: 11px; font-weight: bold; color: #ccc; }
     </style>
 </head>
 <body>
-
     <div class="header">
         <div class="logo-wrapper">
             <img src="logo.png" class="logo-circle" onerror="this.style.display='none'">
-            <div class="logo-txt">SELIN<span>777</span></div>
+            <b style="font-size: 20px;">SELIN<span style="color:var(--accent)">777</span></b>
         </div>
         <div class="lang-box">
-            <div class="l-btn active" id="btn-ru" onclick="setLang('ru')">RU</div>
-            <div class="l-btn" id="btn-en" onclick="setLang('en')">EN</div>
-            <div class="l-btn" id="btn-cn" onclick="setLang('cn')">CN</div>
+            <button class="l-btn active" id="ru" onclick="setL('ru')">RU</button>
+            <button class="l-btn" id="en" onclick="setL('en')">EN</button>
+            <button class="l-btn" id="cn" onclick="setL('cn')">CN</button>
         </div>
     </div>
-
     <div class="balance-card">
-        <div id="txt-assets" style="color: var(--text-dim); font-size: 11px; letter-spacing: 2px; font-weight: 800;">АКТИВЫ КОШЕЛЬКА</div>
-        <div class="main-val">0.00 <span id="symbol" style="font-size: 32px; color: var(--text-dim);">₽</span></div>
+        <div id="t-a" style="color:var(--text-dim); font-size:11px; letter-spacing:1px;">АКТИВЫ КОШЕЛЬКА</div>
+        <div class="main-val">0.00 <span id="sym" style="color:var(--text-dim); font-size:24px;">₽</span></div>
         <div class="curr-btns">
-            <div class="c-btn active" id="c-rub" onclick="setV('₽', 'c-rub')">RUB</div>
-            <div class="c-btn" id="c-usdt" onclick="setV('₮', 'c-usdt')">USDT</div>
-            <div class="c-btn" id="c-btc" onclick="setV('₿', 'c-btc')">BTC</div>
+            <button class="c-btn active" id="b-rub" onclick="setV('₽', 'b-rub')">RUB</button>
+            <button class="c-btn" id="b-usdt" onclick="setV('₮', 'b-usdt')">USDT</button>
+            <button class="c-btn" id="b-btc" onclick="setV('₿', 'b-btc')">BTC</button>
         </div>
     </div>
-
     <div class="grid">
-        <div class="item" onclick="lock('dep')"><img src="https://img.icons8.com" width="24"><div id="txt-dep">Внести</div></div>
-        <div class="item" onclick="lock('with')"><img src="https://img.icons8.com" width="24"><div id="txt-with">Вывод</div></div>
-        <div class="item" onclick="lock('exch')"><img src="https://img.icons8.com" width="24"><div id="txt-exch">Обмен</div></div>
-        <div class="item" onclick="lock('mob')"><img src="https://img.icons8.com" width="24"><div id="txt-mob">Связь</div></div>
+        <div class="item" onclick="lock()"><span>📥</span><div id="t-d">Внести</div></div>
+        <div class="item" onclick="lock()"><span>📤</span><div id="t-w">Вывод</div></div>
+        <div class="item" onclick="lock()"><span>🔄</span><div id="t-e">Обмен</div></div>
+        <div class="item" onclick="lock()"><span>📱</span><div id="t-m">Связь</div></div>
     </div>
-
     <script>
-        const tg = window.Telegram.WebApp;
+        var tg = window.Telegram.WebApp;
         tg.expand();
-
-        const langData = {
-            ru: { assets: "АКТИВЫ КОШЕЛЬКА", dep: "Внести", with: "Вывод", exch: "Обмен", mob: "Связь", lock: "Доступ ограничен. Авторизуйтесь." },
-            en: { assets: "WALLET ASSETS", dep: "Deposit", with: "Withdraw", exch: "Exchange", mob: "Mobile", lock: "Access Denied. Please Login." },
-            cn: { assets: "钱包资产", dep: "充值", with: "提现", exch: "兑换", mob: "通讯", lock: "访问受限。请登录。" }
+        var ld = {
+            ru: {a:"АКТИВЫ КОШЕЛЬКА",d:"Внести",w:"Вывод",e:"Обмен",m:"Связь",l:"Авторизуйтесь!"},
+            en: {a:"WALLET ASSETS",d:"Deposit",w:"Withdraw",e:"Exchange",m:"Mobile",l:"Please Login!"},
+            cn: {a:"钱包资产",d:"充值",w:"提现",e:"兑换",m:"通讯",l:"请登录!"}
         };
-
-        let curL = 'ru';
-
-        function setLang(l) {
-            tg.HapticFeedback.selectionChanged();
-            curL = l;
+        var cl = 'ru';
+        function setL(l){
+            cl = l;
             document.querySelectorAll('.l-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-' + l).classList.add('active');
-            
-            document.getElementById('txt-assets').innerText = langData[l].assets;
-            document.getElementById('txt-dep').innerText = langData[l].dep;
-            document.getElementById('txt-with').innerText = langData[l].with;
-            document.getElementById('txt-exch').innerText = langData[l].exch;
-            document.getElementById('txt-mob').innerText = langData[l].mob;
-        }
-
-        function setV(s, id) {
+            document.getElementById(l).classList.add('active');
+            document.getElementById('t-a').innerText = ld[l].a;
+            document.getElementById('t-d').innerText = ld[l].d;
+            document.getElementById('t-w').innerText = ld[l].w;
+            document.getElementById('t-e').innerText = ld[l].e;
+            document.getElementById('t-m').innerText = ld[l].m;
             tg.HapticFeedback.selectionChanged();
-            document.getElementById('symbol').innerText = s;
-            document.querySelectorAll('.c-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
         }
-
-        function lock(n) {
+        function setV(s, i){
+            document.getElementById('sym').innerText = s;
+            document.querySelectorAll('.c-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(i).classList.add('active');
+            tg.HapticFeedback.selectionChanged();
+        }
+        function lock(){
+            tg.showAlert(ld[cl].l);
             tg.HapticFeedback.notificationOccurred('warning');
-            tg.showAlert(langData[curL].lock);
         }
     </script>
 </body>
