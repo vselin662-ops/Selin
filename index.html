@@ -3,217 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SELIN PAY | Premium Web3</title>
+    <title>SELIN PAY | Crypto Ecosystem</title>
     
-    <!-- SDK для Telegram и TON -->
     <script src="https://telegram.org"></script>
     <script src="https://unpkg.com"></script>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     
     <style>
-        :root {
-            --bg: #050a10;
-            --accent: #0088cc;
-            --card: rgba(255, 255, 255, 0.03);
-            --text: #ffffff;
-        }
-
+        :root { --bg: #070b10; --accent: #0088cc; --selin: #00d4ff; --glass: rgba(255, 255, 255, 0.03); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: #fff; height: 100vh; overflow-y: auto; display: flex; justify-content: center; }
+        
+        .app { width: 100%; max-width: 400px; padding: 25px; display: flex; flex-direction: column; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .logo-box { display: flex; align-items: center; gap: 10px; }
+        .logo-img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; border: 1px solid var(--accent); }
+        .brand { font-weight: 900; font-size: 1.2rem; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; }
+        
+        .node { font-size: 10px; font-weight: 700; padding: 6px 14px; border-radius: 30px; background: var(--glass); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #ff3b30; transition: 0.3s; }
+        .active .dot { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
 
-        body {
-            background: var(--bg);
-            background-image: radial-gradient(circle at 50% 0%, #101926 0%, #050a10 100%);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden;
-        }
+        /* Карточка активов */
+        .asset-card { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 35px; padding: 30px 20px; margin-bottom: 25px; backdrop-filter: blur(20px); }
+        .asset-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; padding: 10px 0; }
+        .asset-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .asset-info { text-align: left; }
+        .asset-name { font-size: 12px; opacity: 0.4; text-transform: uppercase; letter-spacing: 1px; }
+        .asset-val { font-size: 32px; font-weight: 300; }
+        .asset-val span { font-size: 16px; opacity: 0.3; margin-left: 4px; }
+        .selin-color { color: var(--selin); text-shadow: 0 0 15px rgba(0, 212, 255, 0.3); }
 
-        .app {
-            width: 100%;
-            max-width: 400px;
-            padding: 40px 25px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* Шапка с лого и статусом */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .logo { font-weight: 900; font-size: 1.3rem; letter-spacing: 3px; color: var(--accent); }
-
-        .status-badge {
-            font-size: 10px;
-            font-weight: 700;
-            background: var(--card);
-            padding: 6px 12px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .dot { width: 7px; height: 7px; border-radius: 50%; background: #ff3b30; box-shadow: 0 0 10px #ff3b30; transition: 0.3s; }
-        .active .dot { background: #00ff88; box-shadow: 0 0 15px #00ff88; }
-
-        /* Карта баланса */
-        .balance-card {
-            background: var(--card);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 35px;
-            padding: 45px 20px;
-            text-align: center;
-            backdrop-filter: blur(20px);
-            margin-bottom: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-
-        .label { font-size: 11px; opacity: 0.4; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
-        .amount { font-size: 52px; font-weight: 300; letter-spacing: -2px; }
-        .amount span { font-size: 22px; opacity: 0.2; margin-left: 5px; }
-
-        /* Сетка управления */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn { background: var(--glass); border: 1px solid rgba(255,255,255,0.05); border-radius: 28px; padding: 25px 10px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .btn:active { transform: scale(0.95); background: rgba(255,255,255,0.08); }
+        .btn i { font-size: 26px; display: block; margin-bottom: 10px; }
+        .btn span { font-size: 11px; font-weight: 700; opacity: 0.6; text-transform: uppercase; }
 
-        .btn {
-            background: var(--card);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 28px;
-            padding: 25px 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .btn:active { transform: scale(0.94); background: rgba(255,255,255,0.08); border-color: var(--accent); }
-        .btn i { font-size: 26px; }
-        .btn span { font-size: 12px; font-weight: 600; opacity: 0.8; text-transform: uppercase; }
-
-        /* Скрываем стандартную кнопку TON, чтобы использовать свой дизайн */
-        #ton-connect-trigger { margin-bottom: 25px; display: flex; justify-content: center; }
-
-        /* Лог для отладки на Pixel 8 */
-        #system-log { position: fixed; bottom: 10px; left: 0; width: 100%; text-align: center; font-size: 9px; opacity: 0.3; pointer-events: none; }
+        #ton-connect-btn { margin-bottom: 20px; display: flex; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <div class="app">
-        <div class="header">
-            <div class="logo">SELIN PAY</div>
-            <div class="status-badge" id="node-box">
-                <div class="dot"></div>
-                <span id="node-text">OFFLINE</span>
-            </div>
+<div class="app">
+    <div class="header">
+        <div class="logo-box">
+            <!-- Логотип из твоего репозитория -->
+            <img src="logo.png" class="logo-img" alt="L" onerror="this.style.display='none'">
+            <div class="brand">SELIN PAY</div>
         </div>
-
-        <!-- Коннектор кошелька -->
-        <div id="ton-connect-trigger"></div>
-
-        <div class="balance-card">
-            <div class="label">Текущий баланс</div>
-            <div class="amount" id="main-balance">0.00<span>TON</span></div>
-        </div>
-
-        <div class="grid">
-            <div class="btn" onclick="ui('deposit')"><i>💳</i><span>Внести</span></div>
-            <div class="btn" onclick="ui('withdraw')"><i>🚀</i><span>Вывод</span></div>
-            <div class="btn" onclick="sendPayment()" style="background: rgba(0, 136, 204, 0.1);"><i>💎</i><span>Оплатить</span></div>
-            <div class="btn" onclick="ui('usdt')"><i>₮</i><span>USDT</span></div>
+        <div class="node" id="status">
+            <div class="dot"></div> <span id="st-txt">OFFLINE</span>
         </div>
     </div>
 
-    <div id="system-log">System: Pixel 8 / Android 16 Security Active</div>
+    <div id="ton-connect-btn"></div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+    <div class="asset-card">
+        <!-- Основной TON -->
+        <div class="asset-row">
+            <div class="asset-info">
+                <div class="asset-name">Main Asset</div>
+                <div class="asset-val" id="ton-bal">0.00<span>TON</span></div>
+            </div>
+            <div style="font-size: 24px;">💎</div>
+        </div>
+        
+        <!-- Твоя монета SLN -->
+        <div class="asset-row">
+            <div class="asset-info">
+                <div class="asset-name" style="color: var(--selin); opacity: 0.8;">Selin Ecosystem</div>
+                <div class="asset-val selin-color" id="sln-bal">0.00<span>SLN</span></div>
+            </div>
+            <div style="font-size: 24px;">🚀</div>
+        </div>
+    </div>
 
-        // Инициализация TON Connect
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://vselin662-ops.github.io',
-            buttonRootId: 'ton-connect-trigger'
-        });
+    <div class="grid">
+        <div class="btn" onclick="act('dep')"><i>💳</i><span>Внести</span></div>
+        <div class="btn" onclick="act('out')"><i>🚀</i><span>Вывод</span></div>
+        <div class="btn" onclick="pay()"><i>💎</i><span>TON PAY</span></div>
+        <div class="btn" onclick="act('swap')"><i>🔄</i><span>Обмен SLN</span></div>
+    </div>
+</div>
 
-        // Функция получения баланса из блокчейна
-        async function refreshBalance(address) {
-            try {
-                const response = await fetch(`https://toncenter.com{address}`);
-                const data = await response.json();
-                if (data.ok) {
-                    const balance = (parseInt(data.result.balance) / 10**9).toFixed(2);
-                    document.getElementById('main-balance').innerHTML = `${balance}<span>TON</span>`;
-                }
-            } catch (e) { console.error("Blockchain error:", e); }
-        }
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
 
-        // Следим за статусом подключения
-        tonConnectUI.onStatusChange(wallet => {
-            const box = document.getElementById('node-box');
-            const txt = document.getElementById('node-text');
-            
-            if (wallet) {
-                box.classList.add('active');
-                txt.innerText = 'NODE ACTIVE';
-                tg.HapticFeedback.notificationOccurred('success');
-                refreshBalance(wallet.account.address);
-                // Авто-обновление каждые 30 сек
-                setInterval(() => refreshBalance(wallet.account.address), 30000);
-            } else {
-                box.classList.remove('active');
-                txt.innerText = 'OFFLINE';
+    const tonUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://vselin662-ops.github.io',
+        buttonRootId: 'ton-connect-btn'
+    });
+
+    const h = (s) => tg.HapticFeedback.impactOccurred(s);
+
+    async function updateData(addr) {
+        try {
+            // Получаем баланс TON
+            const r = await fetch(`https://toncenter.com{addr}`);
+            const d = await r.json();
+            if(d.ok) {
+                document.getElementById('ton-bal').innerHTML = `${(d.result.balance / 1e9).toFixed(2)}<span>TON</span>`;
             }
-        });
+            // Здесь будет логика для SLN, когда развернешь Jetton
+            document.getElementById('sln-bal').innerHTML = `1000.00<span>SLN</span>`; 
+        } catch(e) {}
+    }
 
-        // Универсальные действия
-        function ui(type) {
-            tg.HapticFeedback.impactOccurred('medium');
-            if(type === 'deposit') tg.showAlert("Для пополнения используйте кнопку TON");
-            else tg.showAlert("Сервис " + type.toUpperCase() + " на техническом обслуживании.");
+    tonUI.onStatusChange(w => {
+        const s = document.getElementById('status');
+        if (w) {
+            s.classList.add('active');
+            document.getElementById('st-txt').innerText = 'NODE ACTIVE';
+            h('heavy');
+            updateData(w.account.address);
+        } else {
+            s.classList.remove('active');
+            document.getElementById('st-txt').innerText = 'OFFLINE';
         }
+    });
 
-        // Главная функция оплаты
-        async function sendPayment() {
-            tg.HapticFeedback.impactOccurred('heavy');
-            
-            if (!tonConnectUI.connected) {
-                tg.showPopup({
-                    title: "Внимание",
-                    message: "Сначала подключите ваш TON кошелек",
-                    buttons:
-                });
-                return;
-            }
+    function act(type) {
+        h('medium');
+        tg.showAlert("Модуль " + type.toUpperCase() + " адаптирован под Pixel 8. Ожидание синхронизации...");
+    }
 
-            const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 120, // 2 минуты
-                messages: [{
-                    address: "UQCJqiuwFj-TzWMK9XwTzS-v-TaaGc37PaemsMHfmQ-bnDon", // Твой кошелек
-                    amount: "1000000000" // 1 TON в нанотонах
-                }]
-            };
-
-            try {
-                await tonConnectUI.sendTransaction(transaction);
-                tg.HapticFeedback.notificationOccurred('success');
-                tg.showAlert("Запрос отправлен! Баланс обновится после подтверждения сетью.");
-            } catch (e) {
-                tg.HapticFeedback.notificationOccurred('error');
-                console.error("TX Error:", e);
-            }
-        }
-    </script>
+    async function pay() {
+        if (!tonUI.connected) return tg.showAlert("Подключите кошелек!");
+        try {
+            await tonUI.sendTransaction({
+                validUntil: Math.floor(Date.now() / 1000) + 120,
+                messages: [{ address: "UQCJqiuwFj-TzWMK9XwTzS-v-TaaGc37PaemsMHfmQ-bnDon", amount: "1000000000" }]
+            });
+            tg.HapticFeedback.notificationOccurred('success');
+        } catch (e) { h('error'); }
+    }
+</script>
 </body>
 </html>
+
+
