@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SELIN PAY | LUXURY EDITION 2026</title>
+    <title>SELIN PAY | LUXURY 2026</title>
+    <!-- ИСПРАВЛЕННАЯ 7 СТРОКА: Подключаем кошелек правильно -->
     <script src="https://unpkg.com"></script>
     <style>
         :root {
@@ -31,14 +32,12 @@
             border: 1px solid var(--border);
             border-radius: 40px;
             padding: 40px;
-            width: 340px;
+            width: 320px;
             text-align: center;
             position: relative;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transition: 0.5s ease;
         }
 
-        /* Неоновое свечение вокруг карты */
         .card::before {
             content: '';
             position: absolute;
@@ -50,69 +49,34 @@
             filter: blur(15px);
         }
 
-        h2 {
-            font-weight: 200;
-            letter-spacing: 6px;
-            margin-bottom: 30px;
-            background: linear-gradient(to right, #fff, #888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        #ton-connect-button {
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: center;
-        }
-
-        #node-status {
-            font-size: 9px;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            font-weight: 900;
-            text-shadow: 0 0 10px currentColor;
-        }
-
-        .balance-val {
-            font-size: 56px;
-            font-weight: 100;
-            margin: 10px 0 40px 0;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
+        h2 { font-weight: 200; letter-spacing: 6px; margin-bottom: 25px; color: #fff; }
+        #ton-connect-button { margin-bottom: 20px; display: flex; justify-content: center; }
+        #node-status { font-size: 9px; letter-spacing: 2px; margin-bottom: 15px; font-weight: 900; }
+        .balance-val { font-size: 48px; font-weight: 100; margin: 10px 0 35px 0; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        
         button {
             background: var(--glass);
             border: 1px solid var(--border);
             border-radius: 18px;
             color: #ccc;
-            padding: 20px 10px;
+            padding: 18px 5px;
             cursor: pointer;
-            font-size: 12px;
-            font-weight: 500;
+            font-size: 11px;
+            font-weight: 600;
             transition: 0.3s;
-            backdrop-filter: blur(5px);
+            text-transform: uppercase;
         }
 
         button:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.1);
             border-color: var(--neon-blue);
             color: #fff;
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
         }
 
-        .footer {
-            margin-top: 40px;
-            font-size: 9px;
-            color: #444;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
+        .footer { margin-top: 35px; font-size: 9px; color: #333; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -120,61 +84,64 @@
 <div class="card">
     <h2>SELIN PAY</h2>
     
+    <!-- Кнопка подключения (появится сама) -->
     <div id="ton-connect-button"></div>
 
     <div id="node-status" style="color: #ff3b30;">● NODE OFFLINE</div>
     
-    <div style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Balance</div>
-    <div class="balance-val" id="user-balance">0.00 <span style="font-size: 24px; color: #444;">₽</span></div>
+    <div style="color: #555; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Balance</div>
+    <div class="balance-val" id="user-balance">0.00 <span style="font-size: 20px; color: #333;">₽</span></div>
 
     <div class="grid">
-        <button onclick="pay('RUB')">DEPOSIT</button>
-        <button onclick="pay('TON')">TON</button>
-        <button onclick="pay('USDT')">USDT</button>
-        <button onclick="window.location.href='https://t.me'">SUPPORT</button>
+        <button onclick="alert('Временно недоступно')">Deposit</button>
+        <button onclick="payTon()">TON Pay</button>
+        <button onclick="alert('USDT на техобслуживании')">USDT</button>
+        <button onclick="window.location.href='https://t.me'">Support</button>
     </div>
 
     <div class="footer">vselin662-ops // encrypted</div>
 </div>
 
 <script>
+    // Инициализация системы TON
     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
         manifestUrl: 'https://vselin662-ops.github.io',
         buttonRootId: 'ton-connect-button'
     });
 
+    // Автоматическая смена статуса и баланса
     tonConnectUI.onStatusChange(wallet => {
         const status = document.getElementById('node-status');
         const bal = document.getElementById('user-balance');
         if (wallet) {
             status.innerText = '● NODE ACTIVE';
             status.style.color = '#00ffcc';
-            bal.innerHTML = '145.00 <span style="font-size: 24px; color: #444;">₽</span>';
-            bal.style.textShadow = '0 0 20px rgba(0, 255, 204, 0.2)';
+            bal.innerHTML = '145.00 <span style="font-size: 20px; color: #333;">₽</span>';
         } else {
             status.innerText = '● NODE OFFLINE';
             status.style.color = '#ff3b30';
-            bal.innerHTML = '0.00 <span style="font-size: 24px; color: #444;">₽</span>';
-            bal.style.textShadow = 'none';
+            bal.innerHTML = '0.00 <span style="font-size: 20px; color: #333;">₽</span>';
         }
     });
 
-    async function pay(type) {
-        if (!tonConnectUI.wallet && type !== 'RUB') {
-            alert('PLEASE CONNECT WALLET');
+    // Функция оплаты TON
+    async function payTon() {
+        if (!tonConnectUI.wallet) {
+            alert('Сначала подключите кошелек синей кнопкой!');
             return;
         }
-        if (type === 'TON') {
-            const tx = {
-                validUntil: Math.floor(Date.now() / 1000) + 300,
-                messages: [{
-                    address: "UQCmsvJfKVODb1vxdqzilJqicSuhPs0JzNNmzn_4VLWKOEw7",
-                    amount: "1000000000" 
-                }]
-            };
-            try { await tonConnectUI.sendTransaction(tx); } catch (e) {}
-        } else {
-            alert('SYSTEM INTEGRATION IN PROGRESS...');
+        const tx = {
+            validUntil: Math.floor(Date.now() / 1000) + 300,
+            messages: [{
+                address: "UQCmsvJfKVODb1vxdqzilJqicSuhPs0JzNNmzn_4VLWKOEw7", // Ваш кошелек
+                amount: "1000000000" // 1 TON
+            }]
+        };
+        try { 
+            await tonConnectUI.sendTransaction(tx); 
+            alert('Запрос на оплату отправлен!');
+        } catch (e) {
+            alert('Оплата отменена пользователем');
         }
     }
 </script>
