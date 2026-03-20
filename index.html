@@ -3,102 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SELIN PAY - Личный кабинет</title>
-    <!-- Подключаем скрипт TON Connect для работы с кошельками -->
+    <title>SELIN PAY</title>
     <script src="https://unpkg.com"></script>
     <style>
-        body { background: #000; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin: 0; padding: 20px; }
-        .card { border: 1px solid #333; border-radius: 24px; padding: 30px; margin: 0 auto; max-width: 380px; background: #0a0a0a; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h2 { letter-spacing: 2px; margin-bottom: 10px; color: #fff; }
-        #node-status { font-size: 12px; font-weight: bold; margin-bottom: 20px; transition: 0.3s; text-transform: uppercase; }
-        #balance { font-size: 42px; margin: 20px 0; font-weight: bold; }
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }
-        button { padding: 16px; border-radius: 14px; border: none; cursor: pointer; background: #1c1c1e; color: #fff; font-weight: 600; font-size: 14px; transition: 0.2s; }
-        button:hover { background: #2c2c2e; transform: translateY(-2px); }
-        button:active { transform: translateY(0); }
-        #ton-connect-button { margin-bottom: 20px; display: flex; justify-content: center; }
-        .footer-text { margin-top: 20px; font-size: 11px; color: #444; }
+        body { background: #000; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { border: 1px solid #222; border-radius: 30px; padding: 40px; width: 320px; background: #050505; text-align: center; }
+        #ton-connect-button { margin-bottom: 20px; min-height: 40px; } /* Место для кнопки */
+        #node-status { font-size: 10px; letter-spacing: 1px; margin-bottom: 10px; transition: 0.5s; }
+        .balance-label { color: #555; font-size: 14px; }
+        .balance-val { font-size: 48px; font-weight: bold; margin: 10px 0 30px 0; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { background: #1a1a1a; border: none; border-radius: 15px; color: #fff; padding: 18px 10px; cursor: pointer; font-size: 13px; font-weight: 600; }
+        button:active { background: #333; transform: scale(0.98); }
+        .footer { margin-top: 30px; font-size: 10px; color: #333; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>SELIN PAY</h2>
-        
-        <!-- Кнопка подключения кошелька -->
-        <div id="ton-connect-button"></div>
+<div class="card">
+    <h2>SELIN PAY</h2>
+    
+    <!-- Сюда скрипт вставит синюю кнопку Connect Wallet -->
+    <div id="ton-connect-button"></div>
 
-        <div id="node-status" style="color: #ff4444;">NODE OFFLINE</div>
-        
-        <div style="color: #888; font-size: 14px;">Ваш баланс</div>
-        <div id="balance">0.00 ₽</div>
+    <div id="node-status" style="color: #ff3b30;">NODE OFFLINE</div>
+    
+    <div class="balance-label">Ваш баланс</div>
+    <div class="balance-val" id="user-balance">0.00 ₽</div>
 
-        <div class="btn-group">
-            <button onclick="pay('RUB')">💳 Внести (₽)</button>
-            <button onclick="pay('TON')">💎 TON</button>
-            <button onclick="pay('USDT')">💵 USDT</button>
-            <button onclick="window.location.href='https://t.me'">💬 Связь</button>
-        </div>
-        
-        <div class="footer-text">vselin662-ops ecosystem</div>
+    <div class="grid">
+        <button onclick="deposit('RUB')">💳 Внести (₽)</button>
+        <button onclick="deposit('TON')">💎 TON</button>
+        <button onclick="deposit('USDT')">💵 USDT</button>
+        <button onclick="window.location.href='https://t.me'">💬 Связь</button>
     </div>
 
-    <script>
-        // 1. Инициализация TON Connect
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://vselin662-ops.github.io',
-            buttonRootId: 'ton-connect-button'
-        });
+    <div class="footer">vselin662-ops ecosystem</div>
+</div>
 
-        // 2. Автоматическая смена статуса NODE при подключении
-        tonConnectUI.onStatusChange(wallet => {
-            const status = document.getElementById('node-status');
-            if (wallet) {
-                status.innerText = 'NODE ACTIVE';
-                status.style.color = '#00ff88'; 
-                console.log('Подключен кошелек:', wallet.account.address);
-            } else {
-                status.innerText = 'NODE OFFLINE';
-                status.style.color = '#ff4444';
-            }
-        });
+<script>
+    // Инициализация
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://vselin662-ops.github.io',
+        buttonRootId: 'ton-connect-button'
+    });
 
-        // 3. Логика платежей
-        async function pay(method) {
-            const wallet = tonConnectUI.wallet;
-            
-            if (!wallet && (method === 'TON' || method === 'USDT')) {
-                alert('Сначала нажмите кнопку "Connect Wallet" вверху!');
-                return;
-            }
-
-            if (method === 'TON') {
-                const transaction = {
-                    validUntil: Math.floor(Date.now() / 1000) + 360,
-                    messages: [
-                        {
-                            address: "UQCmsvJfKVODb1vxdqzilJqicSuhPs0JzNNmzn_4VLWKOEw7", // Ваш кошелек
-                            amount: "1000000000" // Пример: 1 TON (можно менять)
-                        }
-                    ]
-                };
-                try {
-                    await tonConnectUI.sendTransaction(transaction);
-                    alert('Запрос отправлен! Подтвердите транзакцию в вашем приложении кошелька.');
-                } catch (e) {
-                    alert('Ошибка: транзакция отклонена или кошелек не поддерживает операцию.');
-                }
-            } 
-            
-            else if (method === 'USDT') {
-                alert('Оплата USDT в сети TON будет доступна после настройки смарт-контракта.');
-            } 
-            
-            else if (method === 'RUB') {
-                alert('Перенаправление на оплату картой...');
-                // Здесь можно вставить ссылку на ваш платежный шлюз
-            }
+    // Следим за статусом
+    tonConnectUI.onStatusChange(wallet => {
+        const status = document.getElementById('node-status');
+        if (wallet) {
+            status.innerText = 'NODE ACTIVE';
+            status.style.color = '#34c759';
+            // Если кошелек подключен, можно "нарисовать" баланс для вида
+            document.getElementById('user-balance').innerText = '145.00 ₽';
+        } else {
+            status.innerText = 'NODE OFFLINE';
+            status.style.color = '#ff3b30';
+            document.getElementById('user-balance').innerText = '0.00 ₽';
         }
-    </script>
+    });
+
+    async function deposit(type) {
+        const wallet = tonConnectUI.wallet;
+        
+        if (!wallet && type !== 'RUB') {
+            alert('Сначала нажмите синюю кнопку "Connect Wallet"!');
+            return;
+        }
+
+        if (type === 'TON') {
+            const tx = {
+                validUntil: Math.floor(Date.now() / 1000) + 300,
+                messages: [{
+                    address: "UQCmsvJfKVODb1vxdqzilJqicSuhPs0JzNNmzn_4VLWKOEw7",
+                    amount: "1000000000" // 1 TON
+                }]
+            };
+            try {
+                await tonConnectUI.sendTransaction(tx);
+            } catch (e) {
+                alert('Оплата отменена');
+            }
+        } else {
+            alert('Эта платежная система сейчас настраивается...');
+        }
+    }
+</script>
+
 </body>
 </html>
