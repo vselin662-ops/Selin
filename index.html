@@ -3,57 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SELIN PAY | Crypto Ecosystem</title>
+    <title>SELIN PAY | Web3 Ecosystem</title>
     
     <script src="https://telegram.org"></script>
     <script src="https://unpkg.com"></script>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     
     <style>
-        :root { --bg: #070b10; --accent: #0088cc; --selin: #00d4ff; --glass: rgba(255, 255, 255, 0.03); }
+        :root { --bg: #070b10; --accent: #0088cc; --sln: #00d4ff; --glass: rgba(255, 255, 255, 0.04); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: #fff; height: 100vh; overflow-y: auto; display: flex; justify-content: center; }
+        body { background: var(--bg); background-image: radial-gradient(circle at 50% 0%, #1c2a3d 0%, #070b10 100%); color: #fff; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
         
-        .app { width: 100%; max-width: 400px; padding: 25px; display: flex; flex-direction: column; }
-        
+        .app-shell { width: 100%; max-width: 400px; padding: 25px; display: flex; flex-direction: column; animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .logo-box { display: flex; align-items: center; gap: 10px; }
-        .logo-img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; border: 1px solid var(--accent); }
-        .brand { font-weight: 900; font-size: 1.2rem; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; }
+        .logo-box { display: flex; align-items: center; gap: 12px; }
+        .logo-img { width: 35px; height: 35px; border-radius: 50%; border: 1.5px solid var(--accent); box-shadow: 0 0 15px rgba(0, 136, 204, 0.3); }
+        .brand { font-weight: 900; font-size: 1.3rem; letter-spacing: 2px; color: var(--accent); }
         
-        .node { font-size: 10px; font-weight: 700; padding: 6px 14px; border-radius: 30px; background: var(--glass); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: #ff3b30; transition: 0.3s; }
+        .status { font-size: 9px; font-weight: 800; padding: 6px 12px; border-radius: 30px; background: var(--glass); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px; }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: #ff3b30; }
         .active .dot { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
 
         /* Карточка активов */
-        .asset-card { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 35px; padding: 30px 20px; margin-bottom: 25px; backdrop-filter: blur(20px); }
-        .asset-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; padding: 10px 0; }
-        .asset-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .asset-info { text-align: left; }
-        .asset-name { font-size: 12px; opacity: 0.4; text-transform: uppercase; letter-spacing: 1px; }
-        .asset-val { font-size: 32px; font-weight: 300; }
-        .asset-val span { font-size: 16px; opacity: 0.3; margin-left: 4px; }
-        .selin-color { color: var(--selin); text-shadow: 0 0 15px rgba(0, 212, 255, 0.3); }
+        .asset-card { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 35px; padding: 25px; margin-bottom: 30px; backdrop-filter: blur(25px); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .asset { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
+        .asset:first-child { border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px; }
+        .a-label { font-size: 10px; opacity: 0.4; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
+        .a-val { font-size: 36px; font-weight: 200; }
+        .a-val span { font-size: 18px; opacity: 0.3; margin-left: 6px; }
+        .sln-text { color: var(--sln); text-shadow: 0 0 20px rgba(0, 212, 255, 0.2); font-weight: 400; }
 
+        /* Сетка управления */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .btn { background: var(--glass); border: 1px solid rgba(255,255,255,0.05); border-radius: 28px; padding: 25px 10px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .btn:active { transform: scale(0.95); background: rgba(255,255,255,0.08); }
+        .btn { background: var(--glass); border: 1px solid rgba(255,255,255,0.05); border-radius: 28px; padding: 22px 10px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .btn:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
         .btn i { font-size: 26px; display: block; margin-bottom: 10px; }
-        .btn span { font-size: 11px; font-weight: 700; opacity: 0.6; text-transform: uppercase; }
+        .btn span { font-size: 11px; font-weight: 700; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; }
 
-        #ton-connect-btn { margin-bottom: 20px; display: flex; justify-content: center; }
+        #ton-connect-btn { margin-bottom: 25px; display: flex; justify-content: center; }
+        #sys-info { position: fixed; bottom: 10px; width: 100%; text-align: center; font-size: 9px; opacity: 0.2; pointer-events: none; }
     </style>
 </head>
 <body>
 
-<div class="app">
+<div class="app-shell">
     <div class="header">
         <div class="logo-box">
-            <!-- Логотип из твоего репозитория -->
-            <img src="logo.png" class="logo-img" alt="L" onerror="this.style.display='none'">
-            <div class="brand">SELIN PAY</div>
+            <img src="logo.png" class="logo-img" alt="S">
+            <div class="brand">SELIN</div>
         </div>
-        <div class="node" id="status">
+        <div class="status" id="st-box">
             <div class="dot"></div> <span id="st-txt">OFFLINE</span>
         </div>
     </div>
@@ -61,87 +62,92 @@
     <div id="ton-connect-btn"></div>
 
     <div class="asset-card">
-        <!-- Основной TON -->
-        <div class="asset-row">
-            <div class="asset-info">
-                <div class="asset-name">Main Asset</div>
-                <div class="asset-val" id="ton-bal">0.00<span>TON</span></div>
+        <div class="asset">
+            <div>
+                <div class="a-label">Blockchain Base</div>
+                <div class="a-val" id="t-bal">0.00<span>TON</span></div>
             </div>
-            <div style="font-size: 24px;">💎</div>
+            <div style="font-size: 24px; opacity: 0.8;">💎</div>
         </div>
-        
-        <!-- Твоя монета SLN -->
-        <div class="asset-row">
-            <div class="asset-info">
-                <div class="asset-name" style="color: var(--selin); opacity: 0.8;">Selin Ecosystem</div>
-                <div class="asset-val selin-color" id="sln-bal">0.00<span>SLN</span></div>
+        <div class="asset">
+            <div>
+                <div class="a-label" style="color: var(--sln); opacity: 0.8;">Selin Asset ($SLN)</div>
+                <div class="a-val sln-text" id="s-bal">0.00<span>SLN</span></div>
             </div>
             <div style="font-size: 24px;">🚀</div>
         </div>
     </div>
 
     <div class="grid">
-        <div class="btn" onclick="act('dep')"><i>💳</i><span>Внести</span></div>
-        <div class="btn" onclick="act('out')"><i>🚀</i><span>Вывод</span></div>
-        <div class="btn" onclick="pay()"><i>💎</i><span>TON PAY</span></div>
-        <div class="btn" onclick="act('swap')"><i>🔄</i><span>Обмен SLN</span></div>
+        <div class="btn" onclick="hapt('medium'); tg.showAlert('Интеграция с СБП в разработке...')"><i>💳</i><span>Внести</span></div>
+        <div class="btn" onclick="hapt('medium'); tg.showAlert('Минимум 10.0 TON')"><i>🚀</i><span>Вывод</span></div>
+        <div class="btn" style="grid-column: span 2; background: rgba(0, 136, 204, 0.1); border-color: var(--accent);" onclick="sendPay()"><i>💎</i><span>Оплатить в TON</span></div>
     </div>
 </div>
 
+<div id="sys-info">Protocol: SELIN PAY v2.0 | Engine: Web3 TON | Hardware: Pixel 8 Native</div>
+
 <script>
     const tg = window.Telegram.WebApp;
-    tg.expand();
+    tg.ready(); tg.expand();
+
+    const CONFIG = {
+        MY_WALLET: "UQCJqiuwFj-TzWMK9XwTzS-v-TaaGc37PaemsMHfmQ-bnDon",
+        SLN_MASTER: "EQCkDna5aow1EBkSydhTrBvARuhGlBC6LntyUlZscx8KzBW7",
+        MANIFEST: "https://vselin662-ops.github.io"
+    };
 
     const tonUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://vselin662-ops.github.io',
+        manifestUrl: CONFIG.MANIFEST,
         buttonRootId: 'ton-connect-btn'
     });
 
-    const h = (s) => tg.HapticFeedback.impactOccurred(s);
+    const hapt = (s) => tg.HapticFeedback.impactOccurred(s);
 
-    async function updateData(addr) {
+    async function refreshAssets(address) {
         try {
-            // Получаем баланс TON
-            const r = await fetch(`https://toncenter.com{addr}`);
-            const d = await r.json();
-            if(d.ok) {
-                document.getElementById('ton-bal').innerHTML = `${(d.result.balance / 1e9).toFixed(2)}<span>TON</span>`;
+            // 1. Получаем баланс TON
+            const r1 = await fetch(`https://toncenter.com{address}`);
+            const d1 = await r1.json();
+            if(d1.ok) document.getElementById('t-bal').innerHTML = `${(d1.result.balance / 1e9).toFixed(2)}<span>TON</span>`;
+
+            // 2. Получаем баланс $SLN (Jetton)
+            const r2 = await fetch(`https://toncenter.com{address}&jetton_master_address=${CONFIG.SLN_MASTER}`);
+            const d2 = await r2.json();
+            if(d2.ok) {
+                const r3 = await fetch(`https://toncenter.com{d2.result}`);
+                const d3 = await r3.json();
+                if(d3.ok) document.getElementById('s-bal').innerHTML = `${(d3.result.balance / 1e9).toLocaleString()}<span>SLN</span>`;
             }
-            // Здесь будет логика для SLN, когда развернешь Jetton
-            document.getElementById('sln-bal').innerHTML = `1000.00<span>SLN</span>`; 
-        } catch(e) {}
+        } catch(e) { console.error("Blockchain Sync Failed"); }
     }
 
     tonUI.onStatusChange(w => {
-        const s = document.getElementById('status');
+        const box = document.getElementById('st-box');
+        const txt = document.getElementById('st-txt');
         if (w) {
-            s.classList.add('active');
-            document.getElementById('st-txt').innerText = 'NODE ACTIVE';
-            h('heavy');
-            updateData(w.account.address);
+            box.classList.add('active');
+            txt.innerText = 'NODE ACTIVE';
+            hapt('heavy');
+            refreshAssets(w.account.address);
+            setInterval(() => refreshAssets(w.account.address), 20000);
         } else {
-            s.classList.remove('active');
-            document.getElementById('st-txt').innerText = 'OFFLINE';
+            box.classList.remove('active');
+            txt.innerText = 'OFFLINE';
         }
     });
 
-    function act(type) {
-        h('medium');
-        tg.showAlert("Модуль " + type.toUpperCase() + " адаптирован под Pixel 8. Ожидание синхронизации...");
-    }
-
-    async function pay() {
+    async function sendPay() {
+        hapt('medium');
         if (!tonUI.connected) return tg.showAlert("Подключите кошелек!");
         try {
             await tonUI.sendTransaction({
                 validUntil: Math.floor(Date.now() / 1000) + 120,
-                messages: [{ address: "UQCJqiuwFj-TzWMK9XwTzS-v-TaaGc37PaemsMHfmQ-bnDon", amount: "1000000000" }]
+                messages: [{ address: CONFIG.MY_WALLET, amount: "1000000000" }]
             });
             tg.HapticFeedback.notificationOccurred('success');
-        } catch (e) { h('error'); }
+        } catch (e) { hapt('error'); }
     }
 </script>
 </body>
 </html>
-
-
