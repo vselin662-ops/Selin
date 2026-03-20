@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SELIN PAY</title>
     <!-- Подключаем TON Connect SDK -->
-    <script src="https://unpkg.com"></script>
-    <link href="https://fonts.googleapis.com" rel="stylesheet">
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
         body {
@@ -21,7 +21,7 @@
             overflow: hidden;
         }
 
-        /* Дизайн карточки как на скриншоте */
+        /* Дизайн карточки */
         .app-container {
             width: 350px;
             height: 600px;
@@ -32,167 +32,4 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 60px 25px;
-            position: relative;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
-        }
-
-        .logo {
-            font-size: 24px;
-            letter-spacing: 8px;
-            font-weight: 200;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 70px;
-        }
-
-        #node-status {
-            font-size: 9px;
-            letter-spacing: 2px;
-            font-weight: 700;
-            color: #ff3b3b;
-            margin-bottom: 8px;
-            transition: 0.5s ease;
-            text-transform: uppercase;
-        }
-
-        .label {
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: rgba(255, 255, 255, 0.2);
-            margin-bottom: 20px;
-        }
-
-        .balance-group {
-            display: flex;
-            align-items: baseline;
-            margin-bottom: 80px;
-        }
-
-        .balance { font-size: 68px; font-weight: 200; }
-        .currency { font-size: 26px; color: rgba(255, 255, 255, 0.05); margin-left: 12px; }
-
-        .btn-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            width: 100%;
-        }
-
-        .btn {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 18px;
-            padding: 24px 0;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 10px;
-            letter-spacing: 1.5px;
-            font-weight: 400;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-        }
-
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.2);
-            color: #fff;
-        }
-
-        .btn-deposit {
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            color: #fff;
-        }
-
-        .footer {
-            position: absolute;
-            bottom: 40px;
-            font-size: 8px;
-            letter-spacing: 2px;
-            color: rgba(255, 255, 255, 0.05);
-        }
-
-        #ton-connect-hidden { display: none; }
-    </style>
-</head>
-<body>
-
-    <div id="ton-connect-hidden"></div>
-
-    <div class="app-container">
-        <div class="logo">SELIN PAY</div>
-        
-        <div id="node-status">• NODE OFFLINE</div>
-        <div class="label">BALANCE</div>
-        
-        <div class="balance-group">
-            <div class="balance">0.00</div>
-            <div class="currency">₽</div>
-        </div>
-
-        <div class="btn-grid">
-            <button class="btn btn-deposit" onclick="connect()">DEPOSIT</button>
-            <button class="btn" onclick="payTon()">TON</button>
-            <button class="btn" onclick="alert('USDT скоро будет доступен')">USDT</button>
-            <button class="btn" onclick="window.open('https://t.me')">SUPPORT</button>
-        </div>
-
-        <div class="footer">VSELIN662-OPS // ENCRYPTED</div>
-    </div>
-
-    <script>
-        // Инициализация TON Connect
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://vselin662-ops.github.io',
-            buttonRootId: 'ton-connect-hidden'
-        });
-
-        // 1. Оживляем статус NODE
-        tonConnectUI.onStatusChange(wallet => {
-            const status = document.getElementById('node-status');
-            if (wallet) {
-                status.innerText = '• NODE ACTIVE';
-                status.style.color = '#00f2ff';
-                status.style.textShadow = '0 0 15px rgba(0, 242, 255, 0.6)';
-            } else {
-                status.innerText = '• NODE OFFLINE';
-                status.style.color = '#ff3b3b';
-                status.style.textShadow = 'none';
-            }
-        });
-
-        // 2. Функция подключения кошелька
-        async function connect() {
-            if (!tonConnectUI.connected) {
-                await tonConnectUI.openModal();
-            } else {
-                alert("Кошелек уже привязан!");
-            }
-        }
-
-        // 3. Функция оплаты на твой кошелек
-        async function payTon() {
-            if (!tonConnectUI.connected) {
-                alert("Сначала нажми DEPOSIT для привязки кошелька");
-                return;
-            }
-
-            const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 60,
-                messages: [
-                    {
-                        address: "UQCJqiuwFj-TzWMK9XwTzS-v-TaaGc37PaemsMHfmQ-bnDon", // Твой адрес
-                        amount: "1000000000" // 1 TON
-                    }
-                ]
-            };
-
-            try {
-                await tonConnectUI.sendTransaction(transaction);
-                alert("Запрос отправлен в кошелек!");
-            } catch (e) {
-                console.error("Ошибка:", e);
-            }
-        }
-    </script>
-</body>
-</html>
+            padding:
