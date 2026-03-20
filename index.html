@@ -3,19 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SELIN PAY</title>
+    <title>SELIN PAY | LUXURY EDITION 2026</title>
     <script src="https://unpkg.com"></script>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { border: 1px solid #222; border-radius: 30px; padding: 40px; width: 320px; background: #050505; text-align: center; }
-        #ton-connect-button { margin-bottom: 20px; min-height: 40px; } /* Место для кнопки */
-        #node-status { font-size: 10px; letter-spacing: 1px; margin-bottom: 10px; transition: 0.5s; }
-        .balance-label { color: #555; font-size: 14px; }
-        .balance-val { font-size: 48px; font-weight: bold; margin: 10px 0 30px 0; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        button { background: #1a1a1a; border: none; border-radius: 15px; color: #fff; padding: 18px 10px; cursor: pointer; font-size: 13px; font-weight: 600; }
-        button:active { background: #333; transform: scale(0.98); }
-        .footer { margin-top: 30px; font-size: 10px; color: #333; }
+        :root {
+            --neon-blue: #00d2ff;
+            --neon-purple: #9d50bb;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background: radial-gradient(circle at top, #1a1a2e 0%, #000 100%);
+            color: #fff;
+            font-family: 'Inter', -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .card {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 40px;
+            width: 340px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: 0.5s ease;
+        }
+
+        /* Неоновое свечение вокруг карты */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            border-radius: 42px;
+            z-index: -1;
+            opacity: 0.3;
+            filter: blur(15px);
+        }
+
+        h2 {
+            font-weight: 200;
+            letter-spacing: 6px;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #ton-connect-button {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #node-status {
+            font-size: 9px;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            font-weight: 900;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .balance-val {
+            font-size: 56px;
+            font-weight: 100;
+            margin: 10px 0 40px 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            color: #ccc;
+            padding: 20px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--neon-blue);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 9px;
+            color: #444;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
@@ -23,69 +120,61 @@
 <div class="card">
     <h2>SELIN PAY</h2>
     
-    <!-- Сюда скрипт вставит синюю кнопку Connect Wallet -->
     <div id="ton-connect-button"></div>
 
-    <div id="node-status" style="color: #ff3b30;">NODE OFFLINE</div>
+    <div id="node-status" style="color: #ff3b30;">● NODE OFFLINE</div>
     
-    <div class="balance-label">Ваш баланс</div>
-    <div class="balance-val" id="user-balance">0.00 ₽</div>
+    <div style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Balance</div>
+    <div class="balance-val" id="user-balance">0.00 <span style="font-size: 24px; color: #444;">₽</span></div>
 
     <div class="grid">
-        <button onclick="deposit('RUB')">💳 Внести (₽)</button>
-        <button onclick="deposit('TON')">💎 TON</button>
-        <button onclick="deposit('USDT')">💵 USDT</button>
-        <button onclick="window.location.href='https://t.me'">💬 Связь</button>
+        <button onclick="pay('RUB')">DEPOSIT</button>
+        <button onclick="pay('TON')">TON</button>
+        <button onclick="pay('USDT')">USDT</button>
+        <button onclick="window.location.href='https://t.me'">SUPPORT</button>
     </div>
 
-    <div class="footer">vselin662-ops ecosystem</div>
+    <div class="footer">vselin662-ops // encrypted</div>
 </div>
 
 <script>
-    // Инициализация
     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
         manifestUrl: 'https://vselin662-ops.github.io',
         buttonRootId: 'ton-connect-button'
     });
 
-    // Следим за статусом
     tonConnectUI.onStatusChange(wallet => {
         const status = document.getElementById('node-status');
+        const bal = document.getElementById('user-balance');
         if (wallet) {
-            status.innerText = 'NODE ACTIVE';
-            status.style.color = '#34c759';
-            // Если кошелек подключен, можно "нарисовать" баланс для вида
-            document.getElementById('user-balance').innerText = '145.00 ₽';
+            status.innerText = '● NODE ACTIVE';
+            status.style.color = '#00ffcc';
+            bal.innerHTML = '145.00 <span style="font-size: 24px; color: #444;">₽</span>';
+            bal.style.textShadow = '0 0 20px rgba(0, 255, 204, 0.2)';
         } else {
-            status.innerText = 'NODE OFFLINE';
+            status.innerText = '● NODE OFFLINE';
             status.style.color = '#ff3b30';
-            document.getElementById('user-balance').innerText = '0.00 ₽';
+            bal.innerHTML = '0.00 <span style="font-size: 24px; color: #444;">₽</span>';
+            bal.style.textShadow = 'none';
         }
     });
 
-    async function deposit(type) {
-        const wallet = tonConnectUI.wallet;
-        
-        if (!wallet && type !== 'RUB') {
-            alert('Сначала нажмите синюю кнопку "Connect Wallet"!');
+    async function pay(type) {
+        if (!tonConnectUI.wallet && type !== 'RUB') {
+            alert('PLEASE CONNECT WALLET');
             return;
         }
-
         if (type === 'TON') {
             const tx = {
                 validUntil: Math.floor(Date.now() / 1000) + 300,
                 messages: [{
                     address: "UQCmsvJfKVODb1vxdqzilJqicSuhPs0JzNNmzn_4VLWKOEw7",
-                    amount: "1000000000" // 1 TON
+                    amount: "1000000000" 
                 }]
             };
-            try {
-                await tonConnectUI.sendTransaction(tx);
-            } catch (e) {
-                alert('Оплата отменена');
-            }
+            try { await tonConnectUI.sendTransaction(tx); } catch (e) {}
         } else {
-            alert('Эта платежная система сейчас настраивается...');
+            alert('SYSTEM INTEGRATION IN PROGRESS...');
         }
     }
 </script>
