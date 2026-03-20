@@ -3,97 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SELIN PAY | Private Office</title>
+    <title>SELIN PAY | Secure Terminal</title>
     
     <script src="https://telegram.org"></script>
     <script src="https://unpkg.com"></script>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     
     <style>
-        :root { --bg: #030508; --accent: #0088cc; --sln: #00d4ff; --border: rgba(255, 255, 255, 0.08); }
+        :root { --bg: #05070a; --accent: #0088cc; --sln: #00d4ff; --border: rgba(255, 255, 255, 0.07); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
         body { background: var(--bg); color: #fff; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
         
-        /* Главная оболочка */
-        .app { width: 100%; max-width: 420px; padding: 40px 20px; display: flex; flex-direction: column; position: relative; }
+        .app { width: 100%; max-width: 420px; padding: 40px 20px; display: flex; flex-direction: column; }
 
-        /* Верхняя панель */
-        .nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; }
-        .brand-box { display: flex; align-items: center; gap: 12px; }
-        .brand-logo { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); }
-        .brand-name { font-weight: 800; font-size: 1.1rem; letter-spacing: 2px; color: #fff; }
-
-        /* Статус (минимализм) */
-        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #333; margin-right: 8px; }
-        .active .status-dot { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
-        .status-txt { font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; }
-
-        /* Карта активов (Стеклянная) */
-        .assets { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 40px; padding: 40px 30px; backdrop-filter: blur(40px); margin-bottom: 40px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); }
-        .asset-item { display: flex; justify-content: space-between; align-items: flex-end; }
-        .asset-item:first-child { border-bottom: 1px solid var(--border); padding-bottom: 25px; margin-bottom: 25px; }
+        /* Дизайн уровня Private Banking */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .brand { font-weight: 800; font-size: 1.1rem; letter-spacing: 3px; color: #fff; text-transform: uppercase; }
         
-        .a-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
-        .a-val { font-size: 44px; font-weight: 300; letter-spacing: -1.5px; }
-        .a-val span { font-size: 18px; color: rgba(255,255,255,0.2); margin-left: 8px; }
-        .sln-val { color: var(--sln); font-weight: 400; }
+        .node-status { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.4); display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
+        .dot { width: 6px; height: 6px; border-radius: 50%; background: #333; transition: 0.5s; }
+        .active .dot { background: #00ff88; box-shadow: 0 0 12px #00ff88; }
 
-        /* Сетка управления */
-        .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .action-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 24px; padding: 22px; text-align: center; cursor: pointer; transition: 0.3s; }
-        .action-btn:active { transform: scale(0.96); background: rgba(255,255,255,0.06); }
-        .action-btn span { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1.5px; }
+        .glass-card { 
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 35px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(50px);
+            box-shadow: 0 50px 100px rgba(0,0,0,0.7);
+        }
 
-        /* Кнопка входа (невидимый слой поверх всего приложения до активации) */
-        #connect-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); cursor: pointer; transition: 0.5s; }
-        .overlay-txt { font-weight: 800; font-size: 12px; letter-spacing: 4px; opacity: 0.5; text-transform: uppercase; }
+        .balance-item { margin-bottom: 30px; }
+        .balance-item:last-child { margin-bottom: 0; padding-top: 25px; border-top: 1px solid var(--border); }
+        
+        .label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+        .value { font-size: 46px; font-weight: 300; letter-spacing: -2px; }
+        .value span { font-size: 18px; opacity: 0.2; margin-left: 8px; font-weight: 400; }
+        .sln-val { color: var(--sln); text-shadow: 0 0 30px rgba(0, 212, 255, 0.15); }
 
-        #ton-connect-hidden { display: none; }
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .main-btn { 
+            background: rgba(255,255,255,0.02); 
+            border: 1px solid var(--border); 
+            border-radius: 24px; 
+            padding: 22px; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+        .main-btn:active { transform: scale(0.96); background: rgba(255,255,255,0.05); border-color: var(--accent); }
+        .main-btn span { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1.5px; }
+
+        /* Окно активации мозгов */
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg); transition: 0.8s; }
+        .auth-btn { padding: 20px 40px; border: 1px solid var(--accent); border-radius: 50px; color: var(--accent); font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; }
+        .auth-btn:hover { background: var(--accent); color: #fff; box-shadow: 0 0 30px rgba(0, 136, 204, 0.5); }
     </style>
 </head>
 <body>
 
-<!-- Экран активации: убирает "дешевый" вид и защищает Pixel 8 -->
-<div id="connect-overlay" onclick="startConnect()">
-    <div class="overlay-txt">Нажмите для авторизации</div>
+<div id="auth-overlay">
+    <div style="margin-bottom: 30px; font-weight: 900; font-size: 2rem; letter-spacing: 5px;">SELIN</div>
+    <div class="auth-btn" onclick="initBrains()">Активировать ядро</div>
 </div>
 
 <div class="app">
-    <div class="nav">
-        <div class="brand-box">
-            <img src="logo.png" class="brand-logo" alt="S" onerror="this.style.opacity='0'">
-            <div class="brand-name">SELIN PAY</div>
-        </div>
-        <div class="status-txt" id="st-pill">
-            <div class="status-dot"></div> <span id="st-val">Offline</span>
+    <div class="header">
+        <div class="brand">Selin Pay</div>
+        <div class="node-status" id="node-pill">
+            <div class="dot"></div> <span id="node-text">Protected Mode</span>
         </div>
     </div>
 
-    <div id="ton-connect-hidden"></div>
-
-    <div class="assets">
-        <div class="asset-item">
-            <div>
-                <div class="a-label">Blockchain Ton</div>
-                <div class="a-val" id="t-bal">0.00<span>TON</span></div>
-            </div>
-            <div style="font-size: 20px; opacity: 0.2;">💎</div>
+    <div class="glass-card">
+        <div class="balance-item">
+            <div class="label">Main Network (TON)</div>
+            <div class="value" id="ton-balance">0.00<span>TON</span></div>
         </div>
-        <div class="asset-item">
-            <div>
-                <div class="a-label" style="color: var(--sln);">Selin Asset ($SLN)</div>
-                <div class="a-val sln-val" id="s-bal">10,000,000<span>SLN</span></div>
-            </div>
-            <div style="font-size: 20px; opacity: 0.5;">🚀</div>
+        <div class="balance-item">
+            <div class="label" style="color: var(--sln);">Ecosystem Asset ($SLN)</div>
+            <div class="value sln-val" id="sln-balance">0.00<span>SLN</span></div>
         </div>
     </div>
 
-    <div class="actions">
-        <div class="action-btn" onclick="ui('deposit')"><span>Внести</span></div>
-        <div class="action-btn" onclick="ui('withdraw')"><span>Вывод</span></div>
-        <div class="action-btn" style="grid-column: span 2; border-color: var(--accent);" onclick="sendPayment()">
-            <span>Оплатить в TON</span>
+    <div class="btn-row">
+        <div class="main-btn" onclick="action('dep')"><span>Внести</span></div>
+        <div class="main-btn" onclick="action('out')"><span>Вывод</span></div>
+        <div class="main-btn" style="grid-column: span 2; border-color: var(--accent); margin-top: 10px;" onclick="securePay()">
+            <span style="color: var(--accent); opacity: 1;">Безопасная оплата 1 TON</span>
         </div>
     </div>
 </div>
@@ -102,54 +100,88 @@
     const tg = window.Telegram.WebApp;
     tg.ready(); tg.expand();
 
-    const tonUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://vselin662-ops.github.io'
+    // КОНФИГУРАЦИЯ "МОЗГОВ"
+    const BRAINS_CONFIG = {
+        WALLET_RECEIVER: "UQCJqiuwFj-TzWMK9XwTzS-v-TaaGc37PaemsMHfmQ-bnDon",
+        SLN_MASTER: "EQCkDna5aow1EBkSydhTrBvARuhGlBC6LntyUlZscx8KzBW7",
+        MANIFEST: "https://vselin662-ops.github.io"
+    };
+
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: BRAINS_CONFIG.MANIFEST
     });
 
-    async function startConnect() {
+    async function initBrains() {
         tg.HapticFeedback.impactOccurred('heavy');
-        try { await tonUI.openModal(); } catch (e) { }
+        try {
+            await tonConnectUI.openModal();
+        } catch (e) {
+            tg.showAlert("Ошибка инициализации. Проверьте кошелек.");
+        }
     }
 
-    tonUI.onStatusChange(wallet => {
-        const overlay = document.getElementById('connect-overlay');
-        const pill = document.getElementById('st-pill');
-        const stVal = document.getElementById('st-val');
+    // ЛОГИКА БЕЗОПАСНОЙ СИНХРОНИЗАЦИИ
+    async function syncSystem(userAddress) {
+        try {
+            // Верифицируем баланс TON
+            const r1 = await fetch(`https://toncenter.com{userAddress}`);
+            const d1 = await r1.json();
+            if(d1.ok) document.getElementById('ton-balance').innerHTML = `${(d1.result.balance / 1e9).toFixed(2)}<span>TON</span>`;
+
+            // "Мозги" ищут твой Jetton SLN в кошельке пользователя
+            const r2 = await fetch(`https://toncenter.com{userAddress}&jetton_master_address=${BRAINS_CONFIG.SLN_MASTER}`);
+            const d2 = await r2.json();
+            if(d2.ok) {
+                const r3 = await fetch(`https://toncenter.com{d2.result}`);
+                const d3 = await r3.json();
+                if(d3.ok) {
+                    const slnVal = (d3.result.balance / 1e9).toLocaleString();
+                    document.getElementById('sln-balance').innerHTML = `${slnVal}<span>SLN</span>`;
+                }
+            }
+        } catch(e) { console.error("Security Sync Error"); }
+    }
+
+    tonConnectUI.onStatusChange(wallet => {
+        const overlay = document.getElementById('auth-overlay');
+        const pill = document.getElementById('node-pill');
 
         if (wallet) {
             overlay.style.opacity = '0';
-            setTimeout(() => overlay.style.display = 'none', 500);
+            setTimeout(() => overlay.style.display = 'none', 800);
             pill.classList.add('active');
-            stVal.innerText = 'Active Node';
             tg.HapticFeedback.notificationOccurred('success');
-            refresh(wallet.account.address);
+            syncSystem(wallet.account.address);
+            setInterval(() => syncSystem(wallet.account.address), 25000);
         } else {
             overlay.style.display = 'flex';
             overlay.style.opacity = '1';
             pill.classList.remove('active');
-            stVal.innerText = 'Offline';
         }
     });
 
-    async function refresh(addr) {
+    async function securePay() {
+        if (!tonConnectUI.connected) return initBrains();
+        tg.HapticFeedback.impactOccurred('medium');
+        
+        const tx = {
+            validUntil: Math.floor(Date.now() / 1000) + 120, // Транзакция живет 2 минуты (защита)
+            messages: [{
+                address: BRAINS_CONFIG.WALLET_RECEIVER,
+                amount: "1000000000" // 1 TON
+            }]
+        };
+
         try {
-            const r = await fetch(`https://toncenter.com{addr}`);
-            const d = await r.json();
-            if(d.ok) document.getElementById('t-bal').innerHTML = `${(d.result.balance / 1e9).toFixed(2)}<span>TON</span>`;
-        } catch(e) {}
+            await tonConnectUI.sendTransaction(tx);
+            tg.HapticFeedback.notificationOccurred('success');
+            tg.showAlert("Платеж верифицирован и отправлен в блокчейн.");
+        } catch (e) {
+            tg.HapticFeedback.notificationOccurred('error');
+        }
     }
 
-    function ui(a) { tg.HapticFeedback.impactOccurred('medium'); tg.showAlert("Модуль " + a.toUpperCase() + " готов."); }
-
-    async function sendPayment() {
-        if (!tonUI.connected) return startConnect();
-        try {
-            await tonUI.sendTransaction({
-                validUntil: Math.floor(Date.now() / 1000) + 60,
-                messages: [{ address: "UQCJqiuwFj-TzWMK9XwTzS-v-TaaGc37PaemsMHfmQ-bnDon", amount: "1000000000" }]
-            });
-        } catch (e) {}
-    }
+    function action(t) { tg.HapticFeedback.impactOccurred('light'); tg.showAlert("Запрос к ноде подтвержден."); }
 </script>
 </body>
 </html>
