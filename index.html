@@ -4,120 +4,129 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SELIN777 FINTECH PRO</title>
-    <!-- ИСПРАВЛЕНО: Правильный адрес скрипта Telegram -->
-    <script src="https://telegram.org"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --bg: #030508; --card: #0d1117; --accent: #00a2ff; --text-dim: #4e5a6e; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, sans-serif; }
+        :root { --bg: #030508; --card: #0d1117; --accent: #00a2ff; --text-dim: #4e5a6e; --green: #00ff88; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, system-ui, sans-serif; }
         body { background: var(--bg); color: white; margin: 0; padding: 20px; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .logo-wrapper { display: flex; align-items: center; gap: 8px; }
-        .logo-circle { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--accent); object-fit: cover; }
-        .balance-card { background: linear-gradient(165deg, #121822 0%, #080c12 100%); border-radius: 35px; padding: 30px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        .main-val { font-size: 58px; font-weight: 200; margin: 10px 0; }
-        .live-rate { font-size: 10px; color: #00ff88; font-weight: 900; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .logo-circle { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--accent); object-fit: cover; background: #1a1a1a; }
+        
+        .balance-card { background: linear-gradient(165deg, #121822 0%, #080c12 100%); border-radius: 35px; padding: 30px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; }
+        .main-val { font-size: 48px; font-weight: 200; margin: 10px 0; letter-spacing: -1px; }
+        .live-rate { font-size: 10px; color: var(--green); font-weight: 900; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .item { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 25px; padding: 25px; text-align: center; transition: 0.2s; cursor: pointer; }
-        .item:active { transform: scale(0.95); border-color: var(--accent); box-shadow: 0 0 20px rgba(0, 162, 255, 0.3); }
+        .item:active { transform: scale(0.95); background: rgba(0, 162, 255, 0.1); border-color: var(--accent); }
         .item span { font-size: 26px; display: block; margin-bottom: 10px; }
-        .drawer { position: fixed; bottom: -100%; left: 0; width: 100%; background: #0d1117; border-top: 2px solid var(--accent); border-radius: 35px 35px 0 0; padding: 30px 20px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; max-height: 85vh; overflow-y: auto; }
+        
+        .drawer { position: fixed; bottom: -100%; left: 0; width: 100%; background: #0d1117; border-top: 2px solid var(--accent); border-radius: 30px 30px 0 0; padding: 30px 20px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; }
         .drawer.active { bottom: 0; }
-        .op-item { background: rgba(255,255,255,0.03); padding: 18px; border-radius: 18px; margin-bottom: 10px; font-weight: 700; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; display: flex; justify-content: space-between; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(8px); }
+        .op-item { background: rgba(255,255,255,0.03); padding: 18px; border-radius: 18px; margin-bottom: 10px; font-weight: 700; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+        
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(4px); }
         .overlay.active { display: block; }
+        
+        #user-status.loading { color: orange; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <div class="logo-wrapper">
-            <img src="logo.png" class="logo-circle" onerror="this.style.display='none'">
+            <div class="logo-circle"></div>
             <div style="font-size: 20px; font-weight: 900;">SELIN<span style="color:var(--accent)">777</span></div>
         </div>
-        <div id="user-status" style="font-size: 10px; color: #00ff88; font-weight: 900;">● NODE ACTIVE</div>
+        <div id="user-status">● NODE ACTIVE</div>
     </div>
 
     <div class="balance-card">
         <div style="color: var(--text-dim); font-size: 11px; letter-spacing: 2px; font-weight: 800;">БАЛАНС SELIN PAY</div>
-        <div class="main-val"><span id="user-balance">0.00</span> <span style="font-size: 28px; color: var(--text-dim);">₽</span></div>
-        <div class="live-rate" id="rate">СИНХРОНИЗАЦИЯ...</div>
+        <div class="main-val"><span id="user-balance">0.00</span> <span style="font-size: 24px; color: var(--text-dim);">₽</span></div>
+        <div class="live-rate" id="rate">ПОДКЛЮЧЕНИЕ К СЕТИ...</div>
     </div>
 
     <div class="grid">
-        <div class="item" onclick="openDeposit()"><span>📥</span><div>Внести</div></div>
-        <div class="item" onclick="tgAlert('Вывод')"><span>📤</span><div>Вывод</div></div>
+        <div class="item" onclick="openDrawer('deposit')"><span>📥</span><div>Внести</div></div>
+        <div class="item" onclick="openDrawer('withdraw')"><span>📤</span><div>Вывод</div></div>
         <div class="item" onclick="tgAlert('Обмен')"><span>🔄</span><div>Обмен</div></div>
         <div class="item" onclick="tgAlert('Связь')"><span>📱</span><div>Связь</div></div>
     </div>
 
-    <div class="overlay" id="overlay" onclick="closeDeposit()"></div>
+    <div class="overlay" id="overlay" onclick="closeAll()"></div>
+
     <div class="drawer" id="deposit-drawer">
-        <div style="text-align:center; margin-bottom:25px;"><h2 style="margin:0;">ПОПОЛНЕНИЕ</h2></div>
-        <div class="op-item" onclick="initRealPay('RUB')"><span>🇷🇺 Рубли (RUB)</span> <span>₽</span></div>
-        <div class="op-item" onclick="initRealPay('USD')"><span>🇺🇸 Доллары (USD)</span> <span>$</span></div>
-        <div class="op-item" onclick="initRealPay('TON')"><span>💎 Toncoin (TON)</span></div>
-        <div class="op-item" onclick="initRealPay('USDT')"><span>₮ Tether (USDT)</span></div>
-        <button onclick="closeDeposit()" style="width:100%; background:none; border:none; color:#555; padding:20px; font-weight:800;">ОТМЕНА</button>
+        <h2 style="text-align:center; margin-top:0;">ПОПОЛНЕНИЕ</h2>
+        <div class="op-item" onclick="initAction('pay', 'RUB')"><span>🇷🇺 Рубли</span> <span>₽</span></div>
+        <div class="op-item" onclick="initAction('pay', 'TON')"><span>💎 Toncoin</span> <span>TON</span></div>
+        <div class="op-item" onclick="initAction('pay', 'USDT')"><span>₮ Tether</span> <span>USDT</span></div>
+        <button onclick="closeAll()" style="width:100%; background:none; border:none; color:var(--text-dim); padding:20px; font-weight:800; cursor:pointer;">ЗАКРЫТЬ</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
+        const BACKEND_URL = 'https://selin-backend.vercel.app'; // Замени на свой актуальный URL Vercel
+
         tg.ready();
         tg.expand();
-        
-        // Твоя ссылка на Vercel
-        const BACKEND_URL = 'https://selin-backend.vercel.app';
+        tg.headerColor = '#030508';
 
-        async function updateRate() {
+        // 1. Получение данных пользователя (баланс и курсы)
+        async function syncData() {
+            const userId = tg.initDataUnsafe.user?.id || 12345;
             try {
-                // Запрос к твоему серверу
-                const res = await fetch(`${BACKEND_URL}/api/rates`);
+                const res = await fetch(`${BACKEND_URL}/api/user-data?userId=${userId}`);
                 const data = await res.json();
-                // Если данные пришли, заменяем "СИНХРОНИЗАЦИЯ" на реальный курс
-                document.getElementById('rate').innerText = `LIVE USDT: ${data.usdt_rub} ₽`;
-            } catch (e) { 
-                document.getElementById('rate').innerText = "NODE ONLINE"; 
+                
+                document.getElementById('user-balance').innerText = data.balance.toFixed(2);
+                document.getElementById('rate').innerText = `LIVE USDT: ${data.rates.usdt_rub} ₽`;
+                document.getElementById('user-status').style.color = '#00ff88';
+            } catch (e) {
+                document.getElementById('rate').innerText = "NODE OFFLINE";
+                document.getElementById('user-status').style.color = "red";
             }
         }
 
-        async function initRealPay(type) {
-            tg.HapticFeedback.impactOccurred('heavy');
+        // 2. Универсальная функция для действий (оплата/вывод)
+        async function initAction(action, type) {
+            tg.HapticFeedback.impactOccurred('medium');
+            const userId = tg.initDataUnsafe.user?.id;
+
             try {
-                const res = await fetch(`${BACKEND_URL}/api/pay`, {
+                const res = await fetch(`${BACKEND_URL}/api/${action}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ 
-                        userId: tg.initDataUnsafe.user?.id, 
-                        currency: type 
-                    })
+                    body: JSON.stringify({ userId, type })
                 });
                 const data = await res.json();
                 tg.showAlert(data.message);
-                closeDeposit();
-            } catch (e) { 
-                tg.showAlert("Ошибка связи с сервером SELIN"); 
+                closeAll();
+            } catch (e) {
+                tg.showPopup({ message: "Ошибка соединения с сервером SELIN" });
             }
         }
 
-        function openDeposit() {
-            tg.HapticFeedback.impactOccurred('medium');
-            document.getElementById('deposit-drawer').classList.add('active');
+        function openDrawer(id) {
+            tg.HapticFeedback.impactOccurred('light');
+            document.getElementById(`${id}-drawer`).classList.add('active');
             document.getElementById('overlay').classList.add('active');
         }
 
-        function closeDeposit() {
-            document.getElementById('deposit-drawer').classList.remove('active');
+        function closeAll() {
+            document.querySelectorAll('.drawer').forEach(d => d.classList.remove('active'));
             document.getElementById('overlay').classList.remove('active');
         }
 
-        function tgAlert(n) { 
-            tg.HapticFeedback.impactOccurred('light');
-            tg.showAlert(`Модуль "${n}" в разработке.`); 
+        function tgAlert(n) {
+            tg.showAlert(`Модуль "${n}" находится в стадии тестирования.`);
         }
 
-        // Обновляем курс каждые 20 секунд
-        setInterval(updateRate, 20000);
-        updateRate();
+        // Интервал обновления
+        setInterval(syncData, 15000);
+        syncData();
     </script>
 </body>
 </html>
