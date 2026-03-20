@@ -2,131 +2,103 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SELIN777 FINTECH PRO</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SELIN PAY - Личный кабинет</title>
+    <!-- Подключаем скрипт TON Connect для работы с кошельками -->
+    <script src="https://unpkg.com"></script>
     <style>
-        :root { --bg: #030508; --card: #0d1117; --accent: #00a2ff; --text-dim: #4e5a6e; --green: #00ff88; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, system-ui, sans-serif; }
-        body { background: var(--bg); color: white; margin: 0; padding: 20px; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .logo-wrapper { display: flex; align-items: center; gap: 8px; }
-        .logo-circle { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--accent); object-fit: cover; background: #1a1a1a; }
-        
-        .balance-card { background: linear-gradient(165deg, #121822 0%, #080c12 100%); border-radius: 35px; padding: 30px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; }
-        .main-val { font-size: 48px; font-weight: 200; margin: 10px 0; letter-spacing: -1px; }
-        .live-rate { font-size: 10px; color: var(--green); font-weight: 900; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
-
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .item { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 25px; padding: 25px; text-align: center; transition: 0.2s; cursor: pointer; }
-        .item:active { transform: scale(0.95); background: rgba(0, 162, 255, 0.1); border-color: var(--accent); }
-        .item span { font-size: 26px; display: block; margin-bottom: 10px; }
-        
-        .drawer { position: fixed; bottom: -100%; left: 0; width: 100%; background: #0d1117; border-top: 2px solid var(--accent); border-radius: 30px 30px 0 0; padding: 30px 20px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; }
-        .drawer.active { bottom: 0; }
-        .op-item { background: rgba(255,255,255,0.03); padding: 18px; border-radius: 18px; margin-bottom: 10px; font-weight: 700; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
-        
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(4px); }
-        .overlay.active { display: block; }
-        
-        #user-status.loading { color: orange; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin: 0; padding: 20px; }
+        .card { border: 1px solid #333; border-radius: 24px; padding: 30px; margin: 0 auto; max-width: 380px; background: #0a0a0a; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { letter-spacing: 2px; margin-bottom: 10px; color: #fff; }
+        #node-status { font-size: 12px; font-weight: bold; margin-bottom: 20px; transition: 0.3s; text-transform: uppercase; }
+        #balance { font-size: 42px; margin: 20px 0; font-weight: bold; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }
+        button { padding: 16px; border-radius: 14px; border: none; cursor: pointer; background: #1c1c1e; color: #fff; font-weight: 600; font-size: 14px; transition: 0.2s; }
+        button:hover { background: #2c2c2e; transform: translateY(-2px); }
+        button:active { transform: translateY(0); }
+        #ton-connect-button { margin-bottom: 20px; display: flex; justify-content: center; }
+        .footer-text { margin-top: 20px; font-size: 11px; color: #444; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="logo-wrapper">
-            <div class="logo-circle"></div>
-            <div style="font-size: 20px; font-weight: 900;">SELIN<span style="color:var(--accent)">777</span></div>
+    <div class="card">
+        <h2>SELIN PAY</h2>
+        
+        <!-- Кнопка подключения кошелька -->
+        <div id="ton-connect-button"></div>
+
+        <div id="node-status" style="color: #ff4444;">NODE OFFLINE</div>
+        
+        <div style="color: #888; font-size: 14px;">Ваш баланс</div>
+        <div id="balance">0.00 ₽</div>
+
+        <div class="btn-group">
+            <button onclick="pay('RUB')">💳 Внести (₽)</button>
+            <button onclick="pay('TON')">💎 TON</button>
+            <button onclick="pay('USDT')">💵 USDT</button>
+            <button onclick="window.location.href='https://t.me'">💬 Связь</button>
         </div>
-        <div id="user-status">● NODE ACTIVE</div>
-    </div>
-
-    <div class="balance-card">
-        <div style="color: var(--text-dim); font-size: 11px; letter-spacing: 2px; font-weight: 800;">БАЛАНС SELIN PAY</div>
-        <div class="main-val"><span id="user-balance">0.00</span> <span style="font-size: 24px; color: var(--text-dim);">₽</span></div>
-        <div class="live-rate" id="rate">ПОДКЛЮЧЕНИЕ К СЕТИ...</div>
-    </div>
-
-    <div class="grid">
-        <div class="item" onclick="openDrawer('deposit')"><span>📥</span><div>Внести</div></div>
-        <div class="item" onclick="openDrawer('withdraw')"><span>📤</span><div>Вывод</div></div>
-        <div class="item" onclick="tgAlert('Обмен')"><span>🔄</span><div>Обмен</div></div>
-        <div class="item" onclick="tgAlert('Связь')"><span>📱</span><div>Связь</div></div>
-    </div>
-
-    <div class="overlay" id="overlay" onclick="closeAll()"></div>
-
-    <div class="drawer" id="deposit-drawer">
-        <h2 style="text-align:center; margin-top:0;">ПОПОЛНЕНИЕ</h2>
-        <div class="op-item" onclick="initAction('pay', 'RUB')"><span>🇷🇺 Рубли</span> <span>₽</span></div>
-        <div class="op-item" onclick="initAction('pay', 'TON')"><span>💎 Toncoin</span> <span>TON</span></div>
-        <div class="op-item" onclick="initAction('pay', 'USDT')"><span>₮ Tether</span> <span>USDT</span></div>
-        <button onclick="closeAll()" style="width:100%; background:none; border:none; color:var(--text-dim); padding:20px; font-weight:800; cursor:pointer;">ЗАКРЫТЬ</button>
+        
+        <div class="footer-text">vselin662-ops ecosystem</div>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        const BACKEND_URL = 'https://selin-backend.vercel.app'; // Замени на свой актуальный URL Vercel
+        // 1. Инициализация TON Connect
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://vselin662-ops.github.io',
+            buttonRootId: 'ton-connect-button'
+        });
 
-        tg.ready();
-        tg.expand();
-        tg.headerColor = '#030508';
+        // 2. Автоматическая смена статуса NODE при подключении
+        tonConnectUI.onStatusChange(wallet => {
+            const status = document.getElementById('node-status');
+            if (wallet) {
+                status.innerText = 'NODE ACTIVE';
+                status.style.color = '#00ff88'; 
+                console.log('Подключен кошелек:', wallet.account.address);
+            } else {
+                status.innerText = 'NODE OFFLINE';
+                status.style.color = '#ff4444';
+            }
+        });
 
-        // 1. Получение данных пользователя (баланс и курсы)
-        async function syncData() {
-            const userId = tg.initDataUnsafe.user?.id || 12345;
-            try {
-                const res = await fetch(`${BACKEND_URL}/api/user-data?userId=${userId}`);
-                const data = await res.json();
-                
-                document.getElementById('user-balance').innerText = data.balance.toFixed(2);
-                document.getElementById('rate').innerText = `LIVE USDT: ${data.rates.usdt_rub} ₽`;
-                document.getElementById('user-status').style.color = '#00ff88';
-            } catch (e) {
-                document.getElementById('rate').innerText = "NODE OFFLINE";
-                document.getElementById('user-status').style.color = "red";
+        // 3. Логика платежей
+        async function pay(method) {
+            const wallet = tonConnectUI.wallet;
+            
+            if (!wallet && (method === 'TON' || method === 'USDT')) {
+                alert('Сначала нажмите кнопку "Connect Wallet" вверху!');
+                return;
+            }
+
+            if (method === 'TON') {
+                const transaction = {
+                    validUntil: Math.floor(Date.now() / 1000) + 360,
+                    messages: [
+                        {
+                            address: "UQCmsvJfKVODb1vxdqzilJqicSuhPs0JzNNmzn_4VLWKOEw7", // Ваш кошелек
+                            amount: "1000000000" // Пример: 1 TON (можно менять)
+                        }
+                    ]
+                };
+                try {
+                    await tonConnectUI.sendTransaction(transaction);
+                    alert('Запрос отправлен! Подтвердите транзакцию в вашем приложении кошелька.');
+                } catch (e) {
+                    alert('Ошибка: транзакция отклонена или кошелек не поддерживает операцию.');
+                }
+            } 
+            
+            else if (method === 'USDT') {
+                alert('Оплата USDT в сети TON будет доступна после настройки смарт-контракта.');
+            } 
+            
+            else if (method === 'RUB') {
+                alert('Перенаправление на оплату картой...');
+                // Здесь можно вставить ссылку на ваш платежный шлюз
             }
         }
-
-        // 2. Универсальная функция для действий (оплата/вывод)
-        async function initAction(action, type) {
-            tg.HapticFeedback.impactOccurred('medium');
-            const userId = tg.initDataUnsafe.user?.id;
-
-            try {
-                const res = await fetch(`${BACKEND_URL}/api/${action}`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ userId, type })
-                });
-                const data = await res.json();
-                tg.showAlert(data.message);
-                closeAll();
-            } catch (e) {
-                tg.showPopup({ message: "Ошибка соединения с сервером SELIN" });
-            }
-        }
-
-        function openDrawer(id) {
-            tg.HapticFeedback.impactOccurred('light');
-            document.getElementById(`${id}-drawer`).classList.add('active');
-            document.getElementById('overlay').classList.add('active');
-        }
-
-        function closeAll() {
-            document.querySelectorAll('.drawer').forEach(d => d.classList.remove('active'));
-            document.getElementById('overlay').classList.remove('active');
-        }
-
-        function tgAlert(n) {
-            tg.showAlert(`Модуль "${n}" находится в стадии тестирования.`);
-        }
-
-        // Интервал обновления
-        setInterval(syncData, 15000);
-        syncData();
     </script>
 </body>
 </html>
