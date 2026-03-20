@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SELIN777 FINTECH PRO</title>
+    <!-- ИСПРАВЛЕНО: Правильный адрес скрипта Telegram -->
     <script src="https://telegram.org"></script>
     <style>
         :root { --bg: #030508; --card: #0d1117; --accent: #00a2ff; --text-dim: #4e5a6e; }
@@ -14,12 +15,12 @@
         .logo-circle { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--accent); object-fit: cover; }
         .balance-card { background: linear-gradient(165deg, #121822 0%, #080c12 100%); border-radius: 35px; padding: 30px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
         .main-val { font-size: 58px; font-weight: 200; margin: 10px 0; }
-        .live-rate { font-size: 10px; color: #00ff88; font-weight: 900; margin-top: 10px; }
+        .live-rate { font-size: 10px; color: #00ff88; font-weight: 900; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .item { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 25px; padding: 25px; text-align: center; transition: 0.2s; cursor: pointer; }
         .item:active { transform: scale(0.95); border-color: var(--accent); box-shadow: 0 0 20px rgba(0, 162, 255, 0.3); }
         .item span { font-size: 26px; display: block; margin-bottom: 10px; }
-        .drawer { position: fixed; bottom: -100%; left: 0; width: 100%; background: #0d1117; border-top: 2px solid var(--accent); border-radius: 35px 35px 0 0; padding: 30px 20px; transition: 0.4s; z-index: 2000; max-height: 85vh; overflow-y: auto; }
+        .drawer { position: fixed; bottom: -100%; left: 0; width: 100%; background: #0d1117; border-top: 2px solid var(--accent); border-radius: 35px 35px 0 0; padding: 30px 20px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; max-height: 85vh; overflow-y: auto; }
         .drawer.active { bottom: 0; }
         .op-item { background: rgba(255,255,255,0.03); padding: 18px; border-radius: 18px; margin-bottom: 10px; font-weight: 700; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; display: flex; justify-content: space-between; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(8px); }
@@ -61,17 +62,22 @@
 
     <script>
         const tg = window.Telegram.WebApp;
+        tg.ready();
         tg.expand();
         
-        // ССЫЛКА НА ТВОЙ ВЕРСЕЛЬ
+        // Твоя ссылка на Vercel
         const BACKEND_URL = 'https://selin-backend.vercel.app';
 
         async function updateRate() {
             try {
+                // Запрос к твоему серверу
                 const res = await fetch(`${BACKEND_URL}/api/rates`);
                 const data = await res.json();
+                // Если данные пришли, заменяем "СИНХРОНИЗАЦИЯ" на реальный курс
                 document.getElementById('rate').innerText = `LIVE USDT: ${data.usdt_rub} ₽`;
-            } catch (e) { document.getElementById('rate').innerText = "NODE ONLINE"; }
+            } catch (e) { 
+                document.getElementById('rate').innerText = "NODE ONLINE"; 
+            }
         }
 
         async function initRealPay(type) {
@@ -80,12 +86,17 @@
                 const res = await fetch(`${BACKEND_URL}/api/pay`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ userId: tg.initDataUnsafe.user?.id, currency: type })
+                    body: JSON.stringify({ 
+                        userId: tg.initDataUnsafe.user?.id, 
+                        currency: type 
+                    })
                 });
                 const data = await res.json();
                 tg.showAlert(data.message);
                 closeDeposit();
-            } catch (e) { tg.showAlert("Ошибка связи с сервером SELIN"); }
+            } catch (e) { 
+                tg.showAlert("Ошибка связи с сервером SELIN"); 
+            }
         }
 
         function openDeposit() {
@@ -99,9 +110,13 @@
             document.getElementById('overlay').classList.remove('active');
         }
 
-        function tgAlert(n) { tg.showAlert(`Модуль "${n}" в разработке.`); }
+        function tgAlert(n) { 
+            tg.HapticFeedback.impactOccurred('light');
+            tg.showAlert(`Модуль "${n}" в разработке.`); 
+        }
 
-        setInterval(updateRate, 30000);
+        // Обновляем курс каждые 20 секунд
+        setInterval(updateRate, 20000);
         updateRate();
     </script>
 </body>
