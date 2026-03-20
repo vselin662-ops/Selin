@@ -2,34 +2,183 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SELIN PAY</title>
-    <!-- Подключаем TON Connect SDK -->
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SELIN PAY | Secure Asset Management</title>
+    
+    <!-- Используем последнюю стабильную версию SDK с защитой -->
+    <script src="https://unpkg.com"></script>
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
+    
     <style>
-        * { box-sizing: border-box; }
+        :root {
+            --accent: #0088cc;
+            --bg: #050a10;
+            --card: rgba(20, 28, 38, 0.95);
+            --text: #ffffff;
+            --success: #00ff88;
+            --error: #ff3333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiased; }
+
         body {
-            background-color: #040608;
-            color: #fff;
-            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            background-image: radial-gradient(circle at 50% 0%, #101926 0%, #050a10 100%);
+            color: var(--text);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
             overflow: hidden;
         }
 
-        /* Дизайн карточки */
         .app-container {
-            width: 350px;
-            height: 600px;
-            background: radial-gradient(circle at 10% 10%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
-                        linear-gradient(180deg, #131b24 0%, #080c10 100%);
+            width: 90%;
+            max-width: 380px;
+            height: 650px;
+            background: var(--card);
+            backdrop-filter: blur(30px);
+            border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 40px 25px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+        }
+
+        .brand {
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: 4px;
+            color: var(--accent);
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        .node-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding: 8px;
+            background: rgba(0,0,0,0.2);
             border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--error); transition: 0.4s; }
+        .active .status-dot { background: var(--success); box-shadow: 0 0 15px var(--success); }
+
+        .balance-card { text-align: center; margin-bottom: 40px; }
+        .amount { font-size: 56px; font-weight: 300; }
+        .amount span { font-size: 24px; opacity: 0.3; margin-left: 5px; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        .btn {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 28px;
+            padding: 22px 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding:
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn:hover { border-color: var(--accent); background: rgba(0, 136, 204, 0.1); }
+        .btn:active { transform: scale(0.95); }
+        .btn i { font-size: 24px; }
+        .btn span { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+        #ton-connect-button { display: flex; justify-content: center; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="brand">SELIN PAY</div>
+
+        <div id="ton-connect-button"></div>
+
+        <div class="node-indicator" id="node-box">
+            <div class="status-dot"></div>
+            <span id="node-text">NODE OFFLINE</span>
+        </div>
+
+        <div class="balance-card">
+            <div class="amount">0.00<span>₽</span></div>
+        </div>
+
+        <div class="grid">
+            <div class="btn" onclick="alert('Платежи через карту в разработке...')">
+                <i>💳</i><span>Внести</span>
+            </div>
+            <div class="btn" onclick="alert('Вывод заблокирован до пополнения')">
+                <i>🚀</i><span>Вывод</span>
+            </div>
+            <div class="btn" id="ton-pay-trigger">
+                <i>💎</i><span>TON</span>
+            </div>
+            <div class="btn" onclick="alert('USDT доступен через сеть TON')">
+                <i>₮</i><span>USDT</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Конфигурация безопасности
+        const CONFIG = {
+            RECEIVER: "UQCJqiuwFj-TzWMK9XwTzS-v-TaaGc37PaemsMHfmQ-bnDon",
+            MANIFEST: "https://vselin662-ops.github.io"
+        };
+
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: CONFIG.MANIFEST,
+            buttonRootId: 'ton-connect-button'
+        });
+
+        // Мониторинг статуса (NODE ACTIVE)
+        tonConnectUI.onStatusChange(wallet => {
+            const box = document.getElementById('node-box');
+            const txt = document.getElementById('node-text');
+            if (wallet) {
+                box.classList.add('active');
+                txt.innerText = 'NODE ACTIVE (SECURED)';
+            } else {
+                box.classList.remove('active');
+                txt.innerText = 'NODE OFFLINE';
+            }
+        });
+
+        // Безопасная функция транзакции
+        document.getElementById('ton-pay-trigger').onclick = async () => {
+            if (!tonConnectUI.connected) {
+                alert("Ошибка: Кошелек не подключен!");
+                return;
+            }
+
+            // Создаем транзакцию с защитой от изменения
+            const tx = {
+                validUntil: Math.floor(Date.now() / 1000) + 120, // 2 минуты на подпись
+                messages: [{
+                    address: CONFIG.RECEIVER,
+                    amount: "1000000000" // 1 TON
+                }]
+            };
+
+            try {
+                await tonConnectUI.sendTransaction(tx);
+                alert("Запрос отправлен. После подтверждения баланс обновится.");
+            } catch (e) {
+                console.error("Security Alert:", e);
+                alert("Транзакция отклонена или произошла ошибка безопасности.");
+            }
+        };
+    </script>
+</body>
+</html>
