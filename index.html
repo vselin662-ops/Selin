@@ -2,186 +2,250 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SELIN PAY | Secure Terminal</title>
-    
-    <script src="https://telegram.org"></script>
-    <script src="https://unpkg.com"></script>
-    <link href="https://fonts.googleapis.com" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SELIN PAY | 2026</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --bg: #05070a; --accent: #0088cc; --sln: #00d4ff; --border: rgba(255, 255, 255, 0.07); }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: #fff; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
-        
-        .app { width: 100%; max-width: 420px; padding: 40px 20px; display: flex; flex-direction: column; }
+        :root {
+            --bg-primary: #0A0F17;
+            --bg-secondary: rgba(25, 35, 50, 0.7);
+            --accent-blue: #7B68EE;
+            --accent-gold: #FFD700;
+            --success: #00FF88;
+            --error: #FF6B6B;
+            --text-white: #FFFFFF;
+            --text-silver: #B0B0B0;
+            --border: rgba(255, 255, 255, 0.07);
+        }
 
-        /* Дизайн уровня Private Banking */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .brand { font-weight: 800; font-size: 1.1rem; letter-spacing: 3px; color: #fff; text-transform: uppercase; }
-        
-        .node-status { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.4); display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
-        .dot { width: 6px; height: 6px; border-radius: 50%; background: #333; transition: 0.5s; }
-        .active .dot { background: #00ff88; box-shadow: 0 0 12px #00ff88; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        .glass-card { 
-            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid var(--border);
-            border-radius: 40px;
-            padding: 35px;
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-white);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Экраны */
+        .screen {
+            display: none;
+            flex: 1;
+            padding: 20px;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Авторизация */
+        #auth-screen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: var(--text-silver);
             margin-bottom: 30px;
-            backdrop-filter: blur(50px);
-            box-shadow: 0 50px 100px rgba(0,0,0,0.7);
         }
 
-        .balance-item { margin-bottom: 30px; }
-        .balance-item:last-child { margin-bottom: 0; padding-top: 25px; border-top: 1px solid var(--border); }
-        
-        .label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
-        .value { font-size: 46px; font-weight: 300; letter-spacing: -2px; }
-        .value span { font-size: 18px; opacity: 0.2; margin-left: 8px; font-weight: 400; }
-        .sln-val { color: var(--sln); text-shadow: 0 0 30px rgba(0, 212, 255, 0.15); }
-
-        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .main-btn { 
-            background: rgba(255,255,255,0.02); 
-            border: 1px solid var(--border); 
-            border-radius: 24px; 
-            padding: 22px; 
-            text-align: center; 
-            cursor: pointer; 
-            transition: 0.2s;
+        /* Шапка */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
         }
-        .main-btn:active { transform: scale(0.96); background: rgba(255,255,255,0.05); border-color: var(--accent); }
-        .main-btn span { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1.5px; }
 
-        /* Окно активации мозгов */
-        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg); transition: 0.8s; }
-        .auth-btn { padding: 20px 40px; border: 1px solid var(--accent); border-radius: 50px; color: var(--accent); font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; }
-        .auth-btn:hover { background: var(--accent); color: #fff; box-shadow: 0 0 30px rgba(0, 136, 204, 0.5); }
+        .brand {
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            color: var(--text-white);
+        }
+
+        .node-status {
+            font-size: 9px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #333;
+            transition: all 0.5s ease;
+        }
+
+        .active .dot {
+            background: var(--success);
+            box-shadow: 0 0 12px var(--success);
+        }
+
+        /* Карточки */
+        .glass-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(10, 15, 23, 0.3);
+        }
+
+        .balance-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            font-size: 1.2rem;
+        }
+
+        /* Кнопки */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-gold));
+            border: none;
+            border-radius: 16px;
+            padding: 14px 24px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(123, 104, 238, 0.4);
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .method-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .method-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .form-group {
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-silver);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .payment-methods {
+            margin: 20px 0;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .transaction-item {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .success {
+            color: var(--success);
+        }
+
+        .error {
+            color: var(--error);
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: var(--text-silver);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-
-<div id="auth-overlay">
-    <div style="margin-bottom: 30px; font-weight: 900; font-size: 2rem; letter-spacing: 5px;">SELIN</div>
-    <div class="auth-btn" onclick="initBrains()">Активировать ядро</div>
-</div>
-
-<div class="app">
-    <div class="header">
-        <div class="brand">Selin Pay</div>
-        <div class="node-status" id="node-pill">
-            <div class="dot"></div> <span id="node-text">Protected Mode</span>
-        </div>
-    </div>
-
-    <div class="glass-card">
-        <div class="balance-item">
-            <div class="label">Main Network (TON)</div>
-            <div class="value" id="ton-balance">0.00<span>TON</span></div>
-        </div>
-        <div class="balance-item">
-            <div class="label" style="color: var(--sln);">Ecosystem Asset ($SLN)</div>
-            <div class="value sln-val" id="sln-balance">0.00<span>SLN</span></div>
-        </div>
-    </div>
-
-    <div class="btn-row">
-        <div class="main-btn" onclick="action('dep')"><span>Внести</span></div>
-        <div class="main-btn" onclick="action('out')"><span>Вывод</span></div>
-        <div class="main-btn" style="grid-column: span 2; border-color: var(--accent); margin-top: 10px;" onclick="securePay()">
-            <span style="color: var(--accent); opacity: 1;">Безопасная оплата 1 TON</span>
-        </div>
-    </div>
-</div>
-
-<script>
-    const tg = window.Telegram.WebApp;
-    tg.ready(); tg.expand();
-
-    // КОНФИГУРАЦИЯ "МОЗГОВ"
-    const BRAINS_CONFIG = {
-        WALLET_RECEIVER: "UQCJqiuwFj-TzWMK9XwTzS-v-TaaGc37PaemsMHfmQ-bnDon",
-        SLN_MASTER: "EQCkDna5aow1EBkSydhTrBvARuhGlBC6LntyUlZscx8KzBW7",
-        MANIFEST: "https://vselin662-ops.github.io"
-    };
-
-    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: BRAINS_CONFIG.MANIFEST
-    });
-
-    async function initBrains() {
-        tg.HapticFeedback.impactOccurred('heavy');
-        try {
-            await tonConnectUI.openModal();
-        } catch (e) {
-            tg.showAlert("Ошибка инициализации. Проверьте кошелек.");
-        }
-    }
-
-    // ЛОГИКА БЕЗОПАСНОЙ СИНХРОНИЗАЦИИ
-    async function syncSystem(userAddress) {
-        try {
-            // Верифицируем баланс TON
-            const r1 = await fetch(`https://toncenter.com{userAddress}`);
-            const d1 = await r1.json();
-            if(d1.ok) document.getElementById('ton-balance').innerHTML = `${(d1.result.balance / 1e9).toFixed(2)}<span>TON</span>`;
-
-            // "Мозги" ищут твой Jetton SLN в кошельке пользователя
-            const r2 = await fetch(`https://toncenter.com{userAddress}&jetton_master_address=${BRAINS_CONFIG.SLN_MASTER}`);
-            const d2 = await r2.json();
-            if(d2.ok) {
-                const r3 = await fetch(`https://toncenter.com{d2.result}`);
-                const d3 = await r3.json();
-                if(d3.ok) {
-                    const slnVal = (d3.result.balance / 1e9).toLocaleString();
-                    document.getElementById('sln-balance').innerHTML = `${slnVal}<span>SLN</span>`;
-                }
-            }
-        } catch(e) { console.error("Security Sync Error"); }
-    }
-
-    tonConnectUI.onStatusChange(wallet => {
-        const overlay = document.getElementById('auth-overlay');
-        const pill = document.getElementById('node-pill');
-
-        if (wallet) {
-            overlay.style.opacity = '0';
-            setTimeout(() => overlay.style.display = 'none', 800);
-            pill.classList.add('active');
-            tg.HapticFeedback.notificationOccurred('success');
-            syncSystem(wallet.account.address);
-            setInterval(() => syncSystem(wallet.account.address), 25000);
-        } else {
-            overlay.style.display = 'flex';
-            overlay.style.opacity = '1';
-            pill.classList.remove('active');
-        }
-    });
-
-    async function securePay() {
-        if (!tonConnectUI.connected) return initBrains();
-        tg.HapticFeedback.impactOccurred('medium');
-        
-        const tx = {
-            validUntil: Math.floor(Date.now() / 1000) + 120, // Транзакция живет 2 минуты (защита)
-            messages: [{
-                address: BRAINS_CONFIG.WALLET_RECEIVER,
-                amount: "1000000000" // 1 TON
-            }]
-        };
-
-        try {
-            await tonConnectUI.sendTransaction(tx);
-            tg.HapticFeedback.notificationOccurred('success');
-            tg.showAlert("Платеж верифицирован и отправлен в блокчейн.");
-        } catch (e) {
-            tg.HapticFeedback.notificationOccurred('error');
-        }
-    }
-
-    function action(t) { tg.HapticFeedback.impactOccurred('light'); tg.showAlert("Запрос к ноде подтвержден."); }
-</script>
-</body>
-</html>
+    <div class="app">
+        <!-- Экран авторизации -->
+        <div id="auth-screen" class="screen active">
+            <div class="auth-content">
+                <svg id="logo" width="80" height="80"
