@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SELIN PAY | Web3 Ecosystem</title>
+    <title>SELIN PAY | Premium Web3</title>
     
+    <!-- Подключаем SDK для Telegram и TON -->
     <script src="https://telegram.org"></script>
     <script src="https://unpkg.com"></script>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
@@ -18,15 +19,14 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .logo-box { display: flex; align-items: center; gap: 12px; }
+        .logo-box { display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .logo-img { width: 35px; height: 35px; border-radius: 50%; border: 1.5px solid var(--accent); box-shadow: 0 0 15px rgba(0, 136, 204, 0.3); }
         .brand { font-weight: 900; font-size: 1.3rem; letter-spacing: 2px; color: var(--accent); }
         
-        .status { font-size: 9px; font-weight: 800; padding: 6px 12px; border-radius: 30px; background: var(--glass); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px; }
+        .status { font-size: 9px; font-weight: 800; padding: 6px 12px; border-radius: 30px; background: var(--glass); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px; cursor: pointer; }
         .dot { width: 7px; height: 7px; border-radius: 50%; background: #ff3b30; }
         .active .dot { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
 
-        /* Карточка активов */
         .asset-card { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 35px; padding: 25px; margin-bottom: 30px; backdrop-filter: blur(25px); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .asset { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
         .asset:first-child { border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px; }
@@ -35,7 +35,6 @@
         .a-val span { font-size: 18px; opacity: 0.3; margin-left: 6px; }
         .sln-text { color: var(--sln); text-shadow: 0 0 20px rgba(0, 212, 255, 0.2); font-weight: 400; }
 
-        /* Сетка управления */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .btn { background: var(--glass); border: 1px solid rgba(255,255,255,0.05); border-radius: 28px; padding: 22px 10px; text-align: center; cursor: pointer; transition: 0.2s; }
         .btn:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
@@ -50,18 +49,19 @@
 
 <div class="app-shell">
     <div class="header">
-        <div class="logo-box">
+        <div class="logo-box" onclick="forceConnect()">
             <img src="logo.png" class="logo-img" alt="S">
             <div class="brand">SELIN</div>
         </div>
-        <div class="status" id="st-box">
+        <div class="status" id="st-box" onclick="forceConnect()">
             <div class="dot"></div> <span id="st-txt">OFFLINE</span>
         </div>
     </div>
 
-    <div id="ton-connect-btn"></div>
+    <!-- Скрытая кнопка для системы, но мы будем вызывать её кликом по экрану -->
+    <div id="ton-connect-btn" style="display: none;"></div>
 
-    <div class="asset-card">
+    <div class="asset-card" onclick="forceConnect()">
         <div class="asset">
             <div>
                 <div class="a-label">Blockchain Base</div>
@@ -79,9 +79,9 @@
     </div>
 
     <div class="grid">
-        <div class="btn" onclick="hapt('medium'); tg.showAlert('Интеграция с СБП в разработке...')"><i>💳</i><span>Внести</span></div>
-        <div class="btn" onclick="hapt('medium'); tg.showAlert('Минимум 10.0 TON')"><i>🚀</i><span>Вывод</span></div>
-        <div class="btn" style="grid-column: span 2; background: rgba(0, 136, 204, 0.1); border-color: var(--accent);" onclick="sendPay()"><i>💎</i><span>Оплатить в TON</span></div>
+        <div class="btn" onclick="handleButtonClick('deposit')"><i>💳</i><span>Внести</span></div>
+        <div class="btn" onclick="handleButtonClick('withdraw')"><i>🚀</i><span>Вывод</span></div>
+        <div class="btn" style="grid-column: span 2; background: rgba(0, 136, 204, 0.15); border-color: var(--accent);" onclick="handleButtonClick('pay')"><i>💎</i><span>Оплатить в TON</span></div>
     </div>
 </div>
 
@@ -89,7 +89,8 @@
 
 <script>
     const tg = window.Telegram.WebApp;
-    tg.ready(); tg.expand();
+    tg.ready(); 
+    tg.expand();
 
     const CONFIG = {
         MY_WALLET: "UQCJqiuwFj-TzWMK9XwTzS-v-TaaGc37PaemsMHfmQ-bnDon",
@@ -97,21 +98,46 @@
         MANIFEST: "https://vselin662-ops.github.io"
     };
 
+    // Инициализация TON Connect
     const tonUI = new TON_CONNECT_UI.TonConnectUI({
         manifestUrl: CONFIG.MANIFEST,
         buttonRootId: 'ton-connect-btn'
     });
 
-    const hapt = (s) => tg.HapticFeedback.impactOccurred(s);
+    // Функция ПРИНУДИТЕЛЬНОГО вызова кошелька (для Android 16)
+    async function forceConnect() {
+        tg.HapticFeedback.impactOccurred('heavy');
+        if (!tonUI.connected) {
+            try {
+                await tonUI.openModal();
+            } catch (e) {
+                console.error("Connection failed", e);
+            }
+        }
+    }
+
+    // Обработка кликов по кнопкам
+    async function handleButtonClick(action) {
+        tg.HapticFeedback.impactOccurred('medium');
+        
+        if (!tonUI.connected) {
+            await forceConnect();
+            return;
+        }
+
+        if (action === 'pay') {
+            sendPay();
+        } else {
+            tg.showAlert("Модуль " + action.toUpperCase() + " синхронизируется с вашей нодой.");
+        }
+    }
 
     async function refreshAssets(address) {
         try {
-            // 1. Получаем баланс TON
             const r1 = await fetch(`https://toncenter.com{address}`);
             const d1 = await r1.json();
             if(d1.ok) document.getElementById('t-bal').innerHTML = `${(d1.result.balance / 1e9).toFixed(2)}<span>TON</span>`;
 
-            // 2. Получаем баланс $SLN (Jetton)
             const r2 = await fetch(`https://toncenter.com{address}&jetton_master_address=${CONFIG.SLN_MASTER}`);
             const d2 = await r2.json();
             if(d2.ok) {
@@ -128,7 +154,7 @@
         if (w) {
             box.classList.add('active');
             txt.innerText = 'NODE ACTIVE';
-            hapt('heavy');
+            tg.HapticFeedback.notificationOccurred('success');
             refreshAssets(w.account.address);
             setInterval(() => refreshAssets(w.account.address), 20000);
         } else {
@@ -138,15 +164,15 @@
     });
 
     async function sendPay() {
-        hapt('medium');
-        if (!tonUI.connected) return tg.showAlert("Подключите кошелек!");
         try {
             await tonUI.sendTransaction({
                 validUntil: Math.floor(Date.now() / 1000) + 120,
                 messages: [{ address: CONFIG.MY_WALLET, amount: "1000000000" }]
             });
             tg.HapticFeedback.notificationOccurred('success');
-        } catch (e) { hapt('error'); }
+        } catch (e) {
+            tg.HapticFeedback.notificationOccurred('error');
+        }
     }
 </script>
 </body>
