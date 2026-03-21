@@ -3,106 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SELIN PAY | Infinity 2.0</title>
+    <title>SELIN ENGINE 2.0</title>
     <script src="https://telegram.org"></script>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     <style>
         :root {
             --bg: #020406;
             --sln: #00d4ff;
-            --neon: 0 0 20px rgba(0, 212, 255, 0.8);
-            --border: rgba(255, 255, 255, 0.1);
+            --neon: 0 0 25px rgba(0, 212, 255, 0.5);
+            --border: rgba(255, 255, 255, 0.08);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: #fff; height: 100vh; overflow: hidden; }
 
-        /* ЗВЕЗДЫ - теперь они ПОЗАДИ всего */
-        #starfield { position: fixed; top: 0; left: 0; z-index: -1; pointer-events: none; }
+        /* ГЛУБОКИЙ КОСМОС */
+        #starfield { position: fixed; top: 0; left: 0; z-index: -2; pointer-events: none; }
+        .nebula {
+            position: fixed; width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(0, 136, 204, 0.12), transparent 70%);
+            filter: blur(80px); z-index: -1; pointer-events: none;
+        }
 
         .container { padding: 2rem; position: relative; z-index: 10; display: flex; flex-direction: column; height: 100%; }
 
         /* HEADER */
-        .nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .brand { font-weight: 900; letter-spacing: 0.5rem; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
-        .logo-small { width: 28px; height: 28px; border-radius: 50%; box-shadow: var(--neon); border: 1px solid var(--sln); }
+        .nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
+        .brand { font-weight: 900; letter-spacing: 0.5rem; font-size: 1.2rem; display: flex; align-items: center; gap: 12px; }
+        .logo-main { width: 32px; height: 32px; border-radius: 50%; box-shadow: var(--neon); border: 1px solid var(--sln); }
 
-        /* КАРТОЧКА БАЛАНСА */
+        /* КАРТОЧКА БАЛАНСА (BRAVO STYLE) */
         .card {
-            background: rgba(255,255,255,0.03);
+            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
             border: 1px solid var(--border);
             border-radius: 2.5rem;
             padding: 2.5rem;
             backdrop-filter: blur(20px);
             margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            animation: breathe 4s infinite alternate;
         }
-        .val { font-size: 3rem; font-weight: 200; margin-top: 0.5rem; color: var(--sln); text-shadow: var(--neon); }
+        @keyframes breathe { from { border-color: var(--border); } to { border-color: rgba(0, 212, 255, 0.3); box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.05); } }
+
+        .val { font-size: 3rem; font-weight: 200; color: var(--sln); text-shadow: var(--neon); letter-spacing: -2px; }
         .val span { font-size: 1rem; opacity: 0.3; margin-left: 10px; color: #fff; text-shadow: none; }
 
-        /* КНОПКИ */
+        /* СЕТКА КНОПОК */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .btn {
-            background: rgba(255,255,255,0.03);
+            background: rgba(255,255,255,0.02);
             border: 1px solid var(--border);
             border-radius: 2rem;
-            padding: 2rem 1rem;
+            padding: 2.2rem 1rem;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 1rem;
-            transition: 0.3s;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
         }
-        /* ЭФФЕКТ СВЕЧЕНИЯ ПРИ НАЖАТИИ */
-        .btn:active { border-color: var(--sln); box-shadow: var(--neon); transform: scale(0.95); }
-        .btn span { font-size: 0.7rem; font-weight: 900; letter-spacing: 0.1rem; opacity: 0.5; text-transform: uppercase; }
+        .btn:active { border-color: var(--sln); box-shadow: var(--neon); transform: scale(0.92); }
+        .btn span { font-size: 0.7rem; font-weight: 900; letter-spacing: 0.15rem; opacity: 0.5; text-transform: uppercase; }
 
-        /* КРУТАЯ НЕОНОВАЯ РАКЕТА */
-        .rocket-svg { width: 45px; height: 45px; filter: drop-shadow(0 0 5px var(--sln)); transition: 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
-        .launching { transform: translateY(-100vh) scale(0.1); opacity: 0; filter: drop-shadow(0 0 30px var(--sln)); }
+        /* НЕОНОВАЯ РАКЕТА */
+        .rocket-svg { width: 45px; height: 45px; filter: drop-shadow(0 0 8px var(--sln)); transition: 0.8s cubic-bezier(0.6, -0.28, 0.7, 0.05); }
+        .launching { transform: translateY(-120vh) scale(0.1); opacity: 0; filter: drop-shadow(0 0 50px var(--sln)); }
 
         /* МОДАЛЬНОЕ ОКНО */
         .modal {
             display: none;
             position: fixed;
             bottom: 0; left: 0; width: 100%;
-            background: rgba(2, 4, 6, 0.95);
+            background: rgba(2, 4, 6, 0.98);
             border-top: 2px solid var(--sln);
             border-radius: 3rem 3rem 0 0;
-            padding: 2rem;
+            padding: 2.5rem;
             z-index: 1000;
             backdrop-filter: blur(40px);
             box-shadow: 0 -10px 50px rgba(0, 212, 255, 0.3);
+            animation: slideUp 0.4s ease-out;
         }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
         .modal-item {
-            padding: 1.2rem;
+            padding: 1.3rem;
             margin-bottom: 0.8rem;
+            background: rgba(255,255,255,0.03);
             border: 1px solid var(--border);
             border-radius: 1.5rem;
-            display: flex; justify-content: space-between;
+            display: flex; justify-content: space-between; align-items: center;
             transition: 0.3s;
         }
         .modal-item:active { border-color: var(--sln); box-shadow: var(--neon); color: var(--sln); }
-        .locked { opacity: 0.2; pointer-events: none; }
+        .locked { opacity: 0.15; pointer-events: none; }
         
-        .listing-info { text-align: center; margin-top: 1.5rem; font-size: 0.7rem; font-weight: 900; color: var(--sln); display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .listing-info { 
+            text-align: center; margin-top: 2rem; font-size: 0.7rem; font-weight: 900; color: var(--sln); 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
     </style>
 </head>
 <body>
 
+<div class="nebula" style="top: -10%; right: -10%;"></div>
+<div class="nebula" style="bottom: -10%; left: -10%; background: radial-gradient(circle, rgba(128, 0, 255, 0.08), transparent 70%);"></div>
 <canvas id="starfield"></canvas>
 
 <div class="container">
     <div class="nav">
         <div class="brand">
-            <img src="logo.png" class="logo-small" alt="S" onerror="this.style.display='none'"> 
+            <img src="logo.png" class="logo-main" alt="S" onerror="this.style.display='none'"> 
             SELIN
         </div>
-        <div style="font-size: 0.6rem; opacity: 0.4;">● OFFLINE</div>
+        <div style="font-size: 0.6rem; font-weight: 800; color: #ff3b30; text-shadow: 0 0 10px #ff3b30;">● OFFLINE</div>
     </div>
 
     <div class="card">
-        <div style="font-size: 0.6rem; opacity: 0.3; letter-spacing: 2px;">BALANCE</div>
+        <div style="font-size: 0.6rem; opacity: 0.3; letter-spacing: 3px; font-weight: 900;">TOTAL ASSETS</div>
         <div class="val">0.00<span>TON</span></div>
         <div class="val" style="font-size: 2.2rem; margin-top: 1.5rem;">0.00<span>SLN</span></div>
     </div>
@@ -110,11 +130,11 @@
     <div class="grid">
         <!-- ВНЕСТИ -->
         <div class="btn" onclick="openMenu('DEPOSIT')">
-            <i style="font-size: 1.5rem;">💳</i>
+            <i style="font-size: 1.8rem; filter: drop-shadow(0 0 5px #fff);">💳</i>
             <span>Внести</span>
         </div>
-        <!-- ВЫВОД С РАКЕТОЙ -->
-        <div class="btn" onclick="launch()">
+        <!-- ВЫВОД -->
+        <div class="btn" onclick="startLaunch()">
             <svg id="rocket" class="rocket-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org">
                 <path d="M12 2C12 2 9 6 9 12C9 15.5 10.5 18 12 18C13.5 18 15 15.5 15 12C15 6 12 2 12 2Z" fill="#00d4ff" />
                 <path d="M12 18V22M9 19V21M15 19V21" stroke="#00d4ff" stroke-width="2" stroke-linecap="round" />
@@ -127,44 +147,45 @@
 
 <!-- МЕНЮ -->
 <div id="modal" class="modal">
-    <div id="m-title" style="text-align: center; font-weight: 900; color: var(--sln); margin-bottom: 1.5rem; letter-spacing: 2px;">ВЫВОД</div>
+    <div id="m-title" style="text-align: center; font-weight: 900; color: var(--sln); margin-bottom: 2rem; letter-spacing: 4px; font-size: 0.8rem;">ВЫБЕРИТЕ АКТИВ</div>
     
-    <div class="modal-item" onclick="closeM()"><span>1. SELIN ($SLN)</span> <span>→</span></div>
-    <div class="modal-item" onclick="closeM()"><span>2. TONCOIN</span> <span>→</span></div>
-    <div class="modal-item" onclick="closeM()"><span>3. TETHER (USDT)</span> <span>→</span></div>
-    <div class="modal-item locked"><span>ЦИФРОВОЙ РУБЛЬ</span> <span>СКОРО</span></div>
+    <div class="modal-item" onclick="closeM()"><span>1. SELIN ($SLN)</span> <small>⚡</small></div>
+    <div class="modal-item" onclick="closeM()"><span>2. TONCOIN</span> <small>💎</small></div>
+    <div class="modal-item" onclick="closeM()"><span>3. TETHER (USDT)</span> <small>💵</small></div>
+    <div class="modal-item locked"><span>ЦИФРОВОЙ РУБЛЬ</span> <small>В РАЗРАБОТКЕ</small></div>
 
     <div id="listing" class="listing-info" style="display:none;">
-        <img src="logo.png" class="logo-small" style="width:16px; height:16px;"> СКОРО ЛИСТИНГ SLN
+        <img src="logo.png" style="width:16px; border-radius:50%"> СКОРО ЛИСТИНГ SLN
     </div>
     
-    <button onclick="closeM()" style="width: 100%; margin-top: 1.5rem; background: none; border: none; color: #555; font-weight: 900;">ЗАКРЫТЬ</button>
+    <button onclick="closeM()" style="width: 100%; margin-top: 2.5rem; background: none; border: none; color: rgba(255,255,255,0.2); font-weight: 900; cursor: pointer;">ЗАКРЫТЬ</button>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
-    tg.ready();
+    tg.ready(); tg.expand();
 
-    // Запуск ракеты
-    function launch() {
-        tg.HapticFeedback.impactOccurred('heavy');
-        const r = document.getElementById('rocket');
-        r.classList.add('launching');
+    // 1. ИСПРАВЛЕННЫЙ ВЗЛЕТ РАКЕТЫ
+    function startLaunch() {
+        tg.HapticFeedback.notificationOccurred('success');
+        const rocket = document.getElementById('rocket');
+        rocket.classList.add('launching');
         
         setTimeout(() => {
             openMenu('WITHDRAW');
-            r.classList.remove('launching');
-        }, 700);
+            rocket.classList.remove('launching');
+        }, 750);
     }
 
-    // Открытие меню
+    // 2. ИСПРАВЛЕННОЕ МЕНЮ
     function openMenu(mode) {
+        tg.HapticFeedback.impactOccurred('medium');
         document.getElementById('modal').style.display = 'block';
         const title = document.getElementById('m-title');
         const listInfo = document.getElementById('listing');
         
         if(mode === 'DEPOSIT') {
-            title.innerText = "ВНЕСТИ АКТИВ";
+            title.innerText = "ПОПОЛНЕНИЕ";
             listInfo.style.display = 'flex';
         } else {
             title.innerText = "ВЫВОД СРЕДСТВ";
@@ -174,24 +195,25 @@
 
     function closeM() { document.getElementById('modal').style.display = 'none'; }
 
-    // Звезды
+    // 3. ЗВЕЗДНЫЙ ДВИЖОК (ФИКСИРОВАННЫЙ)
     const cvs = document.getElementById('starfield');
     const ctx = cvs.getContext('2d');
     function res() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
     window.addEventListener('resize', res); res();
     
-    let stars = Array(80).fill().map(() => ({
+    let stars = Array(120).fill().map(() => ({
         x: Math.random() * cvs.width,
         y: Math.random() * cvs.height,
-        s: Math.random() * 2
+        s: Math.random() * 1.5,
+        v: Math.random() * 0.15
     }));
 
     function draw() {
         ctx.clearRect(0,0,cvs.width,cvs.height);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
         stars.forEach(s => {
-            ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, 7); ctx.fill();
-            s.y -= 0.2; if(s.y < 0) s.y = cvs.height;
+            ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
+            s.y -= s.v; if(s.y < 0) s.y = cvs.height;
         });
         requestAnimationFrame(draw);
     }
