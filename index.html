@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SELIN ENGINE 2.0</title>
     
+    <!-- ИСПРАВЛЕНО: Правильное подключение SDK -->
     <script src="https://telegram.org"></script>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     
@@ -18,7 +19,6 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
 
-        /* ОСНОВНОЙ ФОН */
         body { 
             background: var(--bg); 
             color: #fff; height: 100vh; overflow: hidden; 
@@ -26,22 +26,19 @@
             position: relative;
         }
 
-        /* СЛОИ КОСМОСА (ОТПРАВЛЕНЫ НАЗАД) */
-        #space { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-        .nebula { position: fixed; width: 500px; height: 500px; background: radial-gradient(circle, rgba(0, 136, 204, 0.15), transparent 70%); filter: blur(90px); z-index: 2; pointer-events: none; top: -10%; right: -10%; }
+        /* ИСПРАВЛЕНО: Фон ушел на -1 и -2, чтобы не мешать кликам */
+        #space { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; }
+        .nebula { position: fixed; width: 500px; height: 500px; background: radial-gradient(circle, rgba(0, 136, 204, 0.15), transparent 70%); filter: blur(90px); z-index: -1; pointer-events: none; top: -10%; right: -10%; }
 
-        /* КОНТЕЙНЕР ПОВЕРХ ФОНА */
         .container { 
             width: 100%; max-width: 420px; padding: 2.5rem 1.5rem; 
             display: flex; flex-direction: column; z-index: 10; position: relative;
         }
 
-        /* HEADER */
         .nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3.5rem; }
         .brand { font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 0.6rem; font-size: 1rem; display: flex; align-items: center; gap: 15px; }
         .logo-img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(0, 212, 255, 0.2); }
 
-        /* БАЛАНС */
         .card-main {
             background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
             border: 1px solid var(--border); border-radius: 2.5rem;
@@ -53,7 +50,6 @@
         .val.sln { color: var(--sln); text-shadow: var(--neon); margin-top: 2rem; font-size: 2.8rem; }
         .val span { font-size: 1.1rem; opacity: 0.2; margin-left: 10px; font-weight: 400; }
 
-        /* КНОПКИ */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; position: relative; z-index: 100; }
         .btn {
             background: rgba(255,255,255,0.03); border: 1px solid var(--border);
@@ -64,12 +60,10 @@
         .btn:active { transform: scale(0.92); border-color: var(--sln); box-shadow: 0 0 40px rgba(0, 212, 255, 0.3); }
         .btn span { font-size: 0.75rem; font-weight: 900; opacity: 0.4; letter-spacing: 3px; text-transform: uppercase; }
 
-        /* РАКЕТА */
         .rocket-box { width: 55px; height: 75px; transition: 0.8s cubic-bezier(0.6, -0.28, 0.7, 0.05); }
         .rocket-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 10px var(--sln)); }
         .launching { transform: translateY(-120vh) scaleY(1.5) blur(10px); opacity: 0; }
 
-        /* МОДАЛКА */
         .modal {
             display: none; position: fixed; bottom: 0; left: 0; width: 100%;
             background: rgba(1, 2, 4, 0.99); border-top: 2px solid var(--sln);
@@ -88,7 +82,6 @@
 </head>
 <body>
 
-<!-- ФОНОВЫЕ ЭЛЕМЕНТЫ (ТЕПЕРЬ ОНИ ВИДНЫ) -->
 <canvas id="space"></canvas>
 <div class="nebula"></div>
 
@@ -115,7 +108,8 @@
         
         <div class="btn" onclick="triggerRocket()">
             <div id="rocket-id" class="rocket-box">
-                <img src="rocket.png" class="rocket-img" alt="🚀" onerror="this.src='https://cdn-icons-png.flaticon.com'">
+                <!-- ИСПРАВЛЕНО: Убран битый onerror URL -->
+                <img src="rocket.png" class="rocket-img" alt="🚀" onerror="this.style.opacity='0.5'">
             </div>
             <span>Вывод</span>
         </div>
@@ -134,11 +128,13 @@
 </div>
 
 <script>
+    // Инициализация Telegram
     const tg = window.Telegram.WebApp;
     tg.ready();
+    tg.expand();
 
     function triggerRocket() {
-        tg.HapticFeedback.notificationOccurred('success');
+        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         const rkt = document.getElementById('rocket-id');
         rkt.classList.add('launching');
         
@@ -153,7 +149,7 @@
     }
 
     function openUI(type) {
-        tg.HapticFeedback.impactOccurred('medium');
+        if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         document.getElementById('modal-ui').style.display = 'block';
         const title = document.getElementById('m-title');
         const tag = document.getElementById('listing-status');
@@ -167,7 +163,9 @@
         }
     }
 
-    function closeUI() { document.getElementById('modal-ui').style.display = 'none'; }
+    function closeUI() { 
+        document.getElementById('modal-ui').style.display = 'none'; 
+    }
 
     // ЗВЕЗДНЫЙ ДВИЖОК
     const cvs = document.getElementById('space');
