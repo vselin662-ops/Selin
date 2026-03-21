@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SELIN | INFINITY ENGINE</title>
+    <title>SELIN ENGINE 2.0</title>
     
-    <!-- SDK Telegram -->
     <script src="https://telegram.org"></script>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     
@@ -13,12 +12,13 @@
         :root {
             --bg: #010204;
             --sln: #00d4ff;
-            --border: rgba(255, 255, 255, 0.05);
-            --neon: 0 0 20px rgba(0, 212, 255, 0.3);
+            --border: rgba(255, 255, 255, 0.08);
+            --neon: 0 0 25px rgba(0, 212, 255, 0.4);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
 
+        /* ОСНОВНОЙ ФОН */
         body { 
             background: var(--bg); 
             color: #fff; height: 100vh; overflow: hidden; 
@@ -26,79 +26,69 @@
             position: relative;
         }
 
-        /* ГЛУБОКИЙ КОСМОС (САМЫЙ ДАЛЬНИЙ СЛОЙ) */
+        /* СЛОИ КОСМОСА (ОТПРАВЛЕНЫ НАЗАД) */
         #space { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-        .nebula { position: fixed; width: 400px; height: 400px; background: radial-gradient(circle, rgba(0, 136, 204, 0.1), transparent 70%); filter: blur(80px); z-index: 2; pointer-events: none; top: 10%; right: -50px; }
+        .nebula { position: fixed; width: 500px; height: 500px; background: radial-gradient(circle, rgba(0, 136, 204, 0.15), transparent 70%); filter: blur(90px); z-index: 2; pointer-events: none; top: -10%; right: -10%; }
 
+        /* КОНТЕЙНЕР ПОВЕРХ ФОНА */
         .container { 
             width: 100%; max-width: 420px; padding: 2.5rem 1.5rem; 
             display: flex; flex-direction: column; z-index: 10; position: relative;
-            background: transparent;
         }
 
         /* HEADER */
         .nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3.5rem; }
-        .brand { font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 0.6rem; font-size: 1rem; display: flex; align-items: center; gap: 12px; }
-        
-        /* ЛОГОТИП (ЧИСТЫЙ, БЕЗ ОБРАМЛЕНИЯ) */
-        .logo-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .brand { font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 0.6rem; font-size: 1rem; display: flex; align-items: center; gap: 15px; }
+        .logo-img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(0, 212, 255, 0.2); }
 
-        /* КАРТОЧКА БАЛАНСА */
+        /* БАЛАНС */
         .card-main {
             background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
             border: 1px solid var(--border); border-radius: 2.5rem;
             padding: 3rem 2rem; backdrop-filter: blur(25px);
             margin-bottom: 2rem; position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
         }
-        .label { font-size: 0.65rem; font-weight: 900; color: var(--sln); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 1.5rem; opacity: 0.7; }
+        .label { font-size: 0.65rem; font-weight: 900; color: var(--sln); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 1.5rem; opacity: 0.6; }
         .val { font-size: 3.8rem; font-weight: 100; letter-spacing: -3px; color: #fff; line-height: 1; }
         .val.sln { color: var(--sln); text-shadow: var(--neon); margin-top: 2rem; font-size: 2.8rem; }
-        .val span { font-size: 1.2rem; opacity: 0.2; margin-left: 10px; font-weight: 400; }
+        .val span { font-size: 1.1rem; opacity: 0.2; margin-left: 10px; font-weight: 400; }
 
         /* КНОПКИ */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; position: relative; z-index: 100; }
         .btn {
-            background: rgba(255,255,255,0.02); border: 1px solid var(--border);
-            border-radius: 2rem; padding: 2.5rem 1rem;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            border-radius: 2.2rem; padding: 2.8rem 1rem;
             display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
-            transition: 0.3s cubic-bezier(0.2, 1, 0.2, 1); cursor: pointer;
-            position: relative; z-index: 100; /* Кнопки всегда сверху */
+            transition: 0.4s cubic-bezier(0.2, 1, 0.2, 1); cursor: pointer;
         }
-        .btn:active { transform: scale(0.92); border-color: var(--sln); box-shadow: 0 0 30px rgba(0, 212, 255, 0.2); }
-        .btn span { font-size: 0.7rem; font-weight: 900; opacity: 0.4; letter-spacing: 3px; text-transform: uppercase; }
+        .btn:active { transform: scale(0.92); border-color: var(--sln); box-shadow: 0 0 40px rgba(0, 212, 255, 0.3); }
+        .btn span { font-size: 0.75rem; font-weight: 900; opacity: 0.4; letter-spacing: 3px; text-transform: uppercase; }
 
-        /* РАКЕТА (ТВОЙ ФАЙЛ) */
+        /* РАКЕТА */
         .rocket-box { width: 55px; height: 75px; transition: 0.8s cubic-bezier(0.6, -0.28, 0.7, 0.05); }
         .rocket-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 10px var(--sln)); }
-        
-        /* АНИМАЦИЯ ГИПЕРПРЫЖКА */
-        .launching { transform: translateY(-120vh) scaleY(1.5) scaleX(0.8); filter: blur(8px) brightness(2); opacity: 0; }
+        .launching { transform: translateY(-120vh) scaleY(1.5) blur(10px); opacity: 0; }
 
         /* МОДАЛКА */
         .modal {
             display: none; position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(1, 2, 4, 0.98); border-top: 2px solid var(--sln);
-            border-radius: 3.5rem 3.5rem 0 0; padding: 3.5rem 2.5rem; z-index: 1000;
-            backdrop-filter: blur(50px); box-shadow: 0 -20px 60px rgba(0, 212, 255, 0.3);
-            animation: slideUp 0.4s cubic-bezier(0, 1, 0.5, 1);
+            background: rgba(1, 2, 4, 0.99); border-top: 2px solid var(--sln);
+            border-radius: 3.5rem 3.5rem 0 0; padding: 3.5rem 2.5rem; z-index: 2000;
+            backdrop-filter: blur(60px); box-shadow: 0 -20px 60px rgba(0, 212, 255, 0.4);
         }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
         .m-item {
-            padding: 1.5rem; margin-bottom: 1rem; background: rgba(255,255,255,0.03);
+            padding: 1.6rem; margin-bottom: 1rem; background: rgba(255,255,255,0.03);
             border: 1px solid var(--border); border-radius: 1.8rem;
             display: flex; justify-content: space-between; align-items: center;
         }
         .m-item:active { border-color: var(--sln); color: var(--sln); box-shadow: var(--neon); }
-        .m-item small { font-family: 'Orbitron'; font-size: 0.7rem; color: var(--sln); }
-        
-        .listing-tag { text-align: center; margin-top: 2.5rem; font-size: 0.8rem; font-weight: 900; color: var(--sln); letter-spacing: 3px; animation: pulse 2s infinite; }
+        .listing-tag { text-align: center; margin-top: 2.5rem; font-size: 0.8rem; font-weight: 900; color: var(--sln); letter-spacing: 4px; animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; text-shadow: 0 0 15px var(--sln); } }
     </style>
 </head>
 <body>
 
+<!-- ФОНОВЫЕ ЭЛЕМЕНТЫ (ТЕПЕРЬ ОНИ ВИДНЫ) -->
 <canvas id="space"></canvas>
 <div class="nebula"></div>
 
@@ -118,15 +108,13 @@
     </div>
 
     <div class="grid">
-        <!-- КНОПКА ВНЕСТИ -->
         <div class="btn" onclick="openUI('DEPOSIT')">
-            <div style="font-size: 2.2rem; filter: drop-shadow(0 0 10px #fff);">💳</div>
+            <div style="font-size: 2.4rem; filter: drop-shadow(0 0 10px #fff);">💳</div>
             <span>Внести</span>
         </div>
         
-        <!-- КНОПКА ВЫВОД -->
-        <div class="btn" onclick="rocketStart()">
-            <div id="rocket-container" class="rocket-box">
+        <div class="btn" onclick="triggerRocket()">
+            <div id="rocket-id" class="rocket-box">
                 <img src="rocket.png" class="rocket-img" alt="🚀" onerror="this.src='https://cdn-icons-png.flaticon.com'">
             </div>
             <span>Вывод</span>
@@ -134,50 +122,41 @@
     </div>
 </div>
 
-<!-- ОКНО МЕНЮ -->
-<div id="modal" class="modal">
-    <div id="m-title" style="text-align: center; font-family: 'Orbitron'; font-weight: 900; color: var(--sln); margin-bottom: 3rem; letter-spacing: 5px;">ВЫВОД</div>
+<div id="modal-ui" class="modal">
+    <div id="m-title" style="text-align: center; font-family: 'Orbitron'; font-weight: 900; color: var(--sln); margin-bottom: 3rem; letter-spacing: 5px;">PROTOCOL</div>
+    <div class="m-item" onclick="closeUI()"><span>1. SELIN ($SLN)</span> <span>⚡</span></div>
+    <div class="m-item" onclick="closeUI()"><span>2. TONCOIN</span> <span>💎</span></div>
+    <div class="m-item" onclick="closeUI()"><span>3. TETHER (USDT)</span> <span>💵</span></div>
     
-    <div class="m-item" onclick="closeUI()"><span>1. SELIN ($SLN)</span> <small>JETTON</small></div>
-    <div class="m-item" onclick="closeUI()"><span>2. TONCOIN</span> <small>NATIVE</small></div>
-    <div class="m-item" onclick="closeUI()"><span>3. TETHER (USDT)</span> <small>STABLE</small></div>
-    <div class="m-item" style="opacity: 0.1; pointer-events: none;"><span>4. DIGITAL RUBLE</span> <small>DEV</small></div>
+    <div id="listing-status" class="listing-tag" style="display:none;">COMING SOON: SLN LISTING</div>
     
-    <div id="listing-info" class="listing-tag" style="display:none;">COMING SOON: SLN LISTING</div>
-    
-    <button onclick="closeUI()" style="width:100%; margin-top:3rem; background:none; border:none; color:rgba(255,255,255,0.2); font-weight:900; letter-spacing:3px; cursor:pointer;">CLOSE SYSTEM</button>
+    <button onclick="closeUI()" style="width:100%; margin-top:3rem; background:none; border:none; color:rgba(255,255,255,0.2); font-weight:900; letter-spacing:3px; cursor:pointer;">ABORT SYSTEM</button>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
-    tg.ready(); tg.expand();
+    tg.ready();
 
-    // 1. ЛОГИКА ВЗЛЕТА
-    function rocketStart() {
+    function triggerRocket() {
         tg.HapticFeedback.notificationOccurred('success');
-        const r = document.getElementById('rocket-container');
+        const rkt = document.getElementById('rocket-id');
+        rkt.classList.add('launching');
         
-        // Запуск анимации гиперпрыжка
-        r.classList.add('launching');
-        
-        // Открытие меню, когда ракета уже улетела
         setTimeout(() => {
             openUI('WITHDRAW');
-            // Возвращаем ракету на место для следующего раза (без анимации)
             setTimeout(() => {
-                r.style.transition = '0s';
-                r.classList.remove('launching');
-                setTimeout(() => { r.style.transition = '0.8s cubic-bezier(0.6, -0.28, 0.7, 0.05)'; }, 50);
+                rkt.style.transition = '0s';
+                rkt.classList.remove('launching');
+                setTimeout(() => { rkt.style.transition = '0.8s cubic-bezier(0.6, -0.28, 0.7, 0.05)'; }, 50);
             }, 500);
-        }, 800);
+        }, 850);
     }
 
-    // 2. УНИВЕРСАЛЬНОЕ МЕНЮ
     function openUI(type) {
         tg.HapticFeedback.impactOccurred('medium');
-        document.getElementById('modal').style.display = 'block';
+        document.getElementById('modal-ui').style.display = 'block';
         const title = document.getElementById('m-title');
-        const tag = document.getElementById('listing-info');
+        const tag = document.getElementById('listing-status');
         
         if(type === 'DEPOSIT') {
             title.innerText = "ПОПОЛНЕНИЕ";
@@ -188,30 +167,28 @@
         }
     }
 
-    function closeUI() { 
-        document.getElementById('modal').style.display = 'none'; 
-    }
+    function closeUI() { document.getElementById('modal-ui').style.display = 'none'; }
 
-    // 3. ЗВЕЗДНЫЙ ДВИЖОК
-    const canvas = document.getElementById('space');
-    const ctx = canvas.getContext('2d');
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    // ЗВЕЗДНЫЙ ДВИЖОК
+    const cvs = document.getElementById('space');
+    const ctx = cvs.getContext('2d');
+    function resize() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
     window.addEventListener('resize', resize); resize();
 
     let stars = Array(150).fill().map(() => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+        x: Math.random() * cvs.width,
+        y: Math.random() * cvs.height,
         size: Math.random() * 1.8,
         speed: Math.random() * 0.4 + 0.1,
         opacity: Math.random()
     }));
 
     function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
         stars.forEach(s => {
             ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
             ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
-            s.y -= s.speed; if(s.y < 0) s.y = canvas.height;
+            s.y -= s.speed; if(s.y < 0) s.y = cvs.height;
         });
         requestAnimationFrame(draw);
     }
