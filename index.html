@@ -40,10 +40,7 @@
         .brand { font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 0.6rem; font-size: 1rem; display: flex; align-items: center; gap: 15px; }
         .logo-img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(0, 212, 255, 0.2); }
 
-        .status-dot {
-            font-size: 0.7rem; font-weight: 900;
-            transition: color 0.4s, text-shadow 0.4s;
-        }
+        .status-dot { font-size: 0.7rem; font-weight: 900; transition: color 0.4s, text-shadow 0.4s; }
         .status-dot.offline { color: #ff3b30; text-shadow: 0 0 10px rgba(255,59,48,0.5); }
         .status-dot.online  { color: #30d158; text-shadow: 0 0 10px rgba(48,209,88,0.5); }
 
@@ -54,7 +51,6 @@
             margin-bottom: 2rem; position: relative;
         }
         .label { font-size: 0.65rem; font-weight: 900; color: var(--sln); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 1.5rem; opacity: 0.6; }
-
         .val { font-size: 3.8rem; font-weight: 100; letter-spacing: -3px; color: #fff; line-height: 1; }
         .val.sln { color: var(--sln); text-shadow: var(--neon); margin-top: 2rem; font-size: 2.8rem; }
         .val span { font-size: 1.1rem; opacity: 0.2; margin-left: 10px; font-weight: 400; }
@@ -79,14 +75,11 @@
         .btn:active { transform: scale(0.92); border-color: var(--sln); box-shadow: 0 0 40px rgba(0, 212, 255, 0.3); }
         .btn span { font-size: 0.75rem; font-weight: 900; opacity: 0.4; letter-spacing: 3px; text-transform: uppercase; }
 
-        .rocket-box { width: 55px; height: 75px; transition: 0.8s cubic-bezier(0.6, -0.28, 0.7, 0.05); }
-        .rocket-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 10px var(--sln)); }
+        .rocket-box { width: 85px; height: 85px; transition: 0.8s cubic-bezier(0.6, -0.28, 0.7, 0.05); }
+        .rocket-img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: screen; filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.6)); }
         .launching { transform: translateY(-120vh) scaleY(1.5); opacity: 0; }
 
-        .overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.5); z-index: 1999;
-        }
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1999; }
         .overlay.show { display: block; }
 
         .modal {
@@ -99,10 +92,7 @@
         }
         .modal.open { transform: translateY(0); }
 
-        .swipe-bar {
-            width: 50px; height: 5px; border-radius: 99px;
-            background: rgba(255,255,255,0.15); margin: 0 auto 2.5rem;
-        }
+        .swipe-bar { width: 50px; height: 5px; border-radius: 99px; background: rgba(255,255,255,0.15); margin: 0 auto 2.5rem; }
 
         .m-item {
             padding: 1.6rem; margin-bottom: 1rem; background: rgba(255,255,255,0.03);
@@ -129,10 +119,80 @@
         .listing-tag { text-align: center; margin-top: 2.5rem; font-size: 0.8rem; font-weight: 900; color: var(--sln); letter-spacing: 4px; animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; text-shadow: 0 0 15px var(--sln); } }
 
-        .modal-title {
-            text-align: center; font-family: 'Orbitron'; font-weight: 900;
-            color: var(--sln); margin-bottom: 2rem; letter-spacing: 5px;
+        .know-btn {
+            margin-top: 1.5rem;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 1.1rem 1.5rem;
+            background: rgba(0, 212, 255, 0.04);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 2rem; cursor: pointer;
+            transition: 0.3s cubic-bezier(0.2, 1, 0.2, 1);
         }
+        .know-btn:active { transform: scale(0.96); border-color: var(--sln); box-shadow: var(--neon); }
+        .know-btn-icon { font-size: 1rem; }
+        .know-btn-text { font-size: 0.72rem; font-weight: 900; letter-spacing: 3px; color: var(--sln); text-transform: uppercase; }
+        .know-btn-arrow { font-size: 0.7rem; opacity: 0.3; margin-left: auto; }
+
+        .stats-modal {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(1, 2, 4, 0.99); border-top: 2px solid var(--sln);
+            border-radius: 3.5rem 3.5rem 0 0; padding: 2rem 2rem 3rem; z-index: 3000;
+            backdrop-filter: blur(60px); box-shadow: 0 -20px 60px rgba(0, 212, 255, 0.35);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.2, 1, 0.2, 1);
+            max-height: 90vh; overflow-y: auto;
+        }
+        .stats-modal.open { transform: translateY(0); }
+
+        .neon-img-wrap {
+            border-radius: 1.8rem; overflow: hidden;
+            border: 2px solid var(--sln);
+            box-shadow: 0 0 30px rgba(0,212,255,0.5), inset 0 0 20px rgba(0,212,255,0.1);
+            margin-bottom: 1.8rem;
+        }
+        .neon-img-wrap img { width: 100%; display: block; filter: brightness(0.85) saturate(0.95); }
+
+        .stats-title { font-family: 'Orbitron'; font-weight: 900; font-size: 0.85rem; color: var(--sln); letter-spacing: 4px; text-align: center; margin-bottom: 1.5rem; }
+
+        .stat-row {
+            display: flex; align-items: center; gap: 1rem;
+            padding: 1.1rem 1.2rem; margin-bottom: 0.8rem;
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 1.4rem;
+        }
+        .stat-num { font-size: 1.4rem; font-weight: 100; color: var(--sln); text-shadow: var(--neon); white-space: nowrap; min-width: 90px; }
+        .stat-num.red { color: #ff3b30; text-shadow: 0 0 20px rgba(255,59,48,0.4); }
+        .stat-desc { font-size: 0.72rem; color: rgba(255,255,255,0.45); line-height: 1.5; }
+        .stat-desc strong { color: rgba(255,255,255,0.8); font-weight: 900; }
+
+        .stats-footer { text-align: center; margin-top: 1.5rem; font-size: 0.6rem; color: rgba(255,255,255,0.2); letter-spacing: 2px; line-height: 1.8; }
+
+        .modal-title { text-align: center; font-family: 'Orbitron'; font-weight: 900; color: var(--sln); margin-bottom: 2rem; letter-spacing: 5px; }
+
+        /* Платиновая карта */
+        .plat-card {
+            width: 68px; height: 44px; border-radius: 7px;
+            background: linear-gradient(135deg, #c8cdd4 0%, #e8eaed 30%, #b0b5bc 55%, #d4d8de 75%, #9aa0a8 100%);
+            position: relative; overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.4);
+        }
+        .plat-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%);
+        }
+        .plat-chip {
+            position: absolute; top: 10px; left: 10px;
+            width: 16px; height: 12px; border-radius: 3px;
+            background: linear-gradient(135deg, #c8a84b, #f0d060, #a87832, #e8c040);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .plat-chip::after { content: ''; position: absolute; inset: 2px; border: 1px solid rgba(0,0,0,0.15); border-radius: 2px; }
+        .plat-dots { position: absolute; bottom: 8px; left: 9px; display: flex; gap: 3px; }
+        .plat-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(0,0,0,0.3); }
+        .plat-brand { position: absolute; bottom: 6px; right: 8px; display: flex; }
+        .plat-circle { width: 12px; height: 12px; border-radius: 50%; opacity: 0.7; }
+        .plat-circle:first-child { background: #c0392b; margin-right: -5px; }
+        .plat-circle:last-child  { background: #e67e22; }
     </style>
 </head>
 <body>
@@ -157,16 +217,34 @@
 
     <div class="grid">
         <div class="btn" onclick="openUI('DEPOSIT')">
-            <div style="font-size: 2.4rem; filter: drop-shadow(0 0 10px #fff);">💳</div>
+            <div class="plat-card">
+                <div class="plat-chip"></div>
+                <div class="plat-dots">
+                    <div class="plat-dot"></div>
+                    <div class="plat-dot"></div>
+                    <div class="plat-dot"></div>
+                    <div class="plat-dot"></div>
+                </div>
+                <div class="plat-brand">
+                    <div class="plat-circle"></div>
+                    <div class="plat-circle"></div>
+                </div>
+            </div>
             <span>Внести</span>
         </div>
 
         <div class="btn" onclick="triggerRocket()">
             <div id="rocket-id" class="rocket-box">
-                <img src="rocket.png" class="rocket-img" alt="🚀" onerror="this.style.opacity='0.5'">
+                <img src="rocket.jpg" class="rocket-img" alt="🚀">
             </div>
             <span>Вывод</span>
         </div>
+    </div>
+
+    <div class="know-btn" onclick="openStats()">
+        <span class="know-btn-icon">⚠️</span>
+        <span class="know-btn-text">Важно знать</span>
+        <span class="know-btn-arrow">→</span>
     </div>
 </div>
 
@@ -177,24 +255,58 @@
     <div id="m-title" class="modal-title">PROTOCOL</div>
 
     <div id="deposit-content">
-        <div class="m-item"><span>1. SELIN ($SLN)</span> <span>⚡</span></div>
-        <div class="m-item"><span>2. TONCOIN</span> <span>💎</span></div>
-        <div class="m-item"><span>3. TETHER (USDT)</span> <span>💵</span></div>
+        <div class="m-item"><span>1. SELIN ($SLN)</span><span>⚡</span></div>
+        <div class="m-item"><span>2. TONCOIN</span><span>💎</span></div>
+        <div class="m-item"><span>3. TETHER (USDT)</span><span>💵</span></div>
         <div class="listing-tag">COMING SOON: SLN LISTING</div>
     </div>
 
     <div id="withdraw-content" style="display:none;">
-        <div class="m-item"><span>1. SELIN ($SLN)</span> <span>⚡</span></div>
-        <div class="m-item"><span>2. TONCOIN</span> <span>💎</span></div>
-        <div class="m-item"><span>3. TETHER (USDT)</span> <span>💵</span></div>
-
+        <div class="m-item"><span>1. SELIN ($SLN)</span><span>⚡</span></div>
+        <div class="m-item"><span>2. TONCOIN</span><span>💎</span></div>
+        <div class="m-item"><span>3. TETHER (USDT)</span><span>💵</span></div>
         <div class="history-section">
             <div class="history-title">История</div>
             <div id="history-list"></div>
         </div>
     </div>
 
-    <button onclick="closeUI()" style="width:100%; margin-top:2rem; background:none; border:none; color:rgba(255,255,255,0.2); font-weight:900; letter-spacing:3px; cursor:pointer;">ABORT SYSTEM</button>
+    <button onclick="closeUI()" style="width:100%;margin-top:2rem;background:none;border:none;color:rgba(255,255,255,0.2);font-weight:900;letter-spacing:3px;cursor:pointer;">ABORT SYSTEM</button>
+</div>
+
+<div class="overlay" id="stats-overlay" onclick="closeStats()"></div>
+
+<div id="stats-modal" class="stats-modal">
+    <div class="swipe-bar"></div>
+    <div class="neon-img-wrap">
+        <img src="trap.jpg" alt="Крипто ловушка">
+    </div>
+    <div class="stats-title">РЕАЛЬНЫЕ ЦИФРЫ</div>
+    <div class="stat-row">
+        <div class="stat-num red">$5.6B</div>
+        <div class="stat-desc"><strong>Потеряно в 2023 году</strong> от крипто-мошенничества только в США. Данные ФБР.</div>
+    </div>
+    <div class="stat-row">
+        <div class="stat-num">1 млн+</div>
+        <div class="stat-desc"><strong>Человек ежегодно</strong> становятся жертвами крипто-скамов по всему миру.</div>
+    </div>
+    <div class="stat-row">
+        <div class="stat-num red">90%</div>
+        <div class="stat-desc"><strong>Хайп-проектов</strong> исчезают в первые 6 месяцев после запуска.</div>
+    </div>
+    <div class="stat-row">
+        <div class="stat-num">10 сек</div>
+        <div class="stat-desc"><strong>Каждые 10 секунд</strong> кто-то в мире теряет деньги на поддельном крипто-проекте.</div>
+    </div>
+    <div class="stat-row">
+        <div class="stat-num red">$24B</div>
+        <div class="stat-desc"><strong>Прошло через мошеннические адреса</strong> в блокчейне за 2023 год. Chainalysis.</div>
+    </div>
+    <div class="stats-footer">
+        ИСТОЧНИКИ: FBI IC3 · CHAINALYSIS · FTC<br>
+        БУДЬ БДИТЕЛЕН — ПРОВЕРЯЙ ПЕРЕД ИНВЕСТИРОВАНИЕМ
+    </div>
+    <button onclick="closeStats()" style="width:100%;margin-top:2rem;background:none;border:none;color:rgba(255,255,255,0.2);font-weight:900;letter-spacing:3px;cursor:pointer;">ЗАКРЫТЬ</button>
 </div>
 
 <script>
@@ -207,47 +319,36 @@
         if (type === 'impact') tg.HapticFeedback.impactOccurred(value);
     }
 
-    const CACHE_KEY = 'selin_balance_cache';
-
     function renderBalance(ton, sln) {
         document.getElementById('ton-balance').innerHTML = `${ton.toFixed(2)}<span>TON</span>`;
         document.getElementById('sln-balance').innerHTML = `${sln.toFixed(2)}<span>SLN</span>`;
     }
 
     function loadBalance() {
-        const cached = localStorage.getItem(CACHE_KEY);
+        const cached = localStorage.getItem('selin_balance_cache');
         if (cached) {
             const { ton, sln } = JSON.parse(cached);
             renderBalance(ton, sln);
         }
-
+        // Замени этот блок на реальный API-запрос
         setTimeout(() => {
-            const ton = parseFloat((Math.random() * 10).toFixed(2));
-            const sln = parseFloat((Math.random() * 5000).toFixed(2));
+            const ton = 0.00;
+            const sln = 0.00;
             renderBalance(ton, sln);
-            localStorage.setItem(CACHE_KEY, JSON.stringify({ ton, sln }));
+            localStorage.setItem('selin_balance_cache', JSON.stringify({ ton, sln }));
             setOnline(true);
         }, 1200);
     }
 
     function setOnline(isOnline) {
         const el = document.getElementById('status-indicator');
-        if (isOnline) {
-            el.textContent = '● ONLINE';
-            el.className = 'status-dot online';
-        } else {
-            el.textContent = '● OFFLINE';
-            el.className = 'status-dot offline';
-        }
-    }
-
-    function getHistory() {
-        return JSON.parse(localStorage.getItem('selin_history') || '[]');
+        el.textContent = isOnline ? '● ONLINE' : '● OFFLINE';
+        el.className = 'status-dot ' + (isOnline ? 'online' : 'offline');
     }
 
     function renderHistory() {
         const list = document.getElementById('history-list');
-        const history = getHistory();
+        const history = JSON.parse(localStorage.getItem('selin_history') || '[]');
         if (history.length === 0) {
             list.innerHTML = '<div class="history-empty">НЕТ ОПЕРАЦИЙ</div>';
             return;
@@ -256,7 +357,7 @@
             <div class="history-item">
                 <div>
                     <div class="h-type">${h.type === 'deposit' ? 'Пополнение' : 'Вывод'}</div>
-                    <div style="font-size:0.7rem; opacity:0.3; margin-top:2px;">${h.date}</div>
+                    <div style="font-size:0.7rem;opacity:0.3;margin-top:2px;">${h.date}</div>
                 </div>
                 <div class="h-amount ${h.type === 'deposit' ? 'plus' : 'minus'}">
                     ${h.type === 'deposit' ? '+' : '-'}${h.amount} ${h.currency}
@@ -269,7 +370,6 @@
         haptic('notification', 'success');
         const rkt = document.getElementById('rocket-id');
         rkt.classList.add('launching');
-
         setTimeout(() => {
             openUI('WITHDRAW');
             setTimeout(() => {
@@ -287,7 +387,6 @@
         const title    = document.getElementById('m-title');
         const deposit  = document.getElementById('deposit-content');
         const withdraw = document.getElementById('withdraw-content');
-
         if (type === 'DEPOSIT') {
             title.innerText = 'ПОПОЛНЕНИЕ';
             deposit.style.display  = 'block';
@@ -298,7 +397,6 @@
             withdraw.style.display = 'block';
             renderHistory();
         }
-
         overlay.classList.add('show');
         requestAnimationFrame(() => modal.classList.add('open'));
     }
@@ -308,10 +406,19 @@
         document.getElementById('overlay').classList.remove('show');
     }
 
-    // Свайп вниз для закрытия
+    function openStats() {
+        haptic('impact', 'medium');
+        document.getElementById('stats-overlay').classList.add('show');
+        requestAnimationFrame(() => document.getElementById('stats-modal').classList.add('open'));
+    }
+
+    function closeStats() {
+        document.getElementById('stats-modal').classList.remove('open');
+        document.getElementById('stats-overlay').classList.remove('show');
+    }
+
     let touchStartY = 0;
     const modal = document.getElementById('modal-ui');
-
     modal.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
     modal.addEventListener('touchmove', e => {
         const dy = e.touches[0].clientY - touchStartY;
@@ -319,21 +426,16 @@
     }, { passive: true });
     modal.addEventListener('touchend', e => {
         const dy = e.changedTouches[0].clientY - touchStartY;
-        if (dy > 80) {
-            closeUI();
-        } else {
-            modal.style.transform = '';
-        }
+        if (dy > 80) { closeUI(); } else { modal.style.transform = ''; }
         setTimeout(() => { modal.style.transform = ''; }, 400);
     });
 
-    // Звёздный движок
     const cvs = document.getElementById('space');
     const ctx = cvs.getContext('2d');
     function resize() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
     window.addEventListener('resize', resize); resize();
 
-    let stars = Array(150).fill().map(() => ({
+    const stars = Array(150).fill().map(() => ({
         x: Math.random() * cvs.width,
         y: Math.random() * cvs.height,
         size: Math.random() * 1.8,
