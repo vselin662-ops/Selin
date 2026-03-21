@@ -3,98 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SELIN PAY | Infinity Engine 2.0</title>
-    
+    <title>SELIN PAY | Infinity 2.0</title>
     <script src="https://telegram.org"></script>
-    <script src="https://unpkg.com"></script>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
-    
     <style>
         :root {
             --bg: #020406;
-            --accent: #0088cc;
             --sln: #00d4ff;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.08);
-            --neon-glow: 0 0 15px rgba(0, 212, 255, 0.6);
+            --neon: 0 0 20px rgba(0, 212, 255, 0.8);
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: #fff; height: 100vh; overflow: hidden; }
 
-        body {
-            background: var(--bg);
-            color: #fff;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-        }
+        /* ЗВЕЗДЫ - теперь они ПОЗАДИ всего */
+        #starfield { position: fixed; top: 0; left: 0; z-index: -1; pointer-events: none; }
 
-        /* ЗВЕЗДНОЕ НЕБО - ИСПРАВЛЕНО (КЛИКИ ПРОХОДЯТ СКВОЗЬ) */
-        #starfield {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
+        .container { padding: 2rem; position: relative; z-index: 10; display: flex; flex-direction: column; height: 100%; }
 
-        .container {
-            width: 100%;
-            max-width: 450px;
-            padding: 3rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            z-index: 10;
-            position: relative;
-        }
+        /* HEADER */
+        .nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .brand { font-weight: 900; letter-spacing: 0.5rem; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .logo-small { width: 28px; height: 28px; border-radius: 50%; box-shadow: var(--neon); border: 1px solid var(--sln); }
 
-        .nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem; }
-        .brand-wrapper { display: flex; align-items: center; gap: 12px; }
-        .brand-logo { 
-            width: 32px; height: 32px; 
-            border-radius: 50%; 
-            border: 1px solid var(--sln);
-            box-shadow: var(--neon-glow);
-            object-fit: cover;
-        }
-        .brand { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.3rem; text-transform: uppercase; color: #fff; }
-        
-        .status-pill {
-            background: var(--glass);
+        /* КАРТОЧКА БАЛАНСА */
+        .card {
+            background: rgba(255,255,255,0.03);
             border: 1px solid var(--border);
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            font-size: 0.6rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            backdrop-filter: blur(15px);
-            cursor: pointer;
+            border-radius: 2.5rem;
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+            margin-bottom: 1.5rem;
         }
-        .dot { width: 6px; height: 6px; border-radius: 50%; background: #ff3b30; box-shadow: 0 0 10px #ff3b30; transition: 0.5s; }
-        .active .dot { background: #00ff88; box-shadow: 0 0 15px #00ff88; }
+        .val { font-size: 3rem; font-weight: 200; margin-top: 0.5rem; color: var(--sln); text-shadow: var(--neon); }
+        .val span { font-size: 1rem; opacity: 0.3; margin-left: 10px; color: #fff; text-shadow: none; }
 
-        .glass-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid var(--border);
-            border-radius: 3rem;
-            padding: 3rem 2rem;
-            margin-bottom: 2rem;
-            backdrop-filter: blur(40px);
-        }
-
-        .asset-group { margin-bottom: 2.5rem; }
-        .asset-group:last-child { margin-bottom: 0; padding-top: 2rem; border-top: 1px solid var(--border); }
-        .label { font-size: 0.6rem; font-weight: 700; color: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 0.2rem; margin-bottom: 0.8rem; }
-        .value { font-size: 3.2rem; font-weight: 200; letter-spacing: -0.1rem; display: flex; align-items: baseline; }
-        .value span { font-size: 1.2rem; opacity: 0.2; margin-left: 0.5rem; font-weight: 400; }
-        .sln-neon { color: var(--sln); text-shadow: var(--neon-glow); font-weight: 400; }
-
-        /* КНОПКИ С НЕОНОМ */
-        .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        /* КНОПКИ */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .btn {
-            background: var(--glass);
+            background: rgba(255,255,255,0.03);
             border: 1px solid var(--border);
             border-radius: 2rem;
             padding: 2rem 1rem;
@@ -102,61 +50,42 @@
             flex-direction: column;
             align-items: center;
             gap: 1rem;
-            cursor: pointer;
             transition: 0.3s;
-            position: relative;
-            overflow: hidden;
+            cursor: pointer;
         }
-        .btn:active { transform: scale(0.96); border-color: var(--sln); box-shadow: var(--neon-glow); }
-        .btn span { font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.1rem; }
+        /* ЭФФЕКТ СВЕЧЕНИЯ ПРИ НАЖАТИИ */
+        .btn:active { border-color: var(--sln); box-shadow: var(--neon); transform: scale(0.95); }
+        .btn span { font-size: 0.7rem; font-weight: 900; letter-spacing: 0.1rem; opacity: 0.5; text-transform: uppercase; }
 
-        /* АНИМАЦИЯ РАКЕТЫ */
-        .rocket-svg { width: 35px; height: 35px; filter: drop-shadow(0 0 5px var(--sln)); transition: 0.5s; }
-        .launching { transform: translateY(-100vh) scale(0.2); opacity: 0; filter: drop-shadow(0 0 30px var(--sln)); }
+        /* КРУТАЯ НЕОНОВАЯ РАКЕТА */
+        .rocket-svg { width: 45px; height: 45px; filter: drop-shadow(0 0 5px var(--sln)); transition: 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
+        .launching { transform: translateY(-100vh) scale(0.1); opacity: 0; filter: drop-shadow(0 0 30px var(--sln)); }
 
-        /* МОДАЛЬНЫЕ ОКНА (МЕНЮ) */
+        /* МОДАЛЬНОЕ ОКНО */
         .modal {
             display: none;
             position: fixed;
             bottom: 0; left: 0; width: 100%;
-            background: rgba(2, 4, 6, 0.98);
+            background: rgba(2, 4, 6, 0.95);
             border-top: 2px solid var(--sln);
             border-radius: 3rem 3rem 0 0;
-            padding: 2.5rem;
+            padding: 2rem;
             z-index: 1000;
-            backdrop-filter: blur(30px);
-            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 -10px 40px rgba(0, 212, 255, 0.2);
+            backdrop-filter: blur(40px);
+            box-shadow: 0 -10px 50px rgba(0, 212, 255, 0.3);
         }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-        .modal-title { text-align: center; font-weight: 900; letter-spacing: 0.3rem; color: var(--sln); margin-bottom: 2rem; font-size: 0.8rem; text-transform: uppercase; }
         .modal-item {
             padding: 1.2rem;
             margin-bottom: 0.8rem;
-            background: rgba(255,255,255,0.03);
             border: 1px solid var(--border);
             border-radius: 1.5rem;
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: space-between;
             transition: 0.3s;
         }
-        .modal-item:active { border-color: var(--sln); box-shadow: var(--neon-glow); }
-        .modal-item.locked { opacity: 0.2; }
-        .modal-item span { font-size: 0.9rem; font-weight: 600; }
-
-        .listing-tag {
-            text-align: center;
-            margin-top: 2rem;
-            font-size: 0.7rem;
-            font-weight: 800;
-            color: var(--sln);
-            letter-spacing: 0.1rem;
-            opacity: 0.8;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-
-        .pay-btn { grid-column: span 2; border-color: var(--accent); margin-top: 0.5rem; background: rgba(0, 136, 204, 0.05); }
-        .pay-btn span { color: var(--accent); opacity: 1; }
+        .modal-item:active { border-color: var(--sln); box-shadow: var(--neon); color: var(--sln); }
+        .locked { opacity: 0.2; pointer-events: none; }
+        
+        .listing-info { text-align: center; margin-top: 1.5rem; font-size: 0.7rem; font-weight: 900; color: var(--sln); display: flex; align-items: center; justify-content: center; gap: 10px; }
     </style>
 </head>
 <body>
@@ -165,133 +94,108 @@
 
 <div class="container">
     <div class="nav">
-        <div class="brand-wrapper">
-            <img src="logo.png" class="brand-logo" alt="S" onerror="this.style.border='none'">
-            <div class="brand">SELIN</div>
+        <div class="brand">
+            <img src="logo.png" class="logo-small" alt="S" onerror="this.style.display='none'"> 
+            SELIN
         </div>
-        <div class="status-pill" id="st-pill" onclick="connect()">
-            <div class="dot"></div> <span id="st-txt">OFFLINE</span>
-        </div>
+        <div style="font-size: 0.6rem; opacity: 0.4;">● OFFLINE</div>
     </div>
 
-    <div id="ton-btn" style="display: none;"></div>
-
-    <div class="glass-card">
-        <div class="asset-group">
-            <div class="label">Balance Ton</div>
-            <div class="value" id="t-bal">0.00<span>TON</span></div>
-        </div>
-        <div class="asset-group">
-            <div class="label" style="color: var(--sln);">Selin Ecosystem ($SLN)</div>
-            <div class="value sln-neon" id="s-bal">0.00<span>SLN</span></div>
-        </div>
+    <div class="card">
+        <div style="font-size: 0.6rem; opacity: 0.3; letter-spacing: 2px;">BALANCE</div>
+        <div class="val">0.00<span>TON</span></div>
+        <div class="val" style="font-size: 2.2rem; margin-top: 1.5rem;">0.00<span>SLN</span></div>
     </div>
 
-    <div class="actions">
-        <!-- КНОПКА ВНЕСТИ -->
-        <div class="btn" onclick="openModal('deposit')">
-            <i style="font-size: 1.8rem;">💳</i>
+    <div class="grid">
+        <!-- ВНЕСТИ -->
+        <div class="btn" onclick="openMenu('DEPOSIT')">
+            <i style="font-size: 1.5rem;">💳</i>
             <span>Внести</span>
         </div>
-        
-        <!-- КНОПКА ВЫВОД С РАКЕТОЙ -->
-        <div class="btn" id="w-btn" onclick="handleRocket()">
-            <svg class="rocket-svg" id="rocket" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org">
-                <path d="M12 2L15 8H9L12 2Z" fill="#00d4ff""")/>>
-                <path d="M9 8H15V16H9V8Z" fill="#00d4ff""")/>>
-                <path d="M7 21C7 21 7 17 9 17H15C17 17 17 21 17 21H7Z" fill="#0088cc""")/>>
-                <circle cx="12" cy="12" r="1.5" fill="#020406""")/>>
+        <!-- ВЫВОД С РАКЕТОЙ -->
+        <div class="btn" onclick="launch()">
+            <svg id="rocket" class="rocket-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org">
+                <path d="M12 2C12 2 9 6 9 12C9 15.5 10.5 18 12 18C13.5 18 15 15.5 15 12C15 6 12 2 12 2Z" fill="#00d4ff" />
+                <path d="M12 18V22M9 19V21M15 19V21" stroke="#00d4ff" stroke-width="2" stroke-linecap="round" />
+                <circle cx="12" cy="10" r="1" fill="#020406" />
             </svg>
             <span>Вывод</span>
         </div>
-
-        <div class="btn pay-btn" onclick="pay()"><i>💎</i><span>Оплатить в TON</span></div>
     </div>
 </div>
 
-<!-- УНИВЕРСАЛЬНОЕ ОКНО (МЕНЮ) -->
-<div id="ui-modal" class="modal">
-    <div class="modal-title" id="m-title">ВЫБЕРИТЕ АКТИВ</div>
+<!-- МЕНЮ -->
+<div id="modal" class="modal">
+    <div id="m-title" style="text-align: center; font-weight: 900; color: var(--sln); margin-bottom: 1.5rem; letter-spacing: 2px;">ВЫВОД</div>
     
-    <div class="modal-item" onclick="select('SLN')"><span>1. SELIN ($SLN)</span> <small>⚡</small></div>
-    <div class="modal-item" onclick="select('TON')"><span>2. TONCOIN</span> <small>💎</small></div>
-    <div class="modal-item" onclick="select('USDT')"><span>3. TETHER (USDT)</span> <small>💵</small></div>
-    <div class="modal-item locked"><span>ЦИФРОВОЙ РУБЛЬ</span> <small>В РАЗРАБОТКЕ</small></div>
+    <div class="modal-item" onclick="closeM()"><span>1. SELIN ($SLN)</span> <span>→</span></div>
+    <div class="modal-item" onclick="closeM()"><span>2. TONCOIN</span> <span>→</span></div>
+    <div class="modal-item" onclick="closeM()"><span>3. TETHER (USDT)</span> <span>→</span></div>
+    <div class="modal-item locked"><span>ЦИФРОВОЙ РУБЛЬ</span> <span>СКОРО</span></div>
 
-    <div class="listing-tag" id="listing-info" style="display:none;">
-        <img src="logo.png" width="16" style="border-radius:50%"> СКОРО ЛИСТИНГ SLN
+    <div id="listing" class="listing-info" style="display:none;">
+        <img src="logo.png" class="logo-small" style="width:16px; height:16px;"> СКОРО ЛИСТИНГ SLN
     </div>
-
-    <button onclick="closeModal()" style="width:100%; margin-top:2rem; background:none; border:none; color:rgba(255,255,255,0.3); font-weight:700; cursor:pointer;">ЗАКРЫТЬ</button>
+    
+    <button onclick="closeM()" style="width: 100%; margin-top: 1.5rem; background: none; border: none; color: #555; font-weight: 900;">ЗАКРЫТЬ</button>
 </div>
 
 <script>
-    // --- ЗВЕЗДЫ (НЕ МЕНЯТЬ) ---
-    const canvas = document.getElementById('starfield');
-    const ctx = canvas.getContext('2d');
-    let stars = [];
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    window.addEventListener('resize', resize); resize();
-    class Star {
-        constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.size = Math.random()*1.5; this.speed = Math.random()*0.1; this.opacity = Math.random(); }
-        draw() { ctx.fillStyle = `rgba(255,255,255,${this.opacity})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
-        update() { this.y -= this.speed; if(this.y<0) this.y=canvas.height; }
-    }
-    for(let i=0; i<100; i++) stars.push(new Star());
-    function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); stars.forEach(s=>{s.update(); s.draw();}); requestAnimationFrame(animate); }
-    animate();
-
-    // --- ЛОГИКА ПРИЛОЖЕНИЯ ---
     const tg = window.Telegram.WebApp;
-    tg.ready(); tg.expand();
+    tg.ready();
 
-    function openModal(type) {
-        tg.HapticFeedback.impactOccurred('medium');
-        document.getElementById('ui-modal').style.display = 'block';
-        const title = document.getElementById('m-title');
-        const listing = document.getElementById('listing-info');
+    // Запуск ракеты
+    function launch() {
+        tg.HapticFeedback.impactOccurred('heavy');
+        const r = document.getElementById('rocket');
+        r.classList.add('launching');
         
-        if(type === 'deposit') {
-            title.innerText = "ПОПОЛНЕНИЕ";
-            listing.style.display = 'flex';
+        setTimeout(() => {
+            openMenu('WITHDRAW');
+            r.classList.remove('launching');
+        }, 700);
+    }
+
+    // Открытие меню
+    function openMenu(mode) {
+        document.getElementById('modal').style.display = 'block';
+        const title = document.getElementById('m-title');
+        const listInfo = document.getElementById('listing');
+        
+        if(mode === 'DEPOSIT') {
+            title.innerText = "ВНЕСТИ АКТИВ";
+            listInfo.style.display = 'flex';
         } else {
             title.innerText = "ВЫВОД СРЕДСТВ";
-            listing.style.display = 'none';
+            listInfo.style.display = 'none';
         }
     }
 
-    function handleRocket() {
-        tg.HapticFeedback.notificationOccurred('success');
-        const rkt = document.getElementById('rocket');
-        rkt.classList.add('launching');
-        
-        setTimeout(() => {
-            openModal('withdraw');
-            rkt.classList.remove('launching');
-        }, 600);
+    function closeM() { document.getElementById('modal').style.display = 'none'; }
+
+    // Звезды
+    const cvs = document.getElementById('starfield');
+    const ctx = cvs.getContext('2d');
+    function res() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
+    window.addEventListener('resize', res); res();
+    
+    let stars = Array(80).fill().map(() => ({
+        x: Math.random() * cvs.width,
+        y: Math.random() * cvs.height,
+        s: Math.random() * 2
+    }));
+
+    function draw() {
+        ctx.clearRect(0,0,cvs.width,cvs.height);
+        ctx.fillStyle = "white";
+        stars.forEach(s => {
+            ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, 7); ctx.fill();
+            s.y -= 0.2; if(s.y < 0) s.y = cvs.height;
+        });
+        requestAnimationFrame(draw);
     }
-
-    function closeModal() {
-        document.getElementById('ui-modal').style.display = 'none';
-    }
-
-    function select(asset) {
-        tg.HapticFeedback.selectionChanged();
-        tg.showAlert("Выбран актив: " + asset);
-        closeModal();
-    }
-
-    // TON CONNECT (ИСПРАВЛЕНО)
-    const tonUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://vselin662-ops.github.io',
-        buttonRootId: 'ton-btn'
-    });
-
-    async function connect() { 
-        if (!tonUI.connected) await tonUI.openModal(); 
-    }
-
-    // Тут можно добавить функцию sync для баланса (как обсуждали ранее)
+    draw();
 </script>
 </body>
 </html>
