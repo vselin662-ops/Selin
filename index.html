@@ -2,60 +2,268 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>SELIN PAY | 2026</title>
-    <!-- Исправлен протокол в URL -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SELIN PAY | Infinity Engine</title>
+    
+    <script src="https://telegram.org"></script>
+    <script src="https://unpkg.com"></script>
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-primary: #0A0F17;
-            --bg-secondary: rgba(25, 35, 50, 0.7);
-            --accent-blue: #7B68EE;
-            --accent-gold: #FFD700;
-            --success: #00FF88;
-            --error: #FF6B6B;
-            --text-white: #FFFFFF;
-            --text-silver: #B0B0B0;
-            --border: rgba(255, 255, 255, 0.07);
+            --bg: #020406;
+            --accent: #0088cc;
+            --sln: #00d4ff;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-white);
+            background: var(--bg);
+            color: #fff;
             height: 100vh;
             overflow: hidden;
-        }
-
-        .app {
-            width: 100%;
-            max-width: 420px;
-            min-height: 100vh;
-            margin: 0 auto;
             display: flex;
-            flex-direction: column;
-        }
-
-        /* Экраны */
-        .screen {
-            display: none;
-            flex: 1;
-            padding: 20px;
-        }
-
-        .screen.active {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Авторизация */
-        #auth-screen {
             justify-content: center;
-            align-items:
+        }
+
+        /* CANVAS BACKGROUND */
+        #starfield {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 3rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1; /* Поверх звезд */
+            position: relative;
+        }
+
+        /* HEADER */
+        .nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem; }
+        .brand { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.4rem; text-transform: uppercase; color: #fff; }
+        
+        .status-pill {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.6rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            backdrop-filter: blur(15px);
+        }
+        .dot { width: 6px; height: 6px; border-radius: 50%; background: #ff3b30; box-shadow: 0 0 10px #ff3b30; transition: 0.5s; }
+        .active .dot { background: #00ff88; box-shadow: 0 0 15px #00ff88; }
+
+        /* ASSET CARD */
+        .glass-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--border);
+            border-radius: 3rem;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(40px);
+        }
+
+        .asset-group { margin-bottom: 2.5rem; }
+        .asset-group:last-child { margin-bottom: 0; padding-top: 2rem; border-top: 1px solid var(--border); }
+        
+        .label { font-size: 0.6rem; font-weight: 700; color: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 0.2rem; margin-bottom: 0.8rem; }
+        .value { font-size: 3.2rem; font-weight: 200; letter-spacing: -0.1rem; }
+        .value span { font-size: 1.2rem; opacity: 0.2; margin-left: 0.5rem; }
+        .sln-neon { color: var(--sln); text-shadow: 0 0 30px rgba(0, 212, 255, 0.2); font-weight: 400; }
+
+        /* BUTTONS GRID */
+        .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .btn {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 2rem;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:active { transform: scale(0.96); background: rgba(255,255,255,0.08); }
+        .btn i { font-size: 1.5rem; }
+        .btn span { font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.1rem; }
+
+        .pay-btn {
+            grid-column: span 2;
+            background: rgba(0, 136, 204, 0.1);
+            border-color: var(--accent);
+            margin-top: 0.5rem;
+        }
+        .pay-btn span { color: var(--accent); opacity: 1; }
+
+    </style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<div class="container">
+    <div class="nav">
+        <div class="brand">SELIN</div>
+        <div class="status-pill" id="st-pill" onclick="connect()">
+            <div class="dot"></div> <span id="st-txt">OFFLINE</span>
+        </div>
+    </div>
+
+    <!-- Hidden SDK Button -->
+    <div id="ton-btn" style="display: none;"></div>
+
+    <div class="glass-card">
+        <div class="asset-group">
+            <div class="label">Balance Ton</div>
+            <div class="value" id="t-bal">0.00<span>TON</span></div>
+        </div>
+        <div class="asset-group">
+            <div class="label" style="color: var(--sln);">Selin Active ($SLN)</div>
+            <div class="value sln-neon" id="s-bal">0.00<span>SLN</span></div>
+        </div>
+    </div>
+
+    <div class="actions">
+        <div class="btn" onclick="ui('deposit')"><i>💳</i><span>Внести</span></div>
+        <div class="btn" onclick="ui('withdraw')"><i>🚀</i><span>Вывод</span></div>
+        <div class="btn pay-btn" onclick="pay()"><i>💎</i><span>Оплатить в TON</span></div>
+    </div>
+</div>
+
+<script>
+    // --- STARFIELD ENGINE ---
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Star {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 1.5;
+            this.speed = Math.random() * 0.2;
+            this.opacity = Math.random();
+        }
+        draw() {
+            ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        update() {
+            this.y -= this.speed;
+            if (this.y < 0) {
+                this.y = canvas.height;
+                this.x = Math.random() * canvas.width;
+            }
+        }
+    }
+
+    for (let i = 0; i < 150; i++) stars.push(new Star());
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(star => {
+            star.update();
+            star.draw();
+        });
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    // --- LOGIC ---
+    const tg = window.Telegram.WebApp;
+    tg.ready(); tg.expand();
+
+    const CONFIG = {
+        WALLET: "UQCJqiuwFj-TzWMK9XwTzS-v-TaaGc37PaemsMHfmQ-bnDon",
+        SLN_MASTER: "EQCkDna5aow1EBkSydhTrBvARuhGlBC6LntyUlZscx8KzBW7",
+        MANIFEST: "https://vselin662-ops.github.io"
+    };
+
+    const tonUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: CONFIG.MANIFEST,
+        buttonRootId: 'ton-btn'
+    });
+
+    async function connect() { 
+        tg.HapticFeedback.impactOccurred('heavy');
+        if (!tonUI.connected) await tonUI.openModal(); 
+    }
+
+    async function sync(addr) {
+        try {
+            const r1 = await fetch(`https://toncenter.com{addr}`);
+            const d1 = await r1.json();
+            if(d1.ok) document.getElementById('t-bal').innerHTML = `${(d1.result.balance / 1e9).toFixed(2)}<span>TON</span>`;
+
+            const r2 = await fetch(`https://toncenter.com{addr}&jetton_master_address=${CONFIG.SLN_MASTER}`);
+            const d2 = await r2.json();
+            if(d2.ok) {
+                const r3 = await fetch(`https://toncenter.com{d2.result}`);
+                const d3 = await r3.json();
+                if(d3.ok) {
+                    const amount = (d3.result.balance / 1e9).toLocaleString();
+                    document.getElementById('s-bal').innerHTML = `${amount}<span>SLN</span>`;
+                }
+            }
+        } catch(e) {}
+    }
+
+    tonUI.onStatusChange(w => {
+        const pill = document.getElementById('st-pill');
+        const txt = document.getElementById('st-txt');
+        if (w) {
+            pill.classList.add('active');
+            txt.innerText = 'NODE ACTIVE';
+            sync(w.account.address);
+            setInterval(() => sync(w.account.address), 20000);
+        } else {
+            pill.classList.remove('active');
+            txt.innerText = 'OFFLINE';
+        }
+    });
+
+    function ui(type) {
+        tg.HapticFeedback.impactOccurred('medium');
+        tg.showAlert("Модуль " + type.toUpperCase() + " активен.");
+    }
+
+    async function pay() {
+        tg.HapticFeedback.impactOccurred('heavy');
+        if (!tonUI.connected) return connect();
+        try {
+            await tonUI.sendTransaction({
+                validUntil: Math.floor(Date.now() / 1000) + 120,
+                messages: [{ address: CONFIG.WALLET, amount: "1000000000" }]
+            });
+            tg.HapticFeedback.notificationOccurred('success');
+        } catch (e) {
+            tg.HapticFeedback.notificationOccurred('error');
+        }
+    }
+</script>
+</body>
+</html>
