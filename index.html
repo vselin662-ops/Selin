@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SELIN PAY 2.0</title>
+    <title>SELIN PRESTIGE 2026</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@500;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #020408;
-            --accent-color: #00d4ff;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --card-border: rgba(255, 255, 255, 0.1);
+            --bg-color: #05070a;
+            --accent-cyan: #00f2ff;
+            --accent-glow: rgba(0, 242, 255, 0.5);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.07);
             --text-main: #ffffff;
-            --text-dim: rgba(255, 255, 255, 0.5);
-            --sln-color: #00d4ff;
-            --ton-color: #0088cc;
-            --usdt-color: #26a17b;
+            --text-dim: #8a8f98;
+            --neon-green: #00ff9d;
+            --neon-purple: #bc00ff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -31,287 +31,266 @@
             flex-direction: column;
         }
 
-        #space-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        /* --- Анимированный фон (звезды и туманности) --- */
+        #space-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .nebula {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.05), transparent 70%);
+            z-index: -1; pointer-events: none;
+        }
 
         .app-wrapper {
             flex: 1;
-            padding: calc(20px + env(safe-area-inset-top)) 15px 120px;
+            padding: calc(20px + env(safe-area-inset-top)) 20px 120px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
         }
 
-        /* --- ШАПКА --- */
-        .header { display: flex; justify-content: space-between; align-items: center; }
-        .brand { font-family: 'Orbitron'; font-size: 1.2rem; letter-spacing: 2px; display: flex; align-items: center; gap: 10px; }
-        .status { color: #30d158; font-size: 0.7rem; font-weight: 800; border: 1px solid #30d158; padding: 2px 8px; border-radius: 5px; }
-
-        /* --- КАРТОЧКИ АКТИВОВ (ТРИ ОКНА) --- */
-        .assets-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+        /* --- ХЕДЕР С ЛОГОТИПОМ --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .asset-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 15px 10px;
-            border-radius: 15px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-        .asset-card img { width: 24px; height: 24px; margin-bottom: 8px; }
-        .asset-label { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 5px; }
-        .asset-value { font-size: 0.9rem; font-weight: 800; font-family: 'Orbitron'; }
-        .asset-symbol { font-size: 0.6rem; display: block; margin-top: 2px; }
 
-        .card-sln { border-bottom: 3px solid var(--sln-color); }
-        .card-ton { border-bottom: 3px solid var(--ton-color); }
-        .card-usdt { border-bottom: 3px solid var(--usdt-color); }
-
-        /* --- КНОПКА ВАЖНО ЗНАТЬ --- */
-        .important-bar {
-            background: linear-gradient(90deg, rgba(255,69,0,0.2), rgba(255,165,0,0.1));
-            border: 1px solid #ff4500;
-            padding: 15px;
-            border-radius: 15px;
+        .logo-container {
             display: flex;
             align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; }
+            gap: 12px;
         }
 
-        /* --- СЕТКА КНОПОК --- */
+        .main-logo {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px var(--accent-cyan));
+            animation: logo-pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes logo-pulse {
+            0%, 100% { filter: drop-shadow(0 0 5px var(--accent-cyan)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 15px var(--accent-cyan)); transform: scale(1.05); }
+        }
+
+        .brand-name {
+            font-family: 'Orbitron';
+            font-size: 1.4rem;
+            letter-spacing: 4px;
+            background: linear-gradient(to right, #fff, var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            font-size: 0.6rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 800;
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+
+        /* --- КАРТОЧКИ АКТИВОВ (ТРИ ОКНА) --- */
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .asset-window {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 15px 10px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .asset-window::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+        }
+
+        .asset-label { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 8px; }
+        .asset-val { font-family: 'Orbitron'; font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+        .asset-sym { font-size: 0.6rem; font-weight: 800; opacity: 0.8; }
+
+        .sym-sln { color: var(--accent-cyan); text-shadow: 0 0 8px var(--accent-cyan); }
+        .sym-ton { color: #0088cc; text-shadow: 0 0 8px #0088cc; }
+        .sym-usdt { color: #26a17b; text-shadow: 0 0 8px #26a17b; }
+
+        /* --- ВАЖНО ЗНАТЬ (КНОПКА) --- */
+        .important-btn {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(0, 0, 0, 0.4));
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.05);
+        }
+
+        .important-icon {
+            font-size: 1.8rem;
+            filter: drop-shadow(0 0 10px red);
+        }
+
+        .important-title { color: #ff3d3d; font-weight: 800; font-size: 0.9rem; margin-bottom: 2px; }
+        .important-sub { color: var(--text-dim); font-size: 0.7rem; }
+
+        /* --- КНОПКИ ДЕЙСТВИЙ (НЕОН) --- */
         .actions-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
-        .btn-action {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 20px;
-            border-radius: 20px;
+
+        .action-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 25px;
+            border-radius: 24px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.3s;
         }
-        .btn-action:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
-        .btn-icon { font-size: 1.5rem; }
-        .btn-text { font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; }
+
+        .action-card:active {
+            transform: translateY(2px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .action-icon { font-size: 1.6rem; }
+        .action-label { font-size: 0.75rem; font-weight: 800; letter-spacing: 2px; color: var(--text-dim); }
 
         /* --- МОДАЛЬНОЕ ОКНО --- */
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px); display: none; z-index: 1000;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(20px); display: none; z-index: 1000;
         }
+
         .modal {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: #0d1117; border-top: 2px solid var(--accent-color);
-            border-radius: 25px 25px 0 0; padding: 25px;
-            transform: translateY(100%); transition: 0.4s; z-index: 1001;
-            max-height: 80vh; overflow-y: auto;
+            background: #0a0c10; border-top: 1px solid var(--accent-cyan);
+            border-radius: 30px 30px 0 0; padding: 30px;
+            transform: translateY(100%); transition: 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);
+            z-index: 1001; max-height: 85vh; overflow-y: auto;
         }
+
         .modal.active { transform: translateY(0); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .close-btn { background: none; border: none; color: #fff; font-size: 1.5rem; }
 
         .dl-btn {
-            background: var(--accent-color); color: #000; border: none;
-            width: 100%; padding: 15px; border-radius: 12px; font-weight: 800;
-            margin-top: 20px; cursor: pointer;
+            background: linear-gradient(90deg, var(--accent-cyan), #0088cc);
+            color: #000; border: none; width: 100%; padding: 18px;
+            border-radius: 15px; font-weight: 900; font-family: 'Orbitron';
+            margin-top: 25px; cursor: pointer; text-transform: uppercase;
         }
 
-        /* --- НАВИГАЦИЯ --- */
+        /* --- NAV BAR --- */
         .nav-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(10, 15, 25, 0.95); border-top: 1px solid var(--card-border);
+            background: rgba(5, 7, 10, 0.8); border-top: 1px solid var(--glass-border);
             display: flex; justify-content: space-around; padding: 15px 10px 35px;
+            backdrop-filter: blur(20px);
         }
-        .nav-item { text-align: center; color: var(--text-dim); text-decoration: none; font-size: 0.7rem; }
-        .nav-item.active { color: var(--accent-color); }
-        .nav-item span { display: block; margin-top: 4px; }
+
+        .nav-item { text-align: center; color: var(--text-dim); text-decoration: none; font-size: 0.65rem; transition: 0.3s; }
+        .nav-item.active { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
+        .nav-item span { display: block; margin-top: 6px; }
+
     </style>
 </head>
 <body>
 
 <canvas id="space-canvas"></canvas>
+<div class="nebula"></div>
 
 <div class="app-wrapper">
     <header class="header">
-        <div class="brand">
-            <span style="color:var(--accent-color)">🛡️</span> SELIN PAY
+        <div class="logo-container">
+            <!-- ВАШ ЛОГОТИП С GITHUB (заменен на raw ссылку для работы) -->
+            <img src="https://raw.githubusercontent.com/vselin662-ops/Selin/main/logo.png" class="main-logo" alt="S">
+            <span class="brand-name">SELIN</span>
         </div>
-        <div class="status">● SECURE</div>
+        <div class="status-badge">PROTECTED 2026</div>
     </header>
 
     <!-- ТРИ ОКНА АКТИВОВ -->
-    <div class="assets-container">
-        <div class="asset-card card-sln">
-            <div class="asset-label">Selin</div>
-            <div class="asset-value" id="val-sln">4,800</div>
-            <div class="asset-symbol" style="color:var(--sln-color)">SLN</div>
+    <div class="assets-grid">
+        <div class="asset-window">
+            <div class="asset-label">Prestige</div>
+            <div class="asset-val" id="sln-val">0.00</div>
+            <div class="asset-sym sym-sln">SLN</div>
         </div>
-        <div class="asset-card card-ton">
-            <div class="asset-label">Toncoin</div>
-            <div class="asset-value" id="val-ton">1,250</div>
-            <div class="asset-symbol" style="color:var(--ton-color)">TON</div>
+        <div class="asset-window">
+            <div class="asset-label">Main</div>
+            <div class="asset-val" id="ton-val">0.00</div>
+            <div class="asset-sym sym-ton">TON</div>
         </div>
-        <div class="asset-card card-usdt">
-            <div class="asset-label">Tether</div>
-            <div class="asset-value" id="val-usdt">350.5</div>
-            <div class="asset-symbol" style="color:var(--usdt-color)">USDT</div>
+        <div class="asset-window">
+            <div class="asset-label">Reserve</div>
+            <div class="asset-val" id="usdt-val">0.00</div>
+            <div class="asset-sym sym-usdt">USDT</div>
         </div>
     </div>
 
-    <!-- ВАЖНО ЗНАТЬ -->
-    <div class="important-bar" onclick="openCustomModal('safety')">
-        <span style="font-size: 2rem;">⚠️</span>
+    <!-- КНОПКА ВАЖНО ЗНАТЬ -->
+    <div class="important-btn" onclick="openModal('safety')">
+        <span class="important-icon">🚨</span>
         <div>
-            <div style="font-weight: 900; color: #ff4500; font-size: 0.9rem;">ВАЖНО ЗНАТЬ</div>
-            <div style="font-size: 0.7rem; opacity: 0.8;">Криптоугрозы и статистика 2026</div>
+            <div class="important-title">ВАЖНО ЗНАТЬ</div>
+            <div class="important-sub">Аналитика угроз и статистика мошенничества 2026</div>
         </div>
     </div>
 
-    <!-- КНОПКИ ДЕЙСТВИЙ -->
+    <!-- ДЕЙСТВИЯ -->
     <div class="actions-grid">
-        <div class="btn-action" onclick="openCustomModal('deposit')">
-            <span class="btn-icon">💳</span>
-            <span class="btn-text">ВНЕСТИ</span>
+        <div class="action-card" onclick="openModal('deposit')">
+            <span class="action-icon">💎</span>
+            <span class="action-label">ВНЕСТИ</span>
         </div>
-        <div class="btn-action" onclick="openCustomModal('withdraw')">
-            <span class="btn-icon">🚀</span>
-            <span class="btn-text">ВЫВОД</span>
+        <div class="action-card" onclick="openModal('withdraw')">
+            <span class="action-icon">⚡</span>
+            <span class="action-label">ВЫВОД</span>
         </div>
-        <div class="btn-action" onclick="openCustomModal('swap')">
-            <span class="btn-icon">🔄</span>
-            <span class="btn-text">ОБМЕН</span>
+        <div class="action-card" onclick="openModal('swap')">
+            <span class="action-icon">🔄</span>
+            <span class="action-label">ОБМЕН</span>
         </div>
-        <div class="btn-action" onclick="openCustomModal('reports')">
-            <span class="btn-icon">📊</span>
-            <span class="btn-text">ОТЧЕТЫ</span>
+        <div class="action-card" onclick="openModal('reports')">
+            <span class="action-icon">📈</span>
+            <span class="action-label">ОТЧЕТЫ</span>
         </div>
     </div>
 </div>
 
 <nav class="nav-bar">
-    <a href="#" class="nav-item active">🏠<span>Главная</span></a>
-    <a href="#" class="nav-item" onclick="openCustomModal('withdraw')">💼<span>Кошелек</span></a>
-    <a href="#" class="nav-item" onclick="openCustomModal('safety')">🛡️<span>Защита</span></a>
+    <a href="#" class="nav-item active">🏠<span>MAIN</span></a>
+    <a href="#" class="nav-item" onclick="openModal('withdraw')">💼<span>WALLET</span></a>
+    <a href="#" class="nav-item" onclick="openModal('safety')">🛡️<span>SAFETY</span></a>
 </nav>
 
-<!-- МОДАЛКИ -->
-<div class="modal-overlay" id="overlay" onclick="closeCustomModal()"></div>
+<!-- МОДАЛЬНОЕ ОКНО -->
+<div class="modal-overlay" id="overlay" onclick="closeModal()"></div>
 <div class="modal" id="modal">
-    <div class="modal-header">
-        <h2 id="modal-title" style="font-family: Orbitron; font-size: 1rem;">INFO</h2>
-        <button class="close-btn" onclick="closeCustomModal()">✕</button>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <h2 id="modal-title" style="font-family: Orbitron; font-size: 1rem; color: var(--accent-cyan);">INFO</h2>
+        <button style="background: none; border: none; color: #fff; font-size: 1.5rem;" onclick="closeModal()">✕</button>
     </div>
-    <div id="modal-content"></div>
+    <div id="modal-content" style="line-height: 1.6; color: #ccc;"></div>
 </div>
-
-<script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    const reportText = `ОТЧЕТ SELIN PAY 2026:
--------------------------
-Статистика хищений: $19.2 млрд.
-Главная угроза: ИИ-фишинг (60% атак).
-Защита: Engine 2.0 блокирует 99% дрейнеров.
-Рекомендация: Не храните более 10k TON на горячих кошельках.`;
-
-    const modalData = {
-        'safety': {
-            title: 'БЕЗОПАСНОСТЬ 2026',
-            html: `
-                <div style="color:#eee; line-height:1.5;">
-                    <p style="margin-bottom:15px; color: #ff4500; font-weight:bold;">⚠️ Критическая информация 2026</p>
-                    <p>В этом году зафиксирован рекордный рост атак на TON-кошельки с использованием нейросетей.</p>
-                    <ul style="margin: 15px 0; padding-left: 20px;">
-                        <li>Общие потери в мире: <b>$19.2 млрд</b></li>
-                        <li>Новый вид атак: <b>AI Voice Drainer</b></li>
-                        <li>Безопасность SELIN: <b>Максимальная</b></li>
-                    </ul>
-                    <button class="dl-btn" onclick="downloadFile()">СКАЧАТЬ ПОЛНЫЙ ОТЧЕТ (.TXT)</button>
-                </div>`
-        },
-        'deposit': { title: 'ПОПОЛНЕНИЕ', html: '<p>Ваш адрес: <br><code style="color:var(--accent-color)">UQBeR...selin_v2</code></p>' },
-        'withdraw': { title: 'ВЫВОД', html: '<p>Введите сумму и адрес для вывода из системы SELIN.</p>' },
-        'swap': { title: 'ОБМЕН', html: '<p>Курс: 1 TON = 4.5 USDT</p>' },
-        'reports': { title: 'ВАШИ ОТЧЕТЫ', html: '<p>История транзакций пуста.</p>' }
-    };
-
-    function openCustomModal(type) {
-        const data = modalData[type];
-        document.getElementById('modal-title').innerText = data.title;
-        document.getElementById('modal-content').innerHTML = data.html;
-        document.getElementById('overlay').style.display = 'block';
-        setTimeout(() => document.getElementById('modal').classList.add('active'), 10);
-        tg.HapticFeedback.impactOccurred('medium');
-    }
-
-    function closeCustomModal() {
-        document.getElementById('modal').classList.remove('active');
-        setTimeout(() => document.getElementById('overlay').style.display = 'none', 300);
-    }
-
-    function downloadFile() {
-        const blob = new Blob([reportText], { type: 'text/plain' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Selin_Report_2026.txt';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        tg.HapticFeedback.notificationOccurred('success');
-    }
-
-    // --- ЗВЕЗДЫ ---
-    const canvas = document.getElementById('space-canvas');
-    const ctx = canvas.getContext('2d');
-    let stars = [];
-
-    function initStars() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        stars = [];
-        for(let i=0; i<80; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                z: Math.random() * canvas.width,
-                size: Math.random() * 1.5
-            });
-        }
-    }
-
-    function drawStars() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#fff";
-        stars.forEach(s => {
-            s.y -= 0.5;
-            if(s.y < 0) s.y = canvas.height;
-            ctx.beginPath();
-            ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
-            ctx.fill();
-        });
-        requestAnimationFrame(drawStars);
-    }
-
-    window.addEventListener('resize', initStars);
-    initStars();
-    drawStars();
-
-</script>
-</body>
-</html>
