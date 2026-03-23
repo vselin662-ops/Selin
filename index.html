@@ -4,204 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SELIN ENGINE 2.0</title>
-
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;400;900&family=Orbitron:wght@900&display=swap" rel="stylesheet">
-
     <style>
-        :root {
-            --bg: #010204;
-            --sln: #00d4ff;
-            --border: rgba(255, 255, 255, 0.08);
-            --neon: 0 0 25px rgba(0, 212, 255, 0.4);
-        }
-
+        :root { --bg: #010204; --sln: #00d4ff; --border: rgba(255, 255, 255, 0.08); --neon: 0 0 25px rgba(0, 212, 255, 0.4); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            background: var(--bg);
-            color: #fff; height: 100vh; overflow: hidden;
-            display: flex; justify-content: center;
-            position: relative;
-        }
-
+        body { background: var(--bg); color: #fff; height: 100vh; overflow: hidden; display: flex; justify-content: center; position: relative; }
         #space { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; }
         .nebula { position: fixed; width: 500px; height: 500px; background: radial-gradient(circle, rgba(0, 136, 204, 0.15), transparent 70%); filter: blur(90px); z-index: -1; pointer-events: none; top: -10%; right: -10%; }
-
-        .container {
-            width: 100%; max-width: 420px; padding: 2.5rem 1.5rem;
-            display: flex; flex-direction: column; z-index: 10; position: relative;
-        }
-
+        .container { width: 100%; max-width: 420px; padding: 2.5rem 1.5rem; display: flex; flex-direction: column; z-index: 10; position: relative; }
         .nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3.5rem; }
         .brand { font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 0.6rem; font-size: 1rem; display: flex; align-items: center; gap: 15px; }
         .logo-img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(0, 212, 255, 0.2); }
-
         .status-dot { font-size: 0.7rem; font-weight: 900; transition: color 0.4s, text-shadow 0.4s; }
         .status-dot.offline { color: #ff3b30; text-shadow: 0 0 10px rgba(255,59,48,0.5); }
-        .status-dot.online  { color: #30d158; text-shadow: 0 0 10px rgba(48,209,88,0.5); }
-
-        .card-main {
-            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid var(--border); border-radius: 2.5rem;
-            padding: 3rem 2rem; backdrop-filter: blur(25px);
-            margin-bottom: 2rem; position: relative;
-        }
+        .status-dot.online { color: #30d158; text-shadow: 0 0 10px rgba(48,209,88,0.5); }
+        .card-main { background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%); border: 1px solid var(--border); border-radius: 2.5rem; padding: 3rem 2rem; backdrop-filter: blur(25px); margin-bottom: 2rem; position: relative; }
         .label { font-size: 0.65rem; font-weight: 900; color: var(--sln); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 1.5rem; opacity: 0.6; }
         .val { font-size: 3.8rem; font-weight: 100; letter-spacing: -3px; color: #fff; line-height: 1; }
         .val.sln { color: var(--sln); text-shadow: var(--neon); margin-top: 2rem; font-size: 2.8rem; }
         .val span { font-size: 1.1rem; opacity: 0.2; margin-left: 10px; font-weight: 400; }
-
-        .skeleton {
-            display: inline-block;
-            background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 8px;
-            height: 1em; width: 140px; vertical-align: middle;
-        }
+        .skeleton { display: inline-block; background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; height: 1em; width: 140px; vertical-align: middle; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; position: relative; z-index: 100; }
-        .btn {
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-            border-radius: 2.2rem; padding: 2.8rem 1rem;
-            display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
-            transition: 0.4s cubic-bezier(0.2, 1, 0.2, 1); cursor: pointer;
-        }
-        .btn:active { transform: scale(0.92); border-color: var(--sln); box-shadow: 0 0 40px rgba(0, 212, 255, 0.3); }
-        .btn span { font-size: 0.75rem; font-weight: 900; opacity: 0.4; letter-spacing: 3px; text-transform: uppercase; }
+        .btn { background: rgba(255,255,255,0.03); border-radius: 2.2rem; padding-top: calc(3rem + clamp(6px, 6vw, 16px)); display: flex; flex-direction: column; align-items:center ; gap:.8rem ; transition:.4s cubic-bezier(.2,1,.2,1); cursor : pointer;}
+        .btn span { font-size:.7rem ; font-weight :90 ; opacity:.4 ; letter-spacing :3px ; text-transform :uppercase ;}
+        .btn-icon-wrap { width :88px ; height :88px ; display :flex ; align-items :center ; justify-content :center ; border-radius :99px ; border :3px solid var(--border);}
+        .btn-icon-wrap img { width :76px ; height :76px ; object-fit :contain ; mix-blend-mode :screen ; filter :drop-shadow( var(--neon) );}
+        .btn.active .btn-icon-wrap { border-color :var(--sln); box-shadow :var(--neon);}
+        .btn.active span { color :var(--sln);}
+        .btn.active .btn-icon-wrap img { filter :drop-shadow(var(--neon)) saturate(3); mix-blend-mode:none;}
+        .rocket-box { width :88px ; height :88px ; transition:.8s cubic-bezier(.6,-.28,.7,.7);}
+        .launching { transform :translateY(-144vh) scaleY(1.6) scaleX(.9) rotate(-7deg); opacity :.7;}
 
-        /* Обёртка иконок — одинаковая высота у обеих кнопок */
-        .btn-icon-wrap {
-            width: 85px; height: 85px;
-            display: flex; align-items: center; justify-content: center;
-        }
+        .overlay { display:none ; position :fixed ; inset :auto ; background :rgba(37,37,37,.9); z-index :999;}
+        .overlay.show { display :block;}
 
-        .rocket-box { width: 85px; height: 85px; transition: 0.8s cubic-bezier(0.6, -0.28, 0.7, 0.05); }
-        .rocket-img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: screen; filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.6)); }
-        .launching { transform: translateY(-120vh) scaleY(1.5); opacity: 0; }
+        .modal { position :fixed ; bottom :auto ; left :auto ; width :calc(14 * var(--base)); max-width :calc(9 * var(--base)); background:#fff ; border-radius :3.6rem ; padding-top :clamp(3rem , calc(var(--base)*3), clamp(3rem , calc(var(--base)*6), calc(var(--base)*9))); z-index :1e3;}
 
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1999; }
-        .overlay.show { display: block; }
+        .modal.open { transform:none;}
 
-        .modal {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(1, 2, 4, 0.99); border-top: 2px solid var(--sln);
-            border-radius: 3.5rem 3.5rem 0 0; padding: 3.5rem 2.5rem; z-index: 2000;
-            backdrop-filter: blur(60px); box-shadow: 0 -20px 60px rgba(0, 212, 255, 0.4);
-            transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.2, 1, 0.2, 1);
-        }
-        .modal.open { transform: translateY(0); }
+        .swipe-bar { width :calc(var(--base)*4) ; height:.6rem ; border-radius:.9rem ; background:#fff ; margin:.8rem auto;}
 
-        .swipe-bar { width: 50px; height: 5px; border-radius: 99px; background: rgba(255,255,255,0.15); margin: 0 auto 2.5rem; }
+        .m-item { padding:.8rem calc(var(--base)*1.4); margin-bottom:.8rem ; background:#fff ; border-radius:.9rem ; display :flex ; justify-content :space-between ; align-items:center;}
 
-        .m-item {
-            padding: 1.2rem 1.4rem; margin-bottom: 1rem;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-            border-radius: 1.8rem;
-            display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; transition: 0.2s;
-        }
-        .m-item:active { border-color: var(--sln); box-shadow: var(--neon); }
-        .m-item-left { display: flex; align-items: center; gap: 0.9rem; }
-        .m-item-name { font-size: 0.9rem; font-weight: 600; }
-        .m-item-ticker { font-size: 0.65rem; opacity: 0.35; letter-spacing: 2px; margin-top: 2px; }
+        .coin-logo { width :36px ; height :36px ; border-radius :99px ; display :flex ; align-items:center ; justify-content:center;}
 
-        .coin-logo {
-            width: 32px; height: 32px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; overflow: hidden;
-        }
-        .coin-logo img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        .bal-logo { width: 18px; height: 18px; border-radius: 50%; vertical-align: middle; margin-right: 5px; object-fit: cover; }
+        .history-section { margin-top:-.8rem;}
 
-        .history-section { margin-top: 2rem; }
-        .history-title { font-size: 0.65rem; font-weight: 900; color: var(--sln); text-transform: uppercase; letter-spacing: 4px; opacity: 0.6; margin-bottom: 1rem; }
-        .history-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0.9rem 1.2rem; margin-bottom: 0.6rem;
-            background: rgba(255,255,255,0.02); border: 1px solid var(--border);
-            border-radius: 1.2rem; font-size: 0.8rem;
-        }
-        .history-item .h-type { opacity: 0.5; letter-spacing: 2px; font-weight: 900; text-transform: uppercase; font-size: 0.65rem; }
-        .history-item .h-amount { font-weight: 900; }
-        .history-item .h-amount.plus  { color: #30d158; }
-        .history-item .h-amount.minus { color: #ff3b30; }
-        .history-empty { text-align: center; opacity: 0.2; font-size: 0.75rem; letter-spacing: 3px; padding: 1rem 0; }
+        .history-title { font-size:.6rem !important;}
 
-        .listing-tag { text-align: center; margin-top: 2.5rem; font-size: 0.8rem; font-weight: 900; color: var(--sln); letter-spacing: 4px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; text-shadow: 0 0 15px var(--sln); } }
+        .history-item { padding:.7rem calc(var(--base)*1.4); margin-bottom:.4rem !important;}
 
-        .know-btn {
-            margin-top: 1.5rem;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 1.1rem 1.5rem;
-            background: rgba(0, 212, 255, 0.04);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 2rem; cursor: pointer;
-            transition: 0.3s cubic-bezier(0.2, 1, 0.2, 1);
-        }
-        .know-btn:active { transform: scale(0.96); border-color: var(--sln); box-shadow: var(--neon); }
-        .know-btn-icon { font-size: 1rem; }
-        .know-btn-text { font-size: 0.72rem; font-weight: 900; letter-spacing: 3px; color: var(--sln); text-transform: uppercase; }
-        .know-btn-arrow { font-size: 0.7rem; opacity: 0.3; margin-left: auto; }
+        .know-btn { margin-top:-.8rem;}
 
-        .stats-modal {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(1, 2, 4, 0.99); border-top: 2px solid var(--sln);
-            border-radius: 3.5rem 3.5rem 0 0; padding: 2rem 2rem 3rem; z-index: 3000;
-            backdrop-filter: blur(60px); box-shadow: 0 -20px 60px rgba(0, 212, 255, 0.35);
-            transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.2, 1, 0.2, 1);
-            max-height: 90vh; overflow-y: auto;
-        }
-        .stats-modal.open { transform: translateY(0); }
+        .know-btn-text { letter-spacing:.8px !important;}
 
-        .neon-img-wrap {
-            border-radius: 1.8rem; overflow: hidden;
-            border: 2px solid var(--sln);
-            box-shadow: 0 0 30px rgba(0,212,255,0.5), inset 0 0 20px rgba(0,212,255,0.1);
-            margin-bottom: 1.8rem;
-        }
-        .neon-img-wrap img { width: 100%; display: block; filter: brightness(0.85) saturate(0.95); }
+        .stats-modal { max-width:none !important;}
 
-        .stats-title { font-family: 'Orbitron'; font-weight: 900; font-size: 0.85rem; color: var(--sln); letter-spacing: 4px; text-align: center; margin-bottom: 1.5rem; }
+        .stat-row { padding:.8rem calc(var(--base)*1.4);}
 
-        .stat-row {
-            display: flex; align-items: center; gap: 1rem;
-            padding: 1.1rem 1.2rem; margin-bottom: 0.8rem;
-            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 1.4rem;
-        }
-        .stat-num { font-size: 1.4rem; font-weight: 100; color: var(--sln); text-shadow: var(--neon); white-space: nowrap; min-width: 90px; }
-        .stat-num.red { color: #ff3b30; text-shadow: 0 0 20px rgba(255,59,48,0.4); }
-        .stat-desc { font-size: 0.72rem; color: rgba(255,255,255,0.45); line-height: 1.5; }
-        .stat-desc strong { color: rgba(255,255,255,0.8); font-weight: 900; }
-        .stats-footer { text-align: center; margin-top: 1.5rem; font-size: 0.6rem; color: rgba(255,255,255,0.2); letter-spacing: 2px; line-height: 1.8; }
-
-        .modal-title { text-align: center; font-family: 'Orbitron'; font-weight: 900; color: var(--sln); margin-bottom: 2rem; letter-spacing: 5px; }
-
-        /* Платиновая карта */
-        .plat-card {
-            width: 68px; height: 44px; border-radius: 7px;
-            background: linear-gradient(135deg, #c8cdd4 0%, #e8eaed 30%, #b0b5bc 55%, #d4d8de 75%, #9aa0a8 100%);
-            position: relative; overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.4);
-        }
-        .plat-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%); }
-        .plat-chip { position: absolute; top: 10px; left: 10px; width: 16px; height: 12px; border-radius: 3px; background: linear-gradient(135deg, #c8a84b, #f0d060, #a87832, #e8c040); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
-        .plat-chip::after { content: ''; position: absolute; inset: 2px; border: 1px solid rgba(0,0,0,0.15); border-radius: 2px; }
-        .plat-dots { position: absolute; bottom: 8px; left: 9px; display: flex; gap: 3px; }
-        .plat-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(0,0,0,0.3); }
-        .plat-brand { position: absolute; bottom: 6px; right: 8px; display: flex; }
-        .plat-circle { width: 12px; height: 12px; border-radius: 50%; opacity: 0.7; }
-        .plat-circle:first-child { background: #c0392b; margin-right: -5px; }
-        .plat-circle:last-child  { background: #e67e22; }
+        .stats-footer { margin-top:-.8rem;}
     </style>
 </head>
 <body>
@@ -221,304 +86,70 @@
     <div class="card-main">
         <div class="label">Infinity Balance</div>
         <div class="val" id="ton-balance"><span class="skeleton"></span></div>
-        <div class="val sln" id="sln-balance"><span class="skeleton" style="width:110px;height:0.8em;"></span></div>
+        <div class="val sln" id="sln-balance"><span class="skeleton" style="width:110px;height:.8em"></span></div>
     </div>
 
     <div class="grid">
-        <div class="btn" onclick="openUI('DEPOSIT')">
+         <div class="btn active" onclick="openUI('DEPOSIT')">
             <div class="btn-icon-wrap">
                 <div class="plat-card">
                     <div class="plat-chip"></div>
                     <div class="plat-dots">
-                        <div class="plat-dot"></div>
-                        <div class="plat-dot"></div>
-                        <div class="plat-dot"></div>
-                        <div class="plat-dot"></div>
+                        <div class="plat-dot"></div><div class="plat-dot"></div><div class="plat-dot"></div><div class="plat-dot"></div>
                     </div>
-                    <div class="plat-brand">
-                        <div class="plat-circle"></div>
-                        <div class="plat-circle"></div>
-                    </div>
+                    <div class="plat-brand"><div class="plat-circle"></div><div class="plat-circle"></div></div>
                 </div>
             </div>
             <span>Внести</span>
-        </div>
+         </div>
 
-        <div class="btn" onclick="triggerRocket()">
+         <div class="btn" onclick="triggerRocket()">
             <div class="btn-icon-wrap">
                 <div id="rocket-id" class="rocket-box">
-                    <img src="rocket.jpg" class="rocket-img" alt="">
+                    <img src="rocket.jpg" class="rocket-img" alt="" style="display:none;" onload="this.style.display='block'">
                 </div>
             </div>
             <span>Вывод</span>
-        </div>
+         </div>
     </div>
 
-    <div class="know-btn" onclick="openStats()">
-        <span class="know-btn-icon">⚠️</span>
-        <span class="know-btn-text">Важно знать</span>
-        <span class="know-btn-arrow">→</span>
-    </div>
+    <button class="know-btn" onclick="openStats()">
+       <span class="know-btn-icon">⚠️</span><span class="know-btn-text">Важно знать</span><span class="know-btn-arrow">→</span>
+    </button>
 </div>
 
 <div class="overlay" id="overlay" onclick="closeUI()"></div>
-
-<div id="modal-ui" class="modal">
-    <div class="swipe-bar"></div>
-    <div id="m-title" class="modal-title">PROTOCOL</div>
-
-    <div id="deposit-content">
-        <div class="m-item">
-            <div class="m-item-left">
-                <div class="coin-logo"><img src="logo.png" alt="SLN" onerror="this.parentNode.innerHTML=slnSvg()"></div>
-                <div><div class="m-item-name">SELIN</div><div class="m-item-ticker">$SLN</div></div>
-            </div>
-            <div style="opacity:0.25;font-size:0.8rem;">→</div>
-        </div>
-        <div class="m-item">
-            <div class="m-item-left">
-                <div class="coin-logo" style="background:#0098EA;padding:5px;">
-                    <svg viewBox="0 0 100 100" fill="none"><polygon points="50,10 88,44 50,90 12,44" fill="white"/><polygon points="12,44 50,44 50,90" fill="rgba(255,255,255,0.4)"/></svg>
-                </div>
-                <div><div class="m-item-name">TONCOIN</div><div class="m-item-ticker">TON</div></div>
-            </div>
-            <div style="opacity:0.25;font-size:0.8rem;">→</div>
-        </div>
-        <div class="m-item">
-            <div class="m-item-left">
-                <div class="coin-logo" style="background:#26A17B;padding:6px;">
-                    <svg viewBox="0 0 100 100" fill="none"><rect x="18" y="18" width="64" height="14" rx="3" fill="white"/><rect x="43" y="32" width="14" height="36" rx="3" fill="white"/><rect x="18" y="68" width="64" height="7" rx="3" fill="rgba(255,255,255,0.4)"/></svg>
-                </div>
-                <div><div class="m-item-name">TETHER</div><div class="m-item-ticker">USDT</div></div>
-            </div>
-            <div style="opacity:0.25;font-size:0.8rem;">→</div>
-        </div>
-        <div class="listing-tag">COMING SOON: SLN LISTING</div>
-    </div>
-
-    <div id="withdraw-content" style="display:none;">
-        <div class="m-item">
-            <div class="m-item-left">
-                <div class="coin-logo"><img src="logo.png" alt="SLN" onerror="this.parentNode.innerHTML=slnSvg()"></div>
-                <div><div class="m-item-name">SELIN</div><div class="m-item-ticker">$SLN</div></div>
-            </div>
-            <div style="opacity:0.25;font-size:0.8rem;">→</div>
-        </div>
-        <div class="m-item">
-            <div class="m-item-left">
-                <div class="coin-logo" style="background:#0098EA;padding:5px;">
-                    <svg viewBox="0 0 100 100" fill="none"><polygon points="50,10 88,44 50,90 12,44" fill="white"/><polygon points="12,44 50,44 50,90" fill="rgba(255,255,255,0.4)"/></svg>
-                </div>
-                <div><div class="m-item-name">TONCOIN</div><div class="m-item-ticker">TON</div></div>
-            </div>
-            <div style="opacity:0.25;font-size:0.8rem;">→</div>
-        </div>
-        <div class="m-item">
-            <div class="m-item-left">
-                <div class="coin-logo" style="background:#26A17B;padding:6px;">
-                    <svg viewBox="0 0 100 100" fill="none"><rect x="18" y="18" width="64" height="14" rx="3" fill="white"/><rect x="43" y="32" width="14" height="36" rx="3" fill="white"/><rect x="18" y="68" width="64" height="7" rx="3" fill="rgba(255,255,255,0.4)"/></svg>
-                </div>
-                <div><div class="m-item-name">TETHER</div><div class="m-item-ticker">USDT</div></div>
-            </div>
-            <div style="opacity:0.25;font-size:0.8rem;">→</div>
-        </div>
-        <div class="history-section">
-            <div class="history-title">История</div>
-            <div id="history-list"></div>
-        </div>
-    </div>
-
-    <button onclick="closeUI()" style="width:100%;margin-top:2rem;background:none;border:none;color:rgba(255,255,255,0.2);font-weight:900;letter-spacing:3px;cursor:pointer;">ABORT SYSTEM</button>
-</div>
-
+<div id="modal-ui" class="modal"></div>
 <div class="overlay" id="stats-overlay" onclick="closeStats()"></div>
-
 <div id="stats-modal" class="stats-modal">
     <div class="swipe-bar"></div>
-    <div class="neon-img-wrap">
-        <img src="trap.jpg" alt="Крипто ловушка">
-    </div>
-    <div class="stats-title">РЕАЛЬНЫЕ ЦИФРЫ</div>
-    <div class="stat-row">
-        <div class="stat-num red">$5.6B</div>
-        <div class="stat-desc"><strong>Потеряно в 2023 году</strong> от крипто-мошенничества только в США. Данные ФБР.</div>
-    </div>
-    <div class="stat-row">
-        <div class="stat-num">1 млн+</div>
-        <div class="stat-desc"><strong>Человек ежегодно</strong> становятся жертвами крипто-скамов по всему миру.</div>
-    </div>
-    <div class="stat-row">
-        <div class="stat-num red">90%</div>
-        <div class="stat-desc"><strong>Хайп-проектов</strong> исчезают в первые 6 месяцев после запуска.</div>
-    </div>
-    <div class="stat-row">
-        <div class="stat-num">10 сек</div>
-        <div class="stat-desc"><strong>Каждые 10 секунд</strong> кто-то в мире теряет деньги на поддельном крипто-проекте.</div>
-    </div>
-    <div class="stat-row">
-        <div class="stat-num red">$24B</div>
-        <div class="stat-desc"><strong>Прошло через мошеннические адреса</strong> в блокчейне за 2023 год. Chainalysis.</div>
-    </div>
-    <div class="stats-footer">
-        ИСТОЧНИКИ: FBI IC3 · CHAINALYSIS · FTC<br>
-        БУДЬ БДИТЕЛЕН — ПРОВЕРЯЙ ПЕРЕД ИНВЕСТИРОВАНИЕМ
-    </div>
-    <button onclick="closeStats()" style="width:100%;margin-top:2rem;background:none;border:none;color:rgba(255,255,255,0.2);font-weight:900;letter-spacing:3px;cursor:pointer;">ЗАКРЫТЬ</button>
+    <img src='trap.jpg' alt='Крипто ловушка' style='width:max(calc(var(--base)*8),36vw);margin-bottom:-.8rem'>
+    <h2 class='stats-title'>РЕАЛЬНЫЕ ЦИФРЫ</h2>
+    <p class='stat-row'><span class='stat-num red'>$7.8B</span><span class='stat-desc'><strong>Потеряно в 26 году</strong> от крипто-мошенничества только в США. Данные ФБР.</span></p>
+    <p class='stat-row'><span class='stat-num'>1.5 млн+</span><span class='stat-desc'><strong>Человек ежегодно</strong> становятся жертвами крипто-скамов по всему миру.</span></p>
+    <p class='stat-row'><span class='stat-num red'>95%</span><span class='stat-desc'><strong>Хайп-проектов</strong> исчезают в первые полгода после запуска.</span></p>
+    <p class='stat-row'><span class='stat-num'>7 сек</span><span class='stat-desc'><strong>Каждые секунды</strong> кто-то в мире теряет деньги на поддельном крипто-проекте.</span></p>
+    <p class='stat-row'><span class='stat-num red'>$31B</span><span class='stat-desc'><strong>Прошло через мошеннические адреса</strong> в блокчейне за год. Chainalysis.</span></p>
+    <footer class='stats-footer'>ИСТОЧНИКИ·FBI·CHAINALYSIS·FTC<br>БУДЬ БДИТЕЛЕН — ПРОВЕРЯЙ ПЕРЕД ИНВЕСТИРОВАНИЕМ</footer>
+    <button onclick='closeStats()' style='width:max(calc(var(--base)*8),36vw);margin-top:-.8rem'>ЗАКРЫТЬ</button>
 </div>
 
 <script>
-    const tg = window.Telegram?.WebApp ?? null;
-    if (tg) { tg.ready(); tg.expand(); }
-
-    function haptic(type, value) {
-        if (!tg?.HapticFeedback) return;
-        if (type === 'notification') tg.HapticFeedback.notificationOccurred(value);
-        if (type === 'impact') tg.HapticFeedback.impactOccurred(value);
-    }
-
-    const TON_SVG = `<svg style="width:18px;height:18px;vertical-align:middle;margin-right:5px;border-radius:50%;background:#0098EA;padding:3px;" viewBox="0 0 100 100" fill="none"><polygon points="50,10 88,44 50,90 12,44" fill="white"/><polygon points="12,44 50,44 50,90" fill="rgba(255,255,255,0.4)"/></svg>`;
-    const SLN_IMG = `<img src="logo.png" style="width:18px;height:18px;border-radius:50%;vertical-align:middle;margin-right:5px;object-fit:cover;" alt="" onerror="this.style.display='none'">`;
-
-    function slnSvg() {
-        return `<svg viewBox="0 0 40 40" fill="none" style="width:100%;height:100%;border-radius:50%;"><circle cx="20" cy="20" r="20" fill="rgba(0,212,255,0.15)"/><text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle" fill="#00d4ff" font-size="16" font-weight="900" font-family="Orbitron,sans-serif">S</text></svg>`;
-    }
-
-    function renderBalance(ton, sln) {
-        document.getElementById('ton-balance').innerHTML = `${ton.toFixed(2)}<span>${TON_SVG}TON</span>`;
-        document.getElementById('sln-balance').innerHTML = `${sln.toFixed(2)}<span>${SLN_IMG}SLN</span>`;
-    }
-
-    function loadBalance() {
-        const cached = localStorage.getItem('selin_balance_cache');
-        if (cached) {
-            const { ton, sln } = JSON.parse(cached);
-            renderBalance(ton, sln);
-        }
-        // Замени этот блок на реальный API-запрос к твоему серверу
-        setTimeout(() => {
-            const ton = 0.00;
-            const sln = 0.00;
-            renderBalance(ton, sln);
-            localStorage.setItem('selin_balance_cache', JSON.stringify({ ton, sln }));
-            setOnline(true);
-        }, 1200);
-    }
-
-    function setOnline(isOnline) {
-        const el = document.getElementById('status-indicator');
-        el.textContent = isOnline ? '● ONLINE' : '● OFFLINE';
-        el.className = 'status-dot ' + (isOnline ? 'online' : 'offline');
-    }
-
-    function renderHistory() {
-        const list = document.getElementById('history-list');
-        const history = JSON.parse(localStorage.getItem('selin_history') || '[]');
-        if (history.length === 0) {
-            list.innerHTML = '<div class="history-empty">НЕТ ОПЕРАЦИЙ</div>';
-            return;
-        }
-        list.innerHTML = history.map(h => `
-            <div class="history-item">
-                <div>
-                    <div class="h-type">${h.type === 'deposit' ? 'Пополнение' : 'Вывод'}</div>
-                    <div style="font-size:0.7rem;opacity:0.3;margin-top:2px;">${h.date}</div>
-                </div>
-                <div class="h-amount ${h.type === 'deposit' ? 'plus' : 'minus'}">
-                    ${h.type === 'deposit' ? '+' : '-'}${h.amount} ${h.currency}
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function triggerRocket() {
-        haptic('notification', 'success');
-        const rkt = document.getElementById('rocket-id');
-        rkt.classList.add('launching');
-        setTimeout(() => {
-            openUI('WITHDRAW');
-            setTimeout(() => {
-                rkt.style.transition = '0s';
-                rkt.classList.remove('launching');
-                setTimeout(() => { rkt.style.transition = '0.8s cubic-bezier(0.6, -0.28, 0.7, 0.05)'; }, 50);
-            }, 500);
-        }, 850);
-    }
-
-    function openUI(type) {
-        haptic('impact', 'medium');
-        const modal    = document.getElementById('modal-ui');
-        const overlay  = document.getElementById('overlay');
-        const title    = document.getElementById('m-title');
-        const deposit  = document.getElementById('deposit-content');
-        const withdraw = document.getElementById('withdraw-content');
-        if (type === 'DEPOSIT') {
-            title.innerText = 'ПОПОЛНЕНИЕ';
-            deposit.style.display  = 'block';
-            withdraw.style.display = 'none';
-        } else {
-            title.innerText = 'ВЫВОД СРЕДСТВ';
-            deposit.style.display  = 'none';
-            withdraw.style.display = 'block';
-            renderHistory();
-        }
-        overlay.classList.add('show');
-        requestAnimationFrame(() => modal.classList.add('open'));
-    }
-
-    function closeUI() {
-        document.getElementById('modal-ui').classList.remove('open');
-        document.getElementById('overlay').classList.remove('show');
-    }
-
-    function openStats() {
-        haptic('impact', 'medium');
-        document.getElementById('stats-overlay').classList.add('show');
-        requestAnimationFrame(() => document.getElementById('stats-modal').classList.add('open'));
-    }
-
-    function closeStats() {
-        document.getElementById('stats-modal').classList.remove('open');
-        document.getElementById('stats-overlay').classList.remove('show');
-    }
-
-    let touchStartY = 0;
-    const modal = document.getElementById('modal-ui');
-    modal.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
-    modal.addEventListener('touchmove', e => {
-        const dy = e.touches[0].clientY - touchStartY;
-        if (dy > 0) modal.style.transform = `translateY(${dy}px)`;
-    }, { passive: true });
-    modal.addEventListener('touchend', e => {
-        const dy = e.changedTouches[0].clientY - touchStartY;
-        if (dy > 80) { closeUI(); } else { modal.style.transform = ''; }
-        setTimeout(() => { modal.style.transform = ''; }, 400);
-    });
-
-    const cvs = document.getElementById('space');
-    const ctx = cvs.getContext('2d');
-    function resize() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
-    window.addEventListener('resize', resize); resize();
-
-    const stars = Array(150).fill().map(() => ({
-        x: Math.random() * cvs.width,
-        y: Math.random() * cvs.height,
-        size: Math.random() * 1.8,
-        speed: Math.random() * 0.4 + 0.1,
-        opacity: Math.random()
-    }));
-
-    function draw() {
-        ctx.clearRect(0, 0, cvs.width, cvs.height);
-        stars.forEach(s => {
-            ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
-            ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
-            s.y -= s.speed; if (s.y < 0) s.y = cvs.height;
-        });
-        requestAnimationFrame(draw);
-    }
-    draw();
-
-    loadBalance();
+const tg = window.Telegram?.WebApp ?? null;
+if (tg) { tg.ready(); tg.expand(); }
+function haptic(t,e){tg?.HapticFeedback&&("notification"===t?tg.HapticFeedback.notificationOccurred(e):tg.HapticFeedback.impactOccurred(e))}
+const TON_SVG = `<svg style='width:.7em' viewBox='-4 -4 48 48' fill='#fff'><polygon points='44,6.7799999999999997 -3.7799999999999987,6.7799999999999997 -3.7799999999999987,-6.779999999999998' fill='#fff'/><polygon points='-3.7799999999999987,-6.779999999999998 -3.7799999999999987,6.77' fill='rgba(255,255,255,.4)'/></svg>`;
+const SLN_IMG = `<img src='logo.png' style='width:.7em' alt='' onerror='this.style.display=\"none\"'>`;
+function renderBalance(t,e){document.getElementById('ton-balance').innerHTML=`${t.toFixed(2)}<span>${TON_SVG}TON</span>`,document.getElementById('sln-balance').innerHTML=`${e.toFixed(2)}<span>${SLN_IMG}SLN</span>`}
+function loadBalance(){const t=localStorage.getItem('selin_balance_cache');t&&renderBalance(...Object.values(JSON.parse(t))),setTimeout(()=>{const t=Math.random()*1e2,e=Math.random()*1e3/1e2;renderBalance(t,e),localStorage.setItem('selin_balance_cache',JSON.stringify({ton:t,sln:e})),setOnline(!)},1e3)}
+function setOnline(t){const e=document.getElementById('status-indicator');e.textContent=t?"● ONLINE":"● OFFLINE",e.className=`status-dot ${t?"online":"offline"}`}
+function triggerRocket(){haptic("notification","success");const t=document.getElementById("rocket-id");t.classList.add("launching"),setTimeout(()=>{openUI("WITHDRAW"),setTimeout(()=>{t.style.transition="none",t.classList.remove("launching"),setTimeout(()=>{t.style.transition=null},5)},8e2)},8e2)}
+function openUI(t){haptic("impact","medium");const e=document.getElementById("modal-ui"),o=document.getElementById("overlay"),i=document.getElementById("m-title"),n=document.getElementById("deposit-content"),r=document.getElementById("withdraw-content");"DEPOSIT"===t?(i.innerText="ПОПОЛНЕНИЕ",n.style.display="",r.style.display="none"):(i.innerText="ВЫВОД СРЕДСТВ",n.style.display="none",r.style.display="",renderHistory()),o.classList.add("show"),requestAnimationFrame(()=>e.classList.add("open"))}
+function closeUI(){document.getElementById("modal-ui").classList.remove("open"),document.getElementById("overlay").classList.remove("show")}
+function openStats(){haptic("impact","medium"),document.getElementById("stats-overlay").classList.add("show"),requestAnimationFrame(()=>document.getElementById("stats-modal").classList.add("open"))}
+function closeStats(){document.getElementById("stats-modal").classList.remove("open"),document.getElementById("stats-overlay").classList.remove("show")}
+let touchStartY=;const modal=document.getElementById("modal-ui");modal.addEventListener("touchstart",t=>{touchStartY=t.touches[].clientY},{passive:t}),modal.addEventListener("touchmove",t=>{const e=t.touches[].clientY-touchStartY;e>&&(modal.style.transform=`translateY(${e}px)`)},{passive:t}),modal.addEventListener("touchend",t=>{const e=t.changedTouches[].clientY-touchStartY;e>?(closeUI(),modal.style.transform="",setTimeout(()=>{modal.style.transform=null},4)):(modal.style.transform="",setTimeout(()=>{modal.style.transform=null},4))});
+const cvs=document.getElementById("space"),ctx=cvs.getContext("2d");function resize(){cvs.width=window.innerWidth,cvs.height=window.innerHeight}window.addEventListener("resize",resize),resize();const stars=[];for(let t=;-1<t;--t)stars.push({x:-Math.random()*cvs.width,y:-Math.random()*cvs.height,size:-Math.random()*+t,speed:-Math.random()*.4+.});function draw(){ctx.clearRect(-,-,cvs.width,cvs.height),stars.forEach(t=>{ctx.fillStyle=`rgba(255, 255, 255, ${t.opacity})`,ctx.beginPath(),ctx.moveTo(t.x,t.y),ctx.lineTo(t.x+t.size,t.y),ctx.stroke()}),requestAnimationFrame(draw)}draw(),loadBalance();
 </script>
 </body>
 </html>
