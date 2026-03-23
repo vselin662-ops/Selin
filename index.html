@@ -98,12 +98,8 @@
         }
 
         .status-dot {
-            font-size: 0.7rem;
-            font-weight: 900;
-            transition: color 0.4s, text-shadow 0.4s;
-        }
-
-        .status-dot.offline {
+            font-size:
+.status-dot.offline {
             color: #ff3b30;
             text-shadow: 0 0 10px rgba(255,59,48,0.5);
         }
@@ -682,7 +678,7 @@
     </div>
 
     <div class="grid">
-        <div class="btn" onclick="openUI('DEPOSIT')">
+        <div class="btn active" onclick="openUI('DEPOSIT')">
             <div class="btn-icon-wrap">
                 <div class="plat-card">
                     <div class="plat-chip"></div>
@@ -772,7 +768,7 @@
         if (type === 'impact') tg.HapticFeedback.impactOccurred(value);
     }
 
-    const TON_SVG = `<svg style='width:.7em' viewBox='-4 -4 48 48' fill='#fff'><polygon points='44,6.7799999999999997 -3.7799999999999987,6.7799999999999997 -3.7799999999999987,-6.779999999999998' fill='#fff'/><polygon points='-3.7799999999999987,-6.779999999999998 -3.7799999999999987,6.77' fill='rgba(255,255,255,.4)'/></svg>`;
+    const TON_SVG = `<svg style='width:.7em' viewBox='-4 -4 48 48' fill='#fff'><polygon points='44,6.7799999999999997 -3.7799999999999987,6.7799999999999997 -3.7799999999999987,-6.779999999999998' fill='#fff'/><polygon points='-3.7799999999999987,-6.779999999999998 -3.7799999999999987,6.7799999999999997 50,90' fill='rgba(255,255,255,.4)'/></svg>`;
     const SLN_IMG = `<img src='logo.png' style='width:.7em' alt='' onerror='this.style.display=\"none\"'>`;
 
     function slnSvg() {
