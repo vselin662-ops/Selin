@@ -251,23 +251,22 @@
 
         /* Модальные окна */
         .modal {
-            position: fixed;
-            bottom: 0;
-            left: 0;
             width: 100%;
-            background: rgba(1, 2, 4, 0.99);
-            border-top: 2px solid var(--sln);
-            border-radius: 3.5rem 3.5rem 0 0;
-            padding: 3.5rem 2.5rem;
-            z-index: 2000;
-            backdrop-filter: blur(60px);
+            max-width: 420px;
+            padding: 2.5rem;
+            border-radius: 2.5rem;
             box-shadow: 0 -20px 60px rgba(0, 212, 255, 0.4);
             transform: translateY(100%);
             transition: transform 0.4s cubic-bezier(0.2, 1, 0.2, 1);
+            overflow-y: auto; /* Прокрутка */
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
         }
 
         .modal.open {
-            transform: translateY(0);
+            transform: translateX(-50%) translateY(0);
         }
 
         .swipe-bar {
@@ -373,98 +372,6 @@
 
         .stats-footer {
             margin-top: -0.8rem;
-        }
-
-        /* Информация "Важно знать" */
-        .stats-modal {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(1, 2, 4, 0.99);
-            border-top: 2px solid var(--sln);
-            border-radius: 3.5rem 3.5rem 0 0;
-            padding: 2rem 2rem 3rem;
-            z-index: 3000;
-            backdrop-filter: blur(60px);
-            box-shadow: 0 -20px 60px rgba(0, 212, 255, 0.35);
-            transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.2, 1, 0.2, 1);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .stats-modal.open {
-            transform: translateY(0);
-        }
-
-        .neon-img-wrap {
-            border-radius: 1.8rem;
-            overflow: hidden;
-            border: 2px solid var(--sln);
-            box-shadow: 0 0 30px rgba(0,212,255,0.5), inset 0 0 20px rgba(0,212,255,0.1);
-            margin-bottom: 1.8rem;
-        }
-
-        .neon-img-wrap img {
-            width: 100%;
-            display: block;
-            filter: brightness(0.85) saturate(0.95);
-        }
-
-        .stats-title {
-            font-family: 'Orbitron';
-            font-weight: 900;
-            font-size: 0.85rem;
-            color: var(--sln);
-            letter-spacing: 4px;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .stat-row {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.8rem 1.2rem;
-            margin-bottom: 0.8rem;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 1.4rem;
-        }
-
-        .stat-num {
-            font-size: 1.4rem;
-            font-weight: 100;
-            color: var(--sln);
-            text-shadow: var(--neon);
-            white-space: nowrap;
-            min-width: 90px;
-        }
-
-        .stat-num.red {
-            color: #ff3b30;
-            text-shadow: 0 0 20px rgba(255,59,48,0.4);
-        }
-
-        .stat-desc {
-            font-size: 0.72rem;
-            color: rgba(255,255,255,0.45);
-            line-height: 1.5;
-        }
-
-        .stat-desc strong {
-            color: rgba(255,255,255,0.8);
-            font-weight: 900;
-        }
-
-        .stats-footer {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.6rem;
-            color: rgba(255,255,255,0.2);
-            letter-spacing: 2px;
-            line-height: 1.8;
         }
 
         /* Платиновая карта */
@@ -661,76 +568,96 @@
             display: block;
         }
 
-        .modal {
-            position: fixed;
-            bottom: auto;
-            left: auto;
-            width: calc(14 * var(--base));
-            max-width: calc(9 * var(--base));
-            background: #fff;
-            border-radius: 3.6rem;
-            padding-top: clamp(3rem, calc(var(--base)*3), clamp(3rem, calc(var(--base)*6), calc(var(--base)*9)));
-            z-index: 1e3;
-        }
-
-        .swipe-bar {
-            width: calc(var(--base)*4);
-            height: .6rem;
-            border-radius: .9rem;
-            background: #fff;
-            margin: .8rem auto;
-        }
-
-        .m-item {
-            padding: .8rem calc(var(--base)*1.4);
-            margin-bottom: .8rem;
-            background: #fff;
-            border-radius: .9rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .coin-logo {
-            width: 36px;
-            height: 36px;
-            border-radius: 99px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .history-section {
-            margin-top: -.8rem;
-        }
-
-        .history-title {
-            font-size: .6rem !important;
-        }
-
-        .history-item {
-            padding: .7rem calc(var(--base)*1.4);
-            margin-bottom: .4rem !important;
-        }
-
-        .know-btn {
-            margin-top: -.8rem;
-        }
-
-        .know-btn-text {
-            letter-spacing: .8px !important;
-        }
-
+        /* Информация "Важно знать" */
         .stats-modal {
-            max-width: none !important;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(1, 2, 4, 0.99);
+            border-top: 2px solid var(--sln);
+            border-radius: 3.5rem 3.5rem 0 0;
+            padding: 2rem 2rem 3rem;
+            z-index: 3000;
+            backdrop-filter: blur(60px);
+            box-shadow: 0 -20px 60px rgba(0, 212, 255, 0.35);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.2, 1, 0.2, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .stats-modal.open {
+            transform: translateY(0);
+        }
+
+        .neon-img-wrap {
+            border-radius: 1.8rem;
+            overflow: hidden;
+            border: 2px solid var(--sln);
+            box-shadow: 0 0 30px rgba(0,212,255,0.5), inset 0 0 20px rgba(0,212,255,0.1);
+            margin-bottom: 1.8rem;
+        }
+
+        .neon-img-wrap img {
+            width: 100%;
+            display: block;
+            filter: brightness(0.85) saturate(0.95);
+        }
+
+        .stats-title {
+            font-family: 'Orbitron';
+            font-weight: 900;
+            font-size: 0.85rem;
+            color: var(--sln);
+            letter-spacing: 4px;
+            text-align: center;
+            margin-bottom: 1.5rem;
         }
 
         .stat-row {
-            padding: .8rem calc(var(--base)*1.4);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1.2rem;
+            margin-bottom: 0.8rem;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 1.4rem;
+        }
+
+        .stat-num {
+            font-size: 1.4rem;
+            font-weight: 100;
+            color: var(--sln);
+            text-shadow: var(--neon);
+            white-space: nowrap;
+            min-width: 90px;
+        }
+
+        .stat-num.red {
+            color: #ff3b30;
+            text-shadow: 0 0 20px rgba(255,59,48,0.4);
+        }
+
+        .stat-desc {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.5;
+        }
+
+        .stat-desc strong {
+            color: rgba(255,255,255,0.8);
+            font-weight: 900;
         }
 
         .stats-footer {
-            margin-top: -.8rem;
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.2);
+            letter-spacing: 2px;
+            line-height: 1.8;
         }
     </style>
 </head>
@@ -742,7 +669,7 @@
 <div class="container">
     <div class="nav">
         <div class="brand">
-            <img src="logo.png" class="logo-img" alt="S" onerror="this.style.display='none'">
+            <img src="logo.png" class="logo-img" alt="Logo" onerror="this.style.display='none'">
             SELIN
         </div>
         <div id="status-indicator" class="status-dot offline">● OFFLINE</div>
@@ -755,7 +682,7 @@
     </div>
 
     <div class="grid">
-        <div class="btn active" onclick="openUI('DEPOSIT')">
+        <div class="btn" onclick="openUI('DEPOSIT')">
             <div class="btn-icon-wrap">
                 <div class="plat-card">
                     <div class="plat-chip"></div>
@@ -792,108 +719,47 @@
 </div>
 
 <div class="overlay" id="overlay" onclick="closeUI()"></div>
-<div id="modal-ui" class="modal">
-    <div class="swipe-bar"></div>
-    <div id="m-title" class="modal-title">PROTOCOL</div>
-
-    <div id="deposit-content">
-        <div class="m-item">
-            <div class="m-item-left">
-                <div class="coin-logo"><img src="logo.png" alt="SLN" onerror="this.parentNode.innerHTML=slnSvg()"></div>
-                <div><div class="m-item-name">SELIN</div><div class="m-item-ticker">$SLN</div></div>
-            </div>
-            <div style="opacity:0.25;font-size:0.8rem;">→</div>
-        </div>
-        <div class="m-item">
-            <div class="m-item-left">
-                <div class="coin-logo" style="background:#0098EA;padding:5px;">
-                    <svg viewBox="0 0 100 100" fill="none"><polygon points="50,10 88,44 50,90 12,44" fill="white"/><polygon points="12,44 50,44 50,90" fill="rgba(255,255,255,0.4)"/></svg>
-                </div>
-                <div><div class="m-item-name">TONCOIN</div><div class="m-item-ticker">TON</div></div>
-            </div>
-            <div style="opacity:0.25;font-size:0.8rem;">→</div>
-        </div>
-        <div class="m-item">
-            <div class="m-item-left">
-                <div class="coin-logo" style="background:#26A17B;padding:6px;">
-                    <svg viewBox="0 0 100 100" fill="none"><rect x="18" y="18" width="64" height="14" rx="3" fill="white"/><rect x="43" y="32" width="14" height="36" rx="3" fill="white"/><rect x="18" y="68" width="64" height="7" rx="3" fill="rgba(255,255,255,0.4)"/></svg>
-                </div>
-                <div><div class="m-item-name">TETHER</div><div class="m-item-ticker">USDT</div></div>
-            </div>
-            <div style="opacity:0.25;font-size:0.8rem;">→</div>
-        </div>
-        <div class="listing-tag">COMING SOON: SLN LISTING</div>
-    </div>
-
-    <div id="withdraw-content" style="display:none;">
-        <div class="m-item">
-            <div class="m-item-left">
-                <div class="coin-logo"><img src="logo.png" alt="SLN" onerror="this.parentNode.innerHTML=slnSvg()"></div>
-                <div><div class="m-item-name">SELIN</div><div class="m-item-ticker">$SLN</div></div>
-            </div>
-            <div style="opacity:0.25;font-size:0.8rem;">→</div>
-        </div>
-        <div class="m-item">
-            <div class="m-item-left">
-                <div class="coin-logo" style="background:#0098EA;padding:5px;">
-                    <svg viewBox="0 0 100 100" fill="none"><polygon points="50,10 88,44 50,90 12,44" fill="white"/><polygon points="12,44 50,44 50,90" fill="rgba(255,255,255,0.4)"/></svg>
-                </div>
-                <div><div class="m-item-name">TONCOIN</div><div class="m-item-ticker">TON</div></div>
-            </div>
-            <div style="opacity:0.25;font-size:0.8rem;">→</div>
-        </div>
-        <div class="m-item">
-            <div class="m-item-left">
-                <div class="coin-logo" style="background:#26A17B;padding:6px;">
-                    <svg viewBox="0 0 100 100" fill="none"><rect x="18" y="18" width="64" height="14" rx="3" fill="white"/><rect x="43" y="32" width="14" height="36" rx="3" fill="white"/><rect x="18" y="68" width="64" height="7" rx="3" fill="rgba(255,255,255,0.4)"/></svg>
-                </div>
-                <div><div class="m-item-name">TETHER</div><div class="m-item-ticker">USDT</div></div>
-            </div>
-            <div style="opacity:0.25;font-size:0.8rem;">→</div>
-        </div>
-        <div class="history-section">
-            <div class="history-title">История</div>
-            <div id="history-list"></div>
-        </div>
-    </div>
-
-    <button onclick="closeUI()" style="width:max(calc(var(--base)*8),36vw);margin-top:-.8rem;background:none;border:none;color:rgba(255,255,255,0.2);font-weight:900;letter-spacing:3px;cursor:pointer;">ABORT SYSTEM</button>
-</div>
+<div id="modal-ui" class="modal"></div>
 
 <div class="overlay" id="stats-overlay" onclick="closeStats()"></div>
 <div id="stats-modal" class="stats-modal">
     <div class="swipe-bar"></div>
-    <img src="trap.jpg" alt="Крипто ловушка" style="width:max(calc(var(--base)*8),36vw);margin-bottom:-.8rem">
+    <div class="neon-img-wrap">
+        <img src="trap.jpg" alt="Crypto Trap">
+    </div>
     <h2 class="stats-title">РЕАЛЬНЫЕ ЦИФРЫ</h2>
 
     <div class="stat-row">
-        <span class="stat-num red">$7.8B</span>
-        <span class="stat-desc"><strong>Потеряно в 2026 году</strong> от крипто-мошенничества только в США. Данные ФБР.</span>
+        <p class="stat-num red">$7.8B</p>
+        <p class="stat-desc"><strong>Потеряно в 2026 году</strong> от крипто-мошенничества только в США. Данные ФБР.</p>
     </div>
 
     <div class="stat-row">
-        <span class="stat-num">1.5 млн+</span>
-        <span class="stat-desc"><strong>Человек ежегодно</strong> становятся жертвами крипто-скамов по всему миру.</span>
+        <p class="stat-num">1.5 млн+</p>
+        <p class="stat-desc"><strong>Человек ежегодно</strong> становятся жертвами крипто-скамов по всему миру.</p>
     </div>
 
     <div class="stat-row">
-        <span class="stat-num red">95%</span>
-        <span class="stat-desc"><strong>Хайп-проектов</strong> исчезают в первые 6 месяцев после запуска.</span>
+        <p class="stat-num red">95%</p>
+        <p class="stat-desc"><strong>Хайп-проектов</strong> исчезают в первые 6 месяцев после запуска.</p>
     </div>
 
     <div class="stat-row">
-        <span class="stat-num">7 сек</span>
-        <span class="stat-desc"><strong>Каждые 7 секунд</strong> кто-то в мире теряет деньги на поддельном крипто-проекте.</span>
+        <p class="stat-num">7 сек</p>
+        <p class="stat-desc"><strong>Каждые 7 секунд</strong> кто-то в мире теряет деньги на поддельном крипто-проекте.</p>
     </div>
 
     <div class="stat-row">
-        <span class="stat-num red">$31B</span>
-        <span class="stat-desc"><strong>Прошло через мошеннические адреса</strong> в блокчейне за 2026 год. Chainalysis.</span>
+        <p class="stat-num red">$31B</p>
+        <p class="stat-desc"><strong>Прошло через мошеннические адреса</strong> в блокчейне за 2026 год. Chainalysis.</p>
     </div>
 
-    <footer class="stats-footer">ИСТОЧНИКИ: FBI IC3 · CHAINALYSIS · FTC<br>БУДЬ БДИТЕЛЕН — ПРОВЕРЯЙ ПЕРЕД ИНВЕСТИРОВАНИЕМ</footer>
+    <footer class="stats-footer">
+        ИСТОЧНИКИ: FBI IC3 · CHAINALYSIS · FTC<br>
+        БУДЬ БДИТЕЛЕН — ПРОВЕРЯЙ ПЕРЕД ИНВЕСТИРОВАНИЕМ
+    </footer>
 
-    <button onclick="closeStats()" style="width:max(calc(var(--base)*8),36vw);margin-top:-.8rem">ЗАКРЫТЬ</button>
+    <button onclick="closeStats()">ЗАКРЫТЬ</button>
 </div>
 
 <script>
@@ -906,7 +772,7 @@
         if (type === 'impact') tg.HapticFeedback.impactOccurred(value);
     }
 
-    const TON_SVG = `<svg style='width:.7em' viewBox='-4 -4 48 48' fill='#fff'><polygon points='44,6.7799999999999997 -3.7799999999999987,6.7799999999999997 -3.7799999999999987,-6.779999999999998' fill='#fff'/><polygon points='-3.7799999999999987,-6.779999999999998 -3.7799999999999987,6.7799999999999997 50,90' fill='rgba(255,255,255,.4)'/></svg>`;
+    const TON_SVG = `<svg style='width:.7em' viewBox='-4 -4 48 48' fill='#fff'><polygon points='44,6.7799999999999997 -3.7799999999999987,6.7799999999999997 -3.7799999999999987,-6.779999999999998' fill='#fff'/><polygon points='-3.7799999999999987,-6.779999999999998 -3.7799999999999987,6.77' fill='rgba(255,255,255,.4)'/></svg>`;
     const SLN_IMG = `<img src='logo.png' style='width:.7em' alt='' onerror='this.style.display=\"none\"'>`;
 
     function slnSvg() {
