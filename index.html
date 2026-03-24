@@ -1,304 +1,128 @@
-import React, { useState, useEffect, useRef, ReactNode } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'motion/react';
-import { 
-  Shield, Wallet, ArrowUpRight, ArrowDownLeft, RefreshCw, BarChart3, AlertTriangle, X, Home, 
-  Smartphone, Search, ChevronRight, Cpu, Activity, Lock, QrCode, Info, Zap, Globe, History, 
-  Fingerprint, Eye, Maximize, Check, Mail, Phone, MessageCircle, UserPlus 
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selin UI - Prestige Edition</title>
+    <!-- Подключаем стили и шрифты -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;800&family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --cyan: #00f2ff; --bg: #020408; }
+        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
+        .font-display { font-family: 'Orbitron', sans-serif; }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .scanline { width: 100%; height: 100px; background: linear-gradient(0deg, transparent, rgba(0,242,255,0.05), transparent); position: absolute; animation: scan 8s linear infinite; pointer-events: none; }
+        @keyframes scan { from { top: -100px; } to { top: 100%; } }
+        .logo-ring { border: 1px dashed rgba(0,242,255,0.3); border-radius: 50%; position: absolute; animation: spin 20s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-// --- Встроенные стили (CSS) ---
-const GlobalStyles = () => (
-  <style dangerouslySetInnerHTML={{ __html: `
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
-    
-    :root {
-      --font-sans: "Inter", sans-serif;
-      --font-display: "Orbitron", sans-serif;
-      --font-mono: "JetBrains Mono", monospace;
-      --color-bg: #020408;
-      --color-accent-cyan: #00f2ff;
-      --color-neon-green: #00ff9d;
-      --color-neon-purple: #bc00ff;
-    }
+    <!-- Подключаем React и библиотеки через CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-    body {
-      background-color: var(--color-bg);
-      background-image: 
-        radial-gradient(circle at 50% -20%, rgba(0, 242, 255, 0.15), transparent 80%),
-        radial-gradient(circle at 0% 100%, rgba(188, 0, 255, 0.1), transparent 50%);
-      color: white;
-      overflow: hidden;
-      font-family: var(--font-sans);
-      margin: 0;
-    }
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-    .scanline {
-      width: 100%; height: 100px; z-index: 999;
-      background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 242, 255, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
-      opacity: 0.15; position: absolute; bottom: 100%;
-      animation: scanline 8s linear infinite; pointer-events: none;
-    }
-    @keyframes scanline { 0% { bottom: 100%; } 100% { bottom: -100px; } }
+        // Компонент приложения
+        function App() {
+            const [isReg, setIsReg] = useState(false);
+            
+            useEffect(() => {
+                // Инициализация иконок Lucide
+                lucide.createIcons();
+            }, []);
 
-    .custom-scrollbar::-webkit-scrollbar { width: 3px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-accent-cyan); border-radius: 10px; }
+            return (
+                <div className="min-h-screen relative flex flex-col p-6 pb-32">
+                    <div className="scanline"></div>
+                    
+                    {/* Header */}
+                    <header className="flex justify-between items-center mb-10">
+                        <div className="flex items-center gap-4">
+                            <div className="relative w-16 h-16 flex items-center justify-center">
+                                <div className="logo-ring inset-0"></div>
+                                <div className="relative w-12 h-12 rounded-full border-2 border-cyan-400 overflow-hidden shadow-[0_0_20px_rgba(0,242,255,0.5)]">
+                                    <img src="https://raw.githubusercontent.com/vselin662-ops/Selin/main/logo.png" className="w-full h-full object-cover" />
+                                </div>
+                            </div>
+                            <div>
+                                <h1 className="font-display text-2xl tracking-widest text-white">SELIN</h1>
+                                <p className="text-[8px] text-cyan-400 tracking-[3px] uppercase opacity-60">Prestige Edition</p>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <div className="bg-green-500/10 border border-green-500/30 text-green-400 text-[9px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+                                ● ЗАЩИЩЕНО
+                            </div>
+                        </div>
+                    </header>
 
-    .glass-panel {
-      background: rgba(255, 255, 255, 0.02);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
+                    {/* Балансы */}
+                    <div className="grid grid-cols-3 gap-2 mb-10">
+                        {[
+                            { l: 'Престиж', v: '0.00', s: 'SLN', c: 'text-cyan-400' },
+                            { l: 'Основной', v: '0.00', s: 'TON', c: 'text-blue-400' },
+                            { l: 'Резерв', v: '0.00', s: 'USDT', c: 'text-green-400' }
+                        ].map((a, i) => (
+                            <div key={i} className="glass p-4 rounded-2xl text-center">
+                                <p className="text-[8px] text-gray-500 uppercase mb-1">{a.l}</p>
+                                <p className="text-sm font-bold">{a.v}</p>
+                                <p className={`text-[8px] font-bold ${a.c}`}>{a.s}</p>
+                            </div>
+                        ))}
+                    </div>
 
-    .grid-bg {
-      background-image: 
-        linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      mask-image: radial-gradient(circle at center, black, transparent 80%);
-    }
-    .grid-animate { animation: grid-move 4s linear infinite; }
-    @keyframes grid-move { 0% { transform: translateY(0); } 100% { transform: translateY(40px); } }
+                    {/* Кнопки действий */}
+                    <div className="grid grid-cols-3 gap-4 mb-10">
+                        {[
+                            { i: 'arrow-down-left', l: 'ВНЕСТИ', c: 'text-cyan-400' },
+                            { i: 'arrow-up-right', l: 'ВЫВОД', c: 'text-red-400' },
+                            { i: 'refresh-cw', l: 'ОБМЕН', c: 'text-purple-400' }
+                        ].map((btn, i) => (
+                            <button key={i} className="glass aspect-square rounded-2xl flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform">
+                                <i data-lucide={btn.i} className={btn.c}></i>
+                                <span className="text-[8px] font-bold text-gray-400">{btn.l}</span>
+                            </button>
+                        ))}
+                    </div>
 
-    .hud-corner { position: absolute; width: 10px; height: 10px; border: 1px solid rgba(0, 242, 255, 0.3); }
-    .hud-corner-tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
-    .hud-corner-tr { top: 0; right: 0; border-left: 0; border-bottom: 0; }
-    .hud-corner-bl { bottom: 0; left: 0; border-right: 0; border-top: 0; }
-    .hud-corner-br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+                    {/* Важное */}
+                    <div className="glass border-red-500/20 p-4 rounded-2xl flex items-center gap-4 mb-10">
+                        <div className="text-xl">🚨</div>
+                        <div>
+                            <p className="text-red-500 font-bold text-[10px] uppercase">ВАЖНО ЗНАТЬ</p>
+                            <p className="text-gray-500 text-[8px]">Аналитика угроз и регламент безопасности</p>
+                        </div>
+                    </div>
 
-    .font-display { font-family: var(--font-display); }
-    .font-mono { font-family: var(--font-mono); }
-  ` }} />
-);
+                    {/* Навигация */}
+                    <nav className="fixed bottom-0 left-0 w-full glass border-t border-white/5 flex justify-around p-6 pb-10">
+                        <button className="text-cyan-400 flex flex-col items-center gap-1">
+                            <i data-lucide="home"></i>
+                            <span className="text-[9px] font-bold">ГЛАВНАЯ</span>
+                        </button>
+                        <button className="text-gray-500 flex flex-col items-center gap-1">
+                            <i data-lucide="wallet"></i>
+                            <span className="text-[9px] font-bold">КОШЕЛЕК</span>
+                        </button>
+                        <button className="text-gray-500 flex flex-col items-center gap-1">
+                            <i data-lucide="shield"></i>
+                            <span className="text-[9px] font-bold">ЗАЩИТА</span>
+                        </button>
+                    </nav>
+                </div>
+            );
+        }
 
-// --- Translations ---
-const translations = {
-  ru: {
-    identifying: "Идентификация личности...", protocol: "Selin Biometric Protocol v9.0", accessGranted: "Доступ разрешен", deposit: "ВНЕСТИ", withdraw: "ВЫВОД", swap: "ОБМЕН", mobile: "СВЯЗЬ", reports: "ОТЧЕТЫ", safety: "ЗАЩИТА", important: "ВАЖНО ЗНАТЬ", safetyDesc: "Аналитика угроз и регламент безопасности", main: "ГЛАВНАЯ", wallet: "КОШЕЛЕК", safetyNav: "ЗАЩИТА", confirmPayment: "Подтвердить оплату", confirmWithdraw: "Подтвердить вывод", performExchange: "Произвести обмен", confirmStake: "ПОДТВЕРДИТЬ СТЕЙКИНГ", prestigeEdition: "Prestige Edition", protected: "ЗАЩИЩЕНО", prestige: "Престиж", mainAsset: "Основной", reserve: "Резерв", search: "Поиск...", selectOperator: "Выберите оператора", selectAsset: "Выберите актив", amount: "Сумма", address: "Адрес кошелька", send: "ОТПРАВИТЬ", get: "ПОЛУЧИТЬ", swapAction: "ОБМЕНЯТЬ", heatmapTitle: "Тепловая карта активов", portfolioCore: "Ядро портфеля", analyticsTitle: "Аналитика портфеля", totalTransactions: "Всего транзакций", activeContracts: "Активные смарт-контракты", systemStatus: "Система работает в штатном режиме", systemStatusDesc: "Все протоколы безопасности Selin Prestige активны.", registration: "РЕГИСТРАЦИЯ", viaTelegram: "Через Telegram", viaGmail: "Через Gmail", viaPhone: "По номеру телефона", viaRetina: "Сетчатка глаз", balanceLocked: "Заблокировано", registerToUnlock: "Зарегистрируйтесь для доступа к балансу", welcome: "Добро пожаловать в Selin", chooseMethod: "Выберите метод регистрации"
-  },
-  en: {
-    identifying: "Identity verification...", protocol: "Selin Biometric Protocol v9.0", accessGranted: "Access Granted", deposit: "DEPOSIT", withdraw: "WITHDRAW", swap: "SWAP", mobile: "MOBILE", reports: "REPORTS", safety: "SAFETY", important: "IMPORTANT", safetyDesc: "Threat analytics and safety protocol", main: "MAIN", wallet: "WALLET", safetyNav: "SAFETY", confirmPayment: "Confirm Payment", confirmWithdraw: "Confirm Withdraw", performExchange: "Perform Exchange", confirmStake: "CONFIRM STAKING", prestigeEdition: "Prestige Edition", protected: "PROTECTED", prestige: "Prestige", mainAsset: "Main", reserve: "Reserve", search: "Search...", selectOperator: "Select operator", selectAsset: "Select asset", amount: "Amount", address: "Wallet address", send: "SEND", get: "GET", swapAction: "SWAP", heatmapTitle: "Asset Heatmap", portfolioCore: "Portfolio Core", analyticsTitle: "Portfolio Analytics", totalTransactions: "Total Transactions", activeContracts: "Active Smart Contracts", systemStatus: "System operating normally", systemStatusDesc: "All Selin Prestige security protocols active.", registration: "REGISTRATION", viaTelegram: "Via Telegram", viaGmail: "Via Gmail", viaPhone: "Via Phone Number", viaRetina: "Retina Scan", balanceLocked: "Locked", registerToUnlock: "Register to unlock balance", welcome: "Welcome to Selin", chooseMethod: "Choose registration method"
-  }
-};
-
-// --- Sub-components ---
-const AtmosphericBackground = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const canvas = canvasRef.current; if (!canvas) return;
-    const ctx = canvas.getContext('2d'); if (!ctx) return;
-    let animationFrameId: number; let stars: any[] = [];
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initStars(); };
-    const initStars = () => {
-      stars = []; const count = Math.floor((canvas.width * canvas.height) / 3000);
-      for (let i = 0; i < count; i++) stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 1.2, speed: Math.random() * 0.2 + 0.05, opacity: Math.random() });
-    };
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const gradient = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width);
-      gradient.addColorStop(0, 'rgba(0, 242, 255, 0.03)'); gradient.addColorStop(1, 'transparent');
-      ctx.fillStyle = gradient; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      stars.forEach((s) => { ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity * 0.5})`; ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill(); s.y += s.speed; if (s.y > canvas.height) s.y = 0; });
-      animationFrameId = requestAnimationFrame(draw);
-    };
-    window.addEventListener('resize', resize); resize(); draw();
-    return () => { window.removeEventListener('resize', resize); cancelAnimationFrame(animationFrameId); };
-  }, []);
-  return (
-    <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-      <canvas ref={canvasRef} className="absolute inset-0" />
-      <div className="absolute inset-0 grid-bg grid-animate opacity-20" />
-      <div className="scanline" />
-    </div>
-  );
-};
-
-const HUDFrame = ({ children, className = "" }: { children: ReactNode; className?: string }) => (
-  <div className={`relative ${className}`}>
-    <div className="hud-corner hud-corner-tl" /><div className="hud-corner hud-corner-tr" />
-    <div className="hud-corner hud-corner-bl" /><div className="hud-corner hud-corner-br" />
-    {children}
-  </div>
-);
-
-const TiltCard = ({ children, className = "" }: { children: ReactNode; className?: string }) => {
-  const x = useMotionValue(0); const y = useMotionValue(0);
-  const mx = useSpring(x); const my = useSpring(y);
-  const rx = useTransform(my, [-0.5, 0.5], ["10deg", "-10deg"]);
-  const ry = useTransform(mx, [-0.5, 0.5], ["-10deg", "10deg"]);
-  return (
-    <motion.div onMouseMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); x.set((e.clientX - r.left) / r.width - 0.5); y.set((e.clientY - r.top) / r.height - 0.5); }} onMouseLeave={() => { x.set(0); y.set(0); }} style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }} className={className}>
-      <div style={{ transform: "translateZ(50px)", transformStyle: "preserve-3d" }}>{children}</div>
-    </motion.div>
-  );
-};
-
-const Modal = ({ isOpen, onClose, title, content }: { isOpen: boolean; onClose: () => void; title: string; content: ReactNode }) => (
-  <AnimatePresence>
-    {isOpen && (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[1000] flex items-end justify-center">
-        <div onClick={onClose} className="absolute inset-0 bg-black/80 backdrop-blur-xl" />
-        <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 30 }} className="relative w-full bg-[#05070a] border-t border-white/10 rounded-t-[40px] p-8 z-[1001] max-h-[90vh] overflow-y-auto shadow-2xl">
-          <div className="w-12 h-1.5 bg-white/10 rounded-full mx-auto mb-8" />
-          <div className="flex justify-between items-center mb-8">
-            <div className="flex items-center gap-3"><div className="w-1 h-6 bg-cyan-400 rounded-full shadow-[0_0_10px_cyan]" /><h2 className="font-display text-lg text-white uppercase tracking-widest">{title}</h2></div>
-            <button onClick={onClose} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white"><X size={20} /></button>
-          </div>
-          <div className="custom-scrollbar overflow-y-auto">{content}</div>
-        </motion.div>
-      </motion.div>
-    )}
-  </AnimatePresence>
-);
-
-const BiometricScan = ({ onComplete, onCancel, language }: { onComplete: () => void; onCancel: () => void; language: 'ru' | 'en' }) => (
-  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[2000] flex items-center justify-center bg-[#020408]/95 backdrop-blur-3xl">
-    <button onClick={onCancel} className="absolute top-10 right-10 text-white/30"><X size={32} /></button>
-    <div className="relative w-80 h-80 flex flex-col items-center justify-center">
-      <div className="absolute inset-0 border-2 border-cyan-500/20 rounded-[60px] overflow-hidden">
-        <motion.div animate={{ top: ['0%', '100%', '0%'] }} transition={{ duration: 3, repeat: Infinity }} className="absolute left-0 w-full h-1 bg-cyan-400 shadow-[0_0_30px_cyan] z-20" />
-      </div>
-      <div className="relative z-10">
-        <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-32 h-32 rounded-full border-4 border-cyan-500/30 flex items-center justify-center">
-          <div className="w-24 h-24 rounded-full border-2 border-cyan-500/50 flex items-center justify-center relative">
-            <div className="absolute inset-0 rounded-full bg-cyan-500/10 animate-pulse" /><Eye size={48} className="text-cyan-400 relative z-10" />
-          </div>
-        </motion.div>
-        {[0, 90, 180, 270].map((d) => <motion.div key={d} animate={{ rotate: d + 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }} style={{ transform: `rotate(${d}deg)` }} className="absolute -inset-8 border-t-2 border-cyan-500/40 rounded-full" />)}
-      </div>
-      <div className="mt-12 text-center"><p className="font-display text-cyan-400 text-sm tracking-widest uppercase animate-pulse">{translations[language].identifying}</p></div>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }} onAnimationComplete={() => setTimeout(onComplete, 800)} className="absolute inset-0 flex flex-col items-center justify-center bg-[#020408] z-30 rounded-[60px] border-2 border-green-500/30">
-        <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mb-6 border border-green-500/30"><Check size={40} className="text-green-400" /></div>
-        <p className="font-display text-green-400 text-sm tracking-widest uppercase">Verified</p>
-      </motion.div>
-    </div>
-  </motion.div>
-);
-
-const HoneycombButton = ({ icon, label, onClick, color, bg, delay = 0, size = "normal" }: any) => {
-  const isSmall = size === "small";
-  return (
-    <motion.button initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay, type: "spring" }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onClick} className={`relative ${isSmall ? 'w-20' : 'w-full'} aspect-[1/1.1] group`}>
-      <div className={`absolute inset-0 ${bg} border border-white/10 transition-all duration-500 group-hover:border-cyan-500/40`} style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)', backdropFilter: 'blur(16px)' }} />
-      <div className="relative z-10 flex flex-col items-center justify-center h-full gap-2 p-3">
-        <span className={`${color} drop-shadow-[0_0_20px_currentColor] group-hover:scale-125 transition-transform duration-500`}>{React.cloneElement(icon as React.ReactElement, { size: isSmall ? 20 : 26 })}</span>
-        <span className={`${isSmall ? 'text-[7px]' : 'text-[9px]'} font-black tracking-[2px] text-gray-500 group-hover:text-white transition-colors uppercase text-center leading-tight`}>{label}</span>
-      </div>
-    </motion.button>
-  );
-};
-
-// --- Main App ---
-export default function App() {
-  const [lang, setLang] = useState<'ru' | 'en'>('ru'); const t = translations[lang];
-  const [isReg, setIsReg] = useState(false); const [modal, setModal] = useState<string | null>(null);
-  const [isScan, setIsScan] = useState(false);
-
-  const openModal = (type: string) => { setModal(type); };
-  const closeModal = () => setModal(null);
-  const onScanComplete = () => { setIsScan(false); setIsReg(true); closeModal(); };
-
-  const getModalContent = () => {
-    if (modal === 'registration') return (
-      <div className="grid gap-3">
-        {[ { id: 'tg', l: t.viaTelegram, i: <MessageCircle />, c: 'from-blue-500/20' }, { id: 'gm', l: t.viaGmail, i: <Mail />, c: 'from-red-500/20' }, { id: 'ph', l: t.viaPhone, i: <Phone />, c: 'from-green-500/20' }, { id: 'rt', l: t.viaRetina, i: <Eye />, c: 'from-cyan-500/20' } ].map((m) => (
-          <button key={m.id} onClick={() => m.id === 'rt' ? setIsScan(true) : (setIsReg(true), closeModal())} className={`p-4 rounded-2xl bg-gradient-to-r ${m.c} to-transparent border border-white/10 flex items-center gap-4 hover:border-white/30 transition-all`}>
-            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">{m.i}</div>
-            <span className="text-xs font-bold text-gray-300">{m.l}</span>
-          </button>
-        ))}
-      </div>
-    );
-    if (modal === 'deposit') return (
-      <div className="grid gap-4">
-        {['SLN', 'TON', 'USDT'].map((a) => (
-          <button key={a} className="p-6 bg-white/[0.02] border border-white/10 rounded-3xl flex justify-between items-center hover:bg-white/5 transition-all">
-            <div className="flex items-center gap-4"><div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center font-display text-sm text-cyan-400">{a}</div><span className="font-display text-lg tracking-widest">{a}</span></div>
-            <ArrowDownLeft size={24} className="text-gray-600" />
-          </button>
-        ))}
-      </div>
-    );
-    return <div className="p-10 text-center text-gray-500 uppercase tracking-widest text-[10px]">Protocol Active: {modal}</div>;
-  };
-
-  return (
-    <div className="min-h-screen flex flex-col selection:bg-cyan-500/30 text-white overflow-hidden">
-      <GlobalStyles />
-      <AnimatePresence>{isScan && <BiometricScan onComplete={onScanComplete} onCancel={() => setIsScan(false)} language={lang} />}</AnimatePresence>
-      <AtmosphericBackground />
-      
-      <div className="flex-1 px-6 pt-12 pb-36 overflow-y-auto flex flex-col gap-8 custom-scrollbar">
-        <header className="flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <div className="relative w-16 h-16 flex items-center justify-center group">
-              <motion.div animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className="absolute inset-0 border border-dashed border-cyan-500/20 rounded-full" />
-              <motion.div animate={{ rotate: -360 }} transition={{ duration: 15, repeat: Infinity, ease: "linear" }} className="absolute inset-1 border border-dotted border-cyan-500/10 rounded-full" />
-              <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.4, 0.1] }} transition={{ duration: 3, repeat: Infinity }} className="absolute inset-3 bg-cyan-500/20 rounded-full blur-2xl" />
-              <motion.div whileHover={{ scale: 1.1, rotate: [0, -2, 2, 0] }} className="relative w-12 h-12 rounded-full border-2 border-cyan-500/40 bg-black overflow-hidden flex items-center justify-center shadow-[0_0_30px_rgba(0,242,255,0.4)] z-10">
-                <img src="https://raw.githubusercontent.com/vselin662-ops/Selin/main/logo.png" className="w-full h-full object-cover rounded-full opacity-90" alt="S" referrerPolicy="no-referrer" />
-                <motion.div animate={{ top: ['-10%', '110%'] }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }} className="absolute left-0 w-full h-[2px] bg-cyan-400 shadow-[0_0_15px_cyan] z-20" />
-              </motion.div>
-              {[0, 90, 180, 270].map(d => <div key={d} style={{ transform: `rotate(${d}deg)` }} className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-cyan-500/60 rounded-tl-sm" />)}
-            </div>
-            <div className="flex flex-col">
-              <span className="font-display text-2xl tracking-[6px] font-black bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">SELIN</span>
-              <span className="text-[8px] text-cyan-400 font-bold tracking-[3px] uppercase opacity-60">{t.prestigeEdition}</span>
-            </div>
-          </div>
-          <div className="flex flex-col items-end gap-3">
-            <div className="flex items-center gap-3">
-              {!isReg && <button onClick={() => openModal('registration')} className="bg-cyan-400 text-black text-[9px] px-4 py-1.5 rounded-full font-black uppercase tracking-wider flex items-center gap-2 shadow-[0_0_15px_rgba(0,242,255,0.2)]"><UserPlus size={12} />{t.registration}</button>}
-              <div className="flex bg-white/5 p-0.5 rounded-lg border border-white/10">
-                {['ru', 'en'].map((l: any) => <button key={l} onClick={() => setLang(l)} className={`px-2.5 py-1 text-[9px] font-black rounded ${lang === l ? 'bg-cyan-400 text-black' : 'text-gray-500'}`}>{l.toUpperCase()}</button>)}
-              </div>
-            </div>
-            <div className="bg-green-500/10 border border-green-500/30 text-green-400 text-[9px] px-3 py-1 rounded-full font-black uppercase flex items-center gap-1.5"><div className="w-1 h-1 bg-green-500 rounded-full animate-pulse" />{t.protected}</div>
-          </div>
-        </header>
-
-        <div className="grid grid-cols-3 gap-2">
-          {[ { l: t.prestige, v: '0.00', s: 'SLN', c: 'text-cyan-400', i: <Cpu size={10} /> }, { l: t.mainAsset, v: '0.00', s: 'TON', c: 'text-blue-400', i: <Activity size={10} /> }, { l: t.reserve, v: '0.00', s: 'USDT', c: 'text-green-400', i: <Lock size={10} /> } ].map((a, i) => (
-            <TiltCard key={i} className="relative bg-white/[0.02] border border-white/[0.08] p-4 rounded-[24px] backdrop-blur-xl text-center group glass-panel">
-              <HUDFrame>
-                <div className="flex justify-center mb-1.5 opacity-30 group-hover:opacity-100 transition-opacity">{a.i}</div>
-                <div className="text-[8px] text-gray-500 uppercase tracking-widest mb-1.5 font-bold">{a.l}</div>
-                <div className="font-display text-sm font-black mb-0.5 tracking-tight group-hover:scale-110 transition-transform">{a.v}</div>
-                <div className={`text-[8px] font-black tracking-widest ${a.c} drop-shadow-[0_0_8px_currentColor]`}>{a.s}</div>
-              </HUDFrame>
-            </TiltCard>
-          ))}
-        </div>
-
-        <div className="flex flex-col items-center gap-4 py-8">
-          <div className="flex justify-center gap-6">
-            {[ { id: 'deposit', i: <ArrowDownLeft />, l: t.deposit, c: 'text-cyan-400', b: 'bg-cyan-400/5' }, { id: 'withdraw', i: <ArrowUpRight />, l: t.withdraw, c: 'text-red-400', b: 'bg-red-400/5' }, { id: 'swap', i: <RefreshCw />, l: t.swap, c: 'text-purple-400', b: 'bg-purple-400/5' } ].map((act) => (
-              <div key={act.id} className="w-20"><HoneycombButton size="small" icon={act.i} label={act.l} onClick={() => openModal(act.id)} color={act.c} bg={act.b} /></div>
-            ))}
-          </div>
-          <div className="flex justify-center gap-6 -mt-4">
-            {[ { id: 'mobile_payment', i: <Smartphone />, l: t.mobile, c: 'text-blue-400', b: 'bg-blue-400/5' }, { id: 'stake', i: <Zap />, l: t.stake, c: 'text-yellow-400', b: 'bg-yellow-400/5' }, { id: 'reports', i: <BarChart3 />, l: t.reports, c: 'text-orange-400', b: 'bg-orange-400/5' } ].map((act) => (
-              <div key={act.id} className="w-20"><HoneycombButton size="small" icon={act.i} label={act.l} onClick={() => openModal(act.id)} color={act.c} bg={act.b} /></div>
-            ))}
-          </div>
-        </div>
-
-        <button onClick={() => openModal('safety')} className="relative bg-gradient-to-br from-red-500/10 via-black to-black border border-red-500/20 rounded-[16px] p-4 flex items-center gap-4 group overflow-hidden">
-          <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-xl">🚨</div>
-          <div className="flex-1 text-left">
-            <div className="text-red-500 font-black text-[10px] uppercase tracking-widest">{t.important}</div>
-            <div className="text-gray-500 text-[8px] uppercase tracking-tighter">{t.safetyDesc}</div>
-          </div>
-          <ChevronRight size={16} className="text-red-500/30" />
-        </button>
-      </div>
-
-      <nav className="fixed bottom-0 left-0 w-full bg-[#020408]/90 border-t border-white/[0.05] flex justify-around p-5 pb-10 backdrop-blur-3xl z-50">
-        <button className="flex flex-col items-center gap-2 text-cyan-400 drop-shadow-[0_0_15px_cyan]"><div className="p-2 rounded-xl bg-cyan-400/10"><Home size={22} /></div><span className="text-[9px] font-black tracking-widest">{t.main}</span></button>
-        <button onClick={() => openModal('withdraw')} className="flex flex-col items-center gap-2 text-gray-600 hover:text-white transition-all"><div className="p-2 rounded-xl bg-white/5"><Wallet size={22} /></div><span className="text-[9px] font-black tracking-widest">{t.wallet}</span></button>
-        <button onClick={() => openModal('safety')} className="flex flex-col items-center gap-2 text-gray-600 hover:text-white transition-all"><div className="p-2 rounded-xl bg-white/5"><Shield size={22} /></div><span className="text-[9px] font-black tracking-widest">{t.safetyNav}</span></button>
-      </nav>
-
-      <Modal isOpen={modal !== null} onClose={closeModal} title={modal ? modal.toUpperCase() : ''} content={getModalContent()} />
-    </div>
-  );
-}
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
