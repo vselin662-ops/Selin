@@ -1,1 +1,42 @@
+код нового иттерфейса
+// language: javascript
+const { useState, useEffect } = React;
 
+function App() {
+  const [gas, setGas] = useState(14);
+  const [status, setStatus] = useState('ONLINE');
+
+  // Инициализируем иконки один раз
+  useEffect(() => {
+    if (window.lucide && window.lucide.createIcons) {
+      window.lucide.createIcons();
+    }
+  }, []);
+
+  // Обновление gas каждые 3 секунды, с плавным шагом и ограничением
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGas(prev => {
+        const delta = Math.random() * 4 - 2; // -2 .. +2
+        let next = prev + delta;
+        next = Math.max(8, Math.min(40, next));
+        return Math.round(next); // целое значение
+      });
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="min-h-screen p-5 flex flex-col relative overflow-y-auto">
+      {/* ... ваш JSX без изменений ... */}
+      <div className="text-right">
+        <p className="text-[9px] text-gray-600 uppercase font-bold tracking-widest mb-1">Network Gas</p>
+        <p className="text-xl font-display text-white">{gas} <span className="text-[10px] text-cyan-500">GW</span></p>
+      </div>
+      {/* ... остальное ... */}
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
